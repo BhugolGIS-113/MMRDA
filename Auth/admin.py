@@ -35,8 +35,8 @@ admin.site.register(User, CustomUserAdmin)
 # admin.site.register(photographs)
 class OutstandingTokenAdmin(OutstandingTokenAdmin):
     def has_delete_permission(self, *args, **kwargs):
-        return True # or whatever logic you want
-
+        return True 
+    
     def get_actions(self, request):
         actions = super(OutstandingTokenAdmin, self).get_actions(request)
         if 'delete_selected' in actions:

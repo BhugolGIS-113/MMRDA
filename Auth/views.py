@@ -1,8 +1,8 @@
-from rest_framework.permissions import IsAuthenticated, AllowAny, DjangoModelPermissions
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth.models import Group
-from Auth.models import User
+from Auth.models import User 
 from .serializers import (
-    LoginSerializer, RegisterSerializer, UserViewSerializer , LogoutSerializer , ChangePasswordSerializer ,
+    LoginSerializer, RegisterSerializer , LogoutSerializer , ChangePasswordSerializer ,
     PasswordRestSerializer,PasswordResetEmailSerializer)
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -12,6 +12,10 @@ from rest_framework.parsers import MultiPartParser
 import json
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenBlacklistView
+from rest_framework_simplejwt.token_blacklist.models import OutstandingToken , BlacklistedToken
+
+
+
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
 
@@ -117,16 +121,21 @@ class restpasswordView(generics.GenericAPIView):
         return Response({"msg" : "Password reset Successfully"} , status=status.HTTP_200_OK)
 
 
-
 class LogoutAPIView(generics.GenericAPIView):
-    serializer_class = LogoutSerializer
+    serializer_class = LogoutSerializer 
+    parser_classes = [MultiPartParser]
 
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
-
+        # userid = request.user.id
+        # print(userid)
+        
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        # token = OutstandingToken.objects.filter(user_id = userid).delete()
+        # print('Outstanding token deleted successfully')
+  
 
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({'Message' : 'Logut Successfull'},status=status.HTTP_204_NO_CONTENT)

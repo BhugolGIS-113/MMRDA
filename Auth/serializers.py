@@ -126,22 +126,7 @@ class LogoutSerializer(serializers.Serializer):
         
         except TokenError:
             self.fail('bad_token')
-# class OccupationalHealthSafetySerailzers(serializers.ModelSerializer):
-#     class Meta:
-#         model = occupationalHealthSafety
-#         fields = "__all__" 
 
-
-# class TraningSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = traning
-#         fields = '__all__'
-
-
-# class photographsSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = photographs
-#         fields = '__all__'
         
 
 

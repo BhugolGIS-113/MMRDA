@@ -1,5 +1,6 @@
 from rest_framework import generics
-from .serialzers import TraningSerializer, photographsSerializer, photographsViewSerializer
+from .serialzers import (TraningSerializer, photographsSerializer, photographsViewSerializer ,
+                         occupationalHealthSafetySerialziers , occupationalHealthSafetyViewSerializer)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
@@ -88,3 +89,20 @@ class updatephotographview(generics.UpdateAPIView):
                 return Response(serializer.data, status=200)
         except:
             return Response({"message": "Matching id does not exist"})
+
+
+class occupationalHealthSafety (generics.GenericAPIView):
+    serializer_class = occupationalHealthSafetySerialziers
+    parser_classes = [MultiPartParser]
+    
+    def post(self, request):
+        lat = float(request.data['latitude'])
+        long = float(request.data['longitude'])
+        location = Point(long, lat, srid=4326)
+        serializer = occupationalHealthSafetySerialziers(data = request.data )
+        if serializer.is_valid(raise_exception=True):
+            rehabilitation = serializer.save(location=location)
+            data = occupationalHealthSafetyViewSerializer(rehabilitation).data
+            return Response(data, status=200)
+        else:
+            return Response({"message": serializer.errors}, status=400)

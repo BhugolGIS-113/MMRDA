@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'Auth.apps.AuthConfig',
     'EnvMonitoring',
     'SocialMonitoring',
+    # 'OccupationalHealthAndSafety'
     'Training' ,
     "corsheaders",
     'rest_framework_simplejwt',
@@ -176,6 +177,9 @@ REST_FRAMEWORK = {
 
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+
+    'DATE_INPUT_FORMATS': ["%d-%m-%Y", ],
+
     
     # 'DEFAULT_PERMISSION_CLASSES': (
     #     "rest_framework.permissions.DjangoModelPermissions",
@@ -216,3 +220,5 @@ SIMPLE_JWT = {
 
     'JTI_CLAIM': 'jti',
 }
+
+TIME_ZONE =  'Asia/Kolkata'

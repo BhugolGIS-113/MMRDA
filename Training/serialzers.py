@@ -37,10 +37,11 @@ class occupationalHealthSafetySerialziers(serializers.ModelSerializer):
     class Meta:
         model = occupationalHealthSafety
         fields = ['dateOfMonitoring' ,'packages', 'quarter','longitude', 'latitude' ,
-        'JoiningMedicalCheckup' , 'PPEkit' ,'TrainingToWorkers','HouseKeeping' ,'PowerSupplySystem' ,'AssemblyArea' ,
-        'AmbulanceArrangement' ,'ToiletFacility','SafeMomentPasage' ,'MaterialKeepingPractice','accidental_check','SafetyGearStatus',
-        'Barricading','NatureOfAccident' ,'TypeOfIncident' ,'IncidentDetails' ,'IdentifiedCauseOfIncident' ,'Outcome' ,'CompensationPaid' ,
-        'photographs' ,'Remarks']
+        'joiningMedicalCheckup' , 'ppeKit' ,'trainingToWorkers','houseKeeping' ,
+        'powerSupplySystem' ,'assemblyArea' ,'ambulanceArrangement' ,'toiletFacility',
+        'safeMomentPassage' ,'materialKeepingPractice','accidentalCheck','safetyGearStatus',
+        'barricading','natureOfAccident' ,'typeOfIncident' ,'incidentDetails' ,
+        'identifiedCauseOfIncident' ,'outcome' ,'compensationPaid' ,'photographs' ,'remarks']
 
     
     def create(self,data):

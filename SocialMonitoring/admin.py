@@ -1,9 +1,9 @@
 from django.contrib import admin
-from .models import (PAP,Rehabilitation, LabourCamp, ConstructionSiteDetails)
+from .models import (labourcampDetails,PAP,Rehabilitation, LabourCamp, ConstructionSiteDetails)
 # Register your models here.
 
 
-# admin.site.register(social_Monitoring)
+admin.site.register(labourcampDetails)
 admin.site.register(PAP)
 admin.site.register(LabourCamp)
 admin.site.register(ConstructionSiteDetails)

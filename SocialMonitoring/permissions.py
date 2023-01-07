@@ -29,6 +29,24 @@ class IsConsultant(BasePermission):
         return request.user and has_group_permission
 
 
+class IsContractor(BasePermission):
+    required_group = ["contractor"]
+
+    def has_permission(self, request, view):
+        has_group_permission = _has_group_permission(
+            request.user, self.required_group)
+        return request.user and has_group_permission
+
+class IsRNR(BasePermission):
+    required_group = ["RNR"]
+
+    def has_permission(self, request, view):
+        has_group_permission = _has_group_permission(
+            request.user, self.required_group)
+        return request.user and has_group_permission
+
+
+
 # class CustomModelPermissions(DjangoModelPermissions):
 #     perms_map = {
 #         'GET': ['%(app_label)s.view_%(model_name)s'],

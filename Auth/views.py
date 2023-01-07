@@ -40,6 +40,7 @@ class UserRegister(generics.GenericAPIView):
                 kfw_group = Group.objects.get(name="kfw")
                 consultant_group = Group.objects.get(name='consultant')
                 contractor_group = Group.objects.get(name='contractor')
+                RNR_group = Group.objects.get(name = 'RNR')
                 print(user)
                 if user.is_mmrda:
                     user.groups.add(mmrda_group)
@@ -52,6 +53,10 @@ class UserRegister(generics.GenericAPIView):
 
                 elif user.is_contractor == True:
                     user.groups.add(contractor_group)
+
+                elif user.is_RNR == True:
+                    user.groups.add(RNR_group)
+
                 return Response({'msg': 'Registration Successfull' }, status=200)
             except:
                 return Response({'msg': 'Please select any one group'}, status=400)
@@ -63,7 +68,7 @@ class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
     renderer_classes = [ErrorRenderer]
     parser_classes = [MultiPartParser]
-    # permission_classes = [AllowAny]
+
 
     def post(self, request):
         try:
@@ -80,7 +85,7 @@ class LoginView(generics.GenericAPIView):
                                 'user_group': user_data.groups.values_list("name", flat=True)[0]},
                                  status=200)
         except:
-            return Response({'msg': 'Check Your email and password',
+            return Response({'msg': serializer.errors,
                             'status': 400,
                             'response': 'Bad Request'}, status=400)
 
@@ -94,6 +99,7 @@ class ChangePasswordView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ChangePasswordSerializer
     parser_classes = [MultiPartParser]
+    
     def post(self, request , format = None):
       serializer = ChangePasswordSerializer(data=request.data , context ={'user':request.user})
       serializer.is_valid(raise_exception=True)
@@ -128,9 +134,6 @@ class LogoutAPIView(generics.GenericAPIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
-        # userid = request.user.id
-        # print(userid)
-        
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()

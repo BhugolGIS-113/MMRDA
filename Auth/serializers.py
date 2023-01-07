@@ -13,7 +13,15 @@ class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(style = {'input_type':'password'},write_only = True)
     class Meta:
         model = User
-        fields = ('email','username' ,  'password','is_mmrda' , 'is_kfw' , 'is_contractor' , 'is_consultant')
+        fields = ('email', 'username','password','is_mmrda' , 'is_kfw' , 'is_contractor' , 'is_consultant' , 'is_RNR')
+
+    def validate(self, data):
+        username = data.get('username')
+        if username == "" or username == None:
+            raise serializers.ValidationError('Username can not be empty')
+        if username[0].islower():
+            raise serializers.ValidationError('Username First letter must be uppercase')
+        return data
 
 
     def create(self,validated_data):
@@ -41,15 +49,12 @@ class LoginSerializer(serializers.ModelSerializer):
        
 class ChangePasswordSerializer(serializers.Serializer):
    password = serializers.CharField(max_length=255 , style={'input_type':'password'}, write_only =True)
-#    password2 = serializers.CharField(max_length=255 , style={'input_type':'password'}, write_only =True)
    class Meta:
     Feilds = ["password"]
    
    def validate(self, data):
     password = data.get('password')
     user = self.context.get('user')
-    # if password:
-    #     raise serializers.ValidationError("password and confirm password doesn't match")
     user.set_password(password)
     user.save()
     return data
@@ -63,7 +68,7 @@ class PasswordResetEmailSerializer(serializers.Serializer):
 
     def validate(self, data):
         email = data.get('email')
-        if User.objects.filter(email=email).exists():
+        if User.objects.filter(email=email ).exists():
             user = User.objects.get(email=email)
             uid = urlsafe_base64_encode(force_bytes(user.id))
             print("Encoded ID" , uid)

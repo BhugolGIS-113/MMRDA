@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'Auth.apps.AuthConfig',
     'EnvMonitoring',
     'SocialMonitoring',
-    # 'OccupationalHealthAndSafety'
     'Training' ,
     "corsheaders",
     'rest_framework_simplejwt',
@@ -105,7 +104,7 @@ EMAIL_USE_TLS = True
 DATABASES={
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME':'Demo_MMRDA',
+        'NAME':'MMRDA',
         'USER':'postgres',
         'PASSWORD':'admin',
         'HOST':'localhost',
@@ -178,7 +177,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 
-    'DATE_INPUT_FORMATS': ["%d-%m-%Y", ],
+
 
     
     # 'DEFAULT_PERMISSION_CLASSES': (
@@ -187,6 +186,7 @@ REST_FRAMEWORK = {
    
 }
 
+DATE_FORMAT = '%d-%m-%y'
 
 SWAGGER_SETTINGS = {
     "SECURITY_DEFINITIONS": {
@@ -201,7 +201,7 @@ SWAGGER_SETTINGS = {
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=120),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,

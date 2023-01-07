@@ -57,59 +57,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_kfw = models.BooleanField(default=False)
     is_consultant = models.BooleanField(default=False)
     is_contractor = models.BooleanField(default=False)
+    is_RNR = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['username']
 
     objects = CustomUserManager()
 
     def __str__(self):
         return self.email
 
-# class report(models.Model):
-#     report = models.FileField(upload_to='reports/', max_length=254)
 
-
-# # # Abstarct Baseclass for EnvMonitoring for common field
-# class Baseclass(models.Model):
-#     choices = [('JAN-MAR 2022', 'JAN-MAR 2022'), ('APR-JUN 2022',
-#                                                   'APR-JUN 2022'), ('JULY-AUG 2022', 'JULY-AUG 2022')]
-#     quarter = models.CharField(
-#         max_length=255, choices=choices, null=True, blank=True)
-#     package_choice = [('CA-08', 'CA-08'), ('CA-09', 'CA-09'), ('CA-10', 'CA-10'),
-#                       ('CA-11', 'CA-11'), ('CA-12', 'CA-12'), ('CA-54', 'CA-54')]
-#     package = models.CharField(
-#         max_length=255, choices=package_choice,  null=True, blank=True)
-#     location = models.PointField(null=True, blank=True)
-#     date = models.DateField(auto_now=True, null=True, blank=True)
-
-#     class Meta:
-#         abstract = True
-
-
-# # --------------------------------------OCCUPATINOL HEALTH & SAFTEY MODEL-----------------------------------
-
-# class occupationalHealthSafety(models.Model):
-#     user = models.ForeignKey(
-#         User, related_name="occupationalHealthSafety", on_delete=models.CASCADE)
-#     location = models.PointField(null=True, blank=True)
-#     joining_medical_check = models.BooleanField()
-#     accidental_check = models.BooleanField()
-#     nature_of_accident = models.CharField(
-#         max_length=255, null=True, blank=True)
-#     date_of_incident = models.DateField(auto_now_add=True, null=True, blank=True)
-#     collective_majors = models.CharField(max_length=255, null=True, blank=True)
-#     incident_reporting = models.CharField(
-#         max_length=255, null=True,  blank=True)
-#     type_of_incident = models.CharField(max_length=255, null=True, blank=True)
-#     barricading = models.BooleanField()
-#     photographs = models.ImageField(
-#         upload_to='photographs/', null=True, blank=True)
-
-#     def __str__(self) -> str:
-#         return self.user.email
-
-
-# # ----------------------- TRANINING MODEL ---------------------------------------------------------
 
 

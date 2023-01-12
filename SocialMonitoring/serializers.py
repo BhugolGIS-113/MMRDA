@@ -54,10 +54,6 @@ class PapSerailzer(serializers.ModelSerializer):
                   'individualLandAsset','areaOfLand','typeOfAsset','legalStatus','legalDocuments',
                    'actionTaken', 'notAgreedReason','presentPhotograp','remarks' )
 
-    def validate(self,data):
-        if 'user' not in data or data['user'] == '' and data['user'] == None:
-            raise serializers.ValidationError('User is required') 
-        return data
 
     def create(self, data):
         data.pop('longitude')
@@ -125,6 +121,7 @@ class LabourCampDetailSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     longitude = serializers.CharField(max_length=10, required=False)
     latitude = serializers.CharField(max_length=10, required=False)
+    
     class Meta:
         model = LabourCamp
         fields = ('user','quarter', 'packages','dateOfMonitoring','longitude', 'latitude', 'labourCampName', 'LabourCampID',
@@ -135,34 +132,34 @@ class LabourCampDetailSerializer(serializers.ModelSerializer):
                     'isKitchenArea','kitchenAreaCondition','kitchenAreaPhotographs','kitchenAreaRemarks',
                     'isFireExtinguish','fireExtinguishCondition','fireExtinguishPhotographs','fireExtinguishRemarks',
                      'isRoomsOrDoms' ,'roomsOrDomsCondition','roomsOrDomsPhotographs' ,'roomsOrDomsRemarks',
-                     'isSegregationOfWaste','segregationOfwasteCondition','segregationOfwastePhotographs','segregationOfwasteRemarks',
+                     'isSegregationOfWaste','segregationOfWasteCondition','segregationOfWastePhotographs','segregationOfWasteRemarks',
                     'isRegularHealthCheckup','regularHealthCheckupCondition','regularHealthCheckupPhotographs','regularHealthCheckupRemarks',
                      'isAvailabilityOfDoctor', 'availabilityOfDoctorCondition','availabilityOfDoctorPhotographs','availabilityOfDoctorRemarks',
                       'isFirstAidKit','firstAidKitCondition' ,'firstAidKitPhotographs','firstAidKitRemarks',
                     'transportationFacility' ,'transportationFacilityCondition', 'modeOfTransportation','distanceFromSite',
-                    'GenralPhotographs' ,'documents','remarks')
+                    'photographs' ,'documents','remarks')
 
     def create(self,data):
         data.pop('longitude')
         data.pop('latitude')
         return LabourCamp.objects.create(**data)
         
-    def validate(self , data):
-        if data['quarter']=="" or data['quarter']==None:
-            raise serializers.ValidationError("quarter cannot be empty!!")
-        if data['packages'] == "" or data['packages'] == None:
-            raise serializers.ValidationError('package cannot be empty!!')
-        if data['longitude'] == "" or data['longitude'] == None:
-            raise serializers.ValidationError('longitude cannot be empty!!')
-        if data['latitude'] == "" or data['latitude'] == None:
-            raise serializers.ValidationError('latitude cannot be empty!!')
-        if data['isToilet'] == "" or data['isToilet'] == None:
-            raise serializers.ValidationError('toilets cannot be empty!!')
-        if data['labourCampName'] == "" or data['labourCampName'] == None:
-            raise serializers.ValidationError('labourcamp Title cannot be empty!!')
-        if data['LabourCampID'] == "" or data['LabourCampID'] == None:
-            raise serializers.ValidationError('LabourCamp ID cannot be empty!!')
-        return data
+    # def validate(self , data):
+    #     if data['quarter']=="" or data['quarter']==None:
+    #         raise serializers.ValidationError("quarter cannot be empty!!")
+    #     if data['packages'] == "" or data['packages'] == None:
+    #         raise serializers.ValidationError('package cannot be empty!!')
+    #     if data['longitude'] == "" or data['longitude'] == None:
+    #         raise serializers.ValidationError('longitude cannot be empty!!')
+    #     if data['latitude'] == "" or data['latitude'] == None:
+    #         raise serializers.ValidationError('latitude cannot be empty!!')
+    #     if data['isToilet'] == "" or data['isToilet'] == None:
+    #         raise serializers.ValidationError('toilets cannot be empty!!')
+    #     if data['labourCampName'] == "" or data['labourCampName'] == None:
+    #         raise serializers.ValidationError('labourcamp Title cannot be empty!!')
+    #     if data['LabourCampID'] == "" or data['LabourCampID'] == None:
+    #         raise serializers.ValidationError('LabourCamp ID cannot be empty!!')
+    #     return data
 
 class LabourCampUpdateSerialzier(serializers.ModelSerializer):
     class Meta:
@@ -174,12 +171,12 @@ class LabourCampUpdateSerialzier(serializers.ModelSerializer):
                  'isKitchenArea','kitchenAreaCondition','kitchenAreaPhotographs','kitchenAreaRemarks',
                 'isFireExtinguish','fireExtinguishCondition','fireExtinguishPhotographs','fireExtinguishRemarks',
                      'isRoomsOrDoms' ,'roomsOrDomsCondition','roomsOrDomsPhotographs' ,'roomsOrDomsRemarks',
-                     'isSegregationOfWaste','segregationOfwasteCondition','segregationOfwastePhotographs','segregationOfwasteRemarks',
+                     'isSegregationOfWaste','segregationOfWasteCondition','segregationOfWastePhotographs','segregationOfWasteRemarks',
                     'isRegularHealthCheckup','regularHealthCheckupCondition','regularHealthCheckupPhotographs','regularHealthCheckupRemarks',
                      'isAvailabilityOfDoctor', 'availabilityOfDoctorCondition','availabilityOfDoctorPhotographs','availabilityOfDoctorRemarks',
                       'isFirstAidKit','firstAidKitCondition' ,'firstAidKitPhotographs','firstAidKitRemarks',
                     'transportationFacility' ,'transportationFacilityCondition', 'modeOfTransportation','distanceFromSite',
-                    'GenralPhotographs' ,'documents','remarks')
+                    'photographs' ,'documents','remarks')
 
 
 

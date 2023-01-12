@@ -4,7 +4,7 @@ LabourCampDetailSerializer, LabourCampDetailViewSerializer,RehabilitationViewSer
  , PAPSerializer ,ConstructionSiteDetailsserializer  , LabourCampUpdateSerialzier)
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated 
-from rest_framework.parsers import MultiPartParser
+from rest_framework.parsers import MultiPartParser , FormParser
 from rest_framework.response import Response
 from .renderers import ErrorRenderer
 from django.contrib.gis.geos import Point 
@@ -35,9 +35,9 @@ class labourCampdetailsView(generics.GenericAPIView):
     serializer_class = labourCampDetailGetviewSerializer
     parser_classes = [MultiPartParser]
    
-    def get(self, request,LabourCampName, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
       
-        details = labourcampDetails.objects.filter(LabourCampName = LabourCampName)
+        details = labourcampDetails.objects.all()
         serializer = labourCampDetailGetviewSerializer(details, many=True)
         return Response(serializer.data, status=200)
 
@@ -161,7 +161,7 @@ class LabourCampDetailsView(generics.GenericAPIView):
                         return Response({
                             'msg' : "Please enter a valid data", 'error':serializer.errors ,'Status' : 400})
             else:
-                serializer = LabourCampDetailSerializer(data=request.data)
+                serializer = LabourCampDetailSerializer(data=request.data ,context={'request': request})
                 if serializer.is_valid(raise_exception=True):
                     LabourCampDetails = serializer.save(location=location)
                     data = LabourCampDetailViewSerializer(LabourCampDetails).data
@@ -269,8 +269,6 @@ class PAPmanagmentAPI(generics.GenericAPIView):
                                           'message': 'successfully'})
             else:
                 return Response({'status':403,'message':'invalid package'})
-
-
 
 
 

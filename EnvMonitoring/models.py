@@ -58,13 +58,13 @@ class TreeManagment(Baseclass):
     Edocuments = models.FileField(upload_to='existingTree_documents/', null = True , blank=True)
     Eremarks = models.TextField(blank=True, null=True )
     
-    Clocation = models.PointField(null = True , blank=True)
-    Cname= models.CharField(max_length=255 ,blank=True, null=True )
-    CbotonicalName = models.CharField(max_length=255 , blank=True , null= True)
-    Ccondition = models.CharField(max_length= 255 ,blank = True , null = True)   
-    Cphotographs = models.ImageField(upload_to="newTree_photographs/", null=True, blank=True)
-    Cdocuments = models.FileField(upload_to="newTree_documents/", null  = True, blank=True  )
-    Cremarks = models.TextField(max_length= 255 , null = True , blank = True)
+    # Clocation = models.PointField(null = True , blank=True)
+    # Cname= models.CharField(max_length=255 ,blank=True, null=True )
+    # CbotonicalName = models.CharField(max_length=255 , blank=True , null= True)
+    # Ccondition = models.CharField(max_length= 255 ,blank = True , null = True)   
+    # Cphotographs = models.ImageField(upload_to="newTree_photographs/", null=True, blank=True)
+    # Cdocuments = models.FileField(upload_to="newTree_documents/", null  = True, blank=True  )
+    # Cremarks = models.TextField(max_length= 255 , null = True , blank = True)
    
 
 

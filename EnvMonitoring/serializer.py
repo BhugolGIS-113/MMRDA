@@ -70,7 +70,7 @@ class NoiseSerializer(serializers.ModelSerializer):
     latitude=serializers.CharField(max_length=10,required=False)
     class Meta:
         model = Noise
-        fields = ('user','quarter','month','packages','longitude','dateOfMonitoring','latitude' ,'noiseLevel' , 'monitoringPeriod', )
+        fields = ('user','quarter','month','packages','longitude','latitude' ,'dateOfMonitoring','noiseLevel' , 'monitoringPeriod', )
 
     def create(self,data):
         data.pop('latitude')
@@ -101,24 +101,23 @@ class Noiseviewserializer(GeoFeatureModelSerializer):
         geo_field='location'
 
 class TreeManagementSerailizer(serializers.ModelSerializer):
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     longitude=serializers.CharField(max_length=10,required=False)
     latitude=serializers.CharField(max_length=10,required=False)
-    Clongitude = serializers.CharField(max_length=10,required=False)
-    Clatitude = serializers.CharField(max_length=10,required=False)
+    # Clongitude = serializers.CharField(max_length=10,required=False)
+    # Clatitude = serializers.CharField(max_length=10,required=False)
 
 
     class Meta:
         model = TreeManagment
-        fields = ('user','quarter','month','dateOfMonitoring','packages','longitude','latitude' ,'EtreeID','EcommanName' ,'EbotanicalName',
-                    'Econdition', 'noOfTreeCut','actionTaken', 'Ephotographs', 'Edocuments','Eremarks',
-                    'Clongitude','Clatitude','Cname','CbotonicalName','Ccondition','Cphotographs','Cdocuments','Cremarks')
+        fields = ('quarter','month','dateOfMonitoring','packages','longitude','latitude' ,'EtreeID','EcommanName' ,'EbotanicalName',
+                    'Econdition', 'noOfTreeCut','actionTaken', 'Ephotographs', 'Edocuments','Eremarks')
+                    # 'Clongitude','Clatitude','Cname','CbotonicalName','Ccondition','Cphotographs','Cdocuments','Cremarks')
         
     def create(self,data):
         data.pop('latitude')
         data.pop('longitude')
-        data.pop('Clongitude')
-        data.pop('Clatitude')
+        # data.pop('Clongitude')
+        # data.pop('Clatitude')
         return TreeManagment.objects.create(**data)
 
     
@@ -159,7 +158,7 @@ class wastetreatmentsViewserializer(GeoFeatureModelSerializer):
 
 
 
-class MaterialSourcingSerializer(serializers.ModelSerializer):
+class MaterialManagmentSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     longitude=serializers.CharField(max_length=10,required=False)
     latitude=serializers.CharField(max_length=10,required=False)

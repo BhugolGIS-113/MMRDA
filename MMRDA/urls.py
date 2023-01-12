@@ -26,5 +26,6 @@ urlpatterns = [
     path('api/envmonitoring/' , include('EnvMonitoring.urls')),
     path('api/socialmonitoring/' , include('SocialMonitoring.urls')),
     path('api/traning/' , include('Training.urls')),
+    path('api/report/' , include('Report.urls')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

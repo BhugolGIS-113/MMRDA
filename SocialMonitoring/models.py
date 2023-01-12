@@ -154,9 +154,9 @@ class LabourCamp(Baseclass):
     roomsOrDomsRemarks = models.TextField(max_length=255,  blank=True, null=True)
 
     isSegregationOfWaste = models.BooleanField(blank=True)
-    segregationOfwasteCondition = models.CharField(max_length=255,  blank=True, null=True)
-    segregationOfwastePhotographs = models.ImageField(upload_to='labour Camp/segrigationOfWaste_Photographs/', blank=True, null=True)
-    segregationOfwasteRemarks = models.TextField(max_length=255,  blank=True, null=True)
+    segregationOfWasteCondition = models.CharField(max_length=255,  blank=True, null=True)
+    segregationOfWastePhotographs = models.ImageField(upload_to='labour Camp/segrigationOfWaste_Photographs/', blank=True, null=True)
+    segregationOfWasteRemarks = models.TextField(max_length=255,  blank=True, null=True)
 
     isRegularHealthCheckup = models.BooleanField(blank=True)
     regularHealthCheckupCondition = models.CharField( max_length=255,   blank=True, null=True)
@@ -179,7 +179,7 @@ class LabourCamp(Baseclass):
     modeOfTransportation = models.CharField(max_length=255, blank=True, null=True)
     distanceFromSite = models.PositiveIntegerField(blank=True, null=True)
 
-    GenralPhotographs = models.ImageField(upload_to='Labour Camp/GenralPhotographs/', blank=True, null=True)
+    photographs = models.ImageField(upload_to='Labour Camp/GenralPhotographs/', blank=True, null=True)
     documents = models.FileField(upload_to='labourcamp_documents/', blank=True, null=True)
     remarks = models.TextField(max_length=255, blank=True, null=True)
 

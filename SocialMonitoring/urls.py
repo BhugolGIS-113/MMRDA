@@ -5,7 +5,7 @@ labourCampUpdateView , PAPmanagmentAPI, RehabilitationView, labourCampdetails,la
 
 urlpatterns = [
     path ('labourcampdetails' , labourCampdetails.as_view() , name = "labourCampdetails "),
-    path('labourCampdetailsView/<str:LabourCampName>' , labourCampdetailsView.as_view() , name = "labourCampdetailsView"),
+    path('labourCampdetailsView' , labourCampdetailsView.as_view() , name = "labourCampdetailsView"),
  
     path ('pap' , PapView.as_view() , name = "project affected Person "),
     path ('pap/<int:id>' , papupdateView.as_view() , name = "project affected Person "),

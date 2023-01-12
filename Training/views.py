@@ -1,10 +1,9 @@
 from rest_framework import generics
-from .serialzers import (TraningSerializer, photographsSerializer, photographsViewSerializer ,
-                         occupationalHealthSafetySerialziers , occupationalHealthSafetyViewSerializer)
+from .serialzers import *
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
-from django.contrib.gis.geos import Point
+from django.contrib.gis.geos import Point , MultiLineString
 from .models import traning, photographs
 from .permission import IsConsultant
 
@@ -106,3 +105,26 @@ class occupationalHealthSafety (generics.GenericAPIView):
             return Response(data, status=200)
         else:
             return Response({"message": serializer.errors}, status=400)
+
+
+
+class ContactUsView(generics.GenericAPIView):
+    serializer_class = ContactusSerializezr
+    parser_classes = [MultiPartParser]
+
+    def post(self, request):
+        lat = float(request.data['latitude'])
+        long = float(request.data['longitude'])
+        location = MultiLineString(long, lat, srid=4326)
+        serializer = ContactusSerializezr(data = request.data )
+        if serializer.is_valid(raise_exception=True):
+            contactus = serializer.save(location=location)
+            data = ContactusViewSerialzier(contactus).data
+            return Response(data, status=200)
+        else:
+            return Response({"message": serializer.errors}, status=400)
+
+
+
+
+

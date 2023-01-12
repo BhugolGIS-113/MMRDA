@@ -1,6 +1,6 @@
 
 from rest_framework import serializers
-from .models import traning , photographs , occupationalHealthSafety
+from .models import *
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
 class TraningSerializer(serializers.ModelSerializer):
@@ -55,3 +55,22 @@ class occupationalHealthSafetyViewSerializer(GeoFeatureModelSerializer):
         fields = '__all__'
         geo_field = 'location'
  
+
+class ContactusSerializezr(serializers.ModelSerializer):
+    longitude = serializers.CharField(max_length= 255 , required = False) # longitude
+    latitude = serializers.CharField(max_length= 255, required = False) # latitude
+    class Meta:
+        model = Contactus
+        fields = ('name','email','messsage' , 'longitude' , 'latitude')
+
+    def create(self,data):
+        data.pop('longitude')
+        data.pop('latitude')
+        return Contactus.objects.create(**data)   
+
+
+class ContactusViewSerialzier(GeoFeatureModelSerializer):
+    class Meta:
+        model = Contactus
+        fields = '__all__'
+        geo_field = 'location'

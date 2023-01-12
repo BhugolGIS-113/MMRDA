@@ -1,13 +1,14 @@
 from django.db import models
 from Auth.models import User
-from django.contrib.gis.db import models
+from django.contrib.gis.db.models import PointField , LineStringField
+from django.contrib.gis.geos import Point, Polygon, LineString
 # Create your models here.
 
 
 class Baseclass(models.Model):
     quarter = models.CharField(max_length=255, null=True, blank=True)
     packages= models.CharField(max_length=255,   null=True, blank=True)
-    location = models.PointField(null=True, blank=True)
+    location = PointField(null=True, blank=True)
     dateOfMonitoring = models.DateField(null=True, blank=True)
 
     class Meta:
@@ -42,7 +43,7 @@ class photographs(models.Model):
     photograph_title = models.CharField(max_length=255, null=True , blank=True)
     photographs_uploaded_by = models.CharField(
         max_length=100, null=True, blank=True)
-    location = models.PointField(null= True, blank=True)
+    location = PointField(null= True, blank=True)
     date = models.DateTimeField( null=True, blank=True)
     site_photographs = models.ImageField(
         upload_to= 'site_photographs/', null=True, blank=True)
@@ -51,7 +52,7 @@ class photographs(models.Model):
 # ---------------------Occupational Health & safety Model --------------------
 class occupationalHealthSafety(Baseclass):
     user = models.ForeignKey(User, related_name='occupational_health_safety_User' , on_delete= models.CASCADE , blank = True)
-    location = models.PointField(blank=True)
+    location = PointField(blank=True)
     joiningMedicalCheckup = models.BooleanField(null=True, blank=True)
     ppeKit   = models.BooleanField( blank=True)
     trainingToWorkers  = models.BooleanField( blank=True)
@@ -85,4 +86,5 @@ class Contactus(models.Model):
     name = models.CharField(max_length=255 , null = True , blank= True) 
     email = models.EmailField(max_length=255 , verbose_name= 'Email')
     messsage = models.TextField(max_length= 255 , blank= True , null = True )
+    location = LineStringField(blank = True , null = True )
     

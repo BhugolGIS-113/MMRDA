@@ -347,12 +347,13 @@ class MaterialManagementReporetQuarterView(ListAPIView):
         try:
             data = MaterialManegmanet.objects.filter(quarter = quarter, dateOfMonitoring__year = year ).order_by('-id')
             if not data.exists():
-                return Response({'Message' : 'No data Found'}, status= status.HTTP_400_BAD_REQUEST)
+                return Response({'Message' : 'No data Found'},
+                                 status= status.HTTP_400_BAD_REQUEST)
                 
             Material_data = materialManagementSerializer(data, many = True).data
             return Response({'Message': 'Success',
-                             "material Management data": Material_data}, status= 200)
-
+                             "material Management data": Material_data},
+                             status= 200)
         except:
             return Response({'Message' : 'There is no data available for the Quarter'},
-                                status= status.HTTP_400_BAD_REQUEST)  
+                            status= status.HTTP_400_BAD_REQUEST)  

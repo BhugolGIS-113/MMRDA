@@ -1,7 +1,5 @@
 from django.urls import path
-from .views import ( PapView , constructionSiteView , papupdateView ,PapListView ,LabourCampDetailsView ,
-labourCampUpdateView , PAPmanagmentAPI, RehabilitationView, labourCampdetails,labourCampdetailsView,ConstructionSiteUpdateView,
- ConstructionSitemanagment,LabourCampManagmentAPI,ConstructionSiteListView , LabourCampDetailsView)
+from .views import *
 
 urlpatterns = [
     path ('labourcampdetails' , labourCampdetails.as_view() , name = "labourCampdetails "),
@@ -12,6 +10,9 @@ urlpatterns = [
     path ('paplist' , PapListView.as_view() , name = "project affected Person List "),
 
     path('rehabitation' , RehabilitationView.as_view() , name = "rehabitation"),
+    path('rehabitationpapid/<str:PAPID>' , RehabilatedPAPIDView.as_view() , name = "rehabitation"),
+       
+    
 
     path ('constructionsite' , constructionSiteView.as_view() , name = "constructionSiteView"),
     path ('constructionsite<int:id>', ConstructionSiteUpdateView.as_view() , name = "constructionSiteUpdateView"),

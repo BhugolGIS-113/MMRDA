@@ -1,8 +1,5 @@
 from django.urls import path
-from .views import (TraningView ,TrainingListView, PhotographsView , ContactUsView,
-                    photographsListView , updatephotographview , TrainingupdateView , occupationalHealthSafety)
-
-
+from .views import *
 
 urlpatterns = [
     path('traning' , TraningView.as_view() , name = 'traning'),
@@ -16,5 +13,7 @@ urlpatterns = [
 
     path('occupational' , occupationalHealthSafety.as_view() , name = 'occupational Health & Safety') ,
     path('contactus' , ContactUsView.as_view() , name = 'occupational update'),
+    path('contactussearch' , ContactusListView.as_view() , name = 'occupational update'),
+    
 
 ]

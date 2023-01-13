@@ -31,7 +31,7 @@ class labourcampDetails(models.Model):
 class PAP(Baseclass):
     user = models.ForeignKey(User, related_name='papUser',
                              on_delete=models.CASCADE, null=True)
-    PAPID = models.CharField(max_length=255, blank=True, null=True)
+    PAPID = models.CharField(max_length=255, blank=True, null=True , unique= True)
     nameOfPAP = models.CharField(max_length=255, blank=True, null=True)
     addressLine1 = models.TextField(max_length=255, blank=True, null=True)
     streetName = models.CharField(max_length=255, blank=True, null=True)
@@ -40,10 +40,10 @@ class PAP(Baseclass):
     eligibility = models.CharField(max_length=255,null=True, blank=True)
     categoryOfPap = models.CharField(
         max_length=255,  null=True, blank=True)
-    areaOfLand = models.BigIntegerField(blank=True, null=True)
-    individualLandAsset = models.PositiveIntegerField(blank=True, null=True)
+    # individualLandAsset = models.PositiveIntegerField(blank=True, null=True)
     typeOfAsset = models.CharField(
         max_length=255,  null=True, blank=True)
+    areaOfAsset = models.BigIntegerField(blank=True, null=True)
     legalStatus = models.CharField(
         max_length=255,  null=True, blank=True)
     legalDocuments = models.FileField(
@@ -54,15 +54,16 @@ class PAP(Baseclass):
     presentPhotograp = models.ImageField(
         upload_to='PAP/presentphotograph', blank=True, null=True)
     remarks = models.TextField(max_length=255, blank=True, null=True)
-    filledBy = models.CharField(max_length=255, blank=True, null=True)
+
 
 
 class Rehabilitation(Baseclass):
     user = models.ForeignKey( User, related_name='rehabilitationUser', on_delete=models.CASCADE, blank=True)
 
     location = models.PointField(null=True, blank=True)
-    PAPID = models.ForeignKey(PAP, related_name='rehabilitation', on_delete=models.CASCADE)
+    ID = models.ForeignKey(PAP, related_name='rehabilitation', on_delete=models.CASCADE)
     dateOfRehabilitation = models.DateField(blank=True, null=True)
+    PAPID = models.CharField(max_length=255, blank = True , null = True )
     PAPName = models.CharField(max_length=255, blank=True, null=True)
 
 

@@ -1,14 +1,11 @@
-from .serializers import (labourCampDetailSerializer,labourCampDetailviewSerializer,labourCampDetailGetviewSerializer,
-PapSerailzer,papviewserialzer,ConstructionSiteDetailsViewSerializer, constructionSiteSerializer, LabourCampserializer,
-LabourCampDetailSerializer, LabourCampDetailViewSerializer,RehabilitationViewSerializer,RehabilitationSerializer,PapUpdateSerialzier
- , PAPSerializer ,ConstructionSiteDetailsserializer  , LabourCampUpdateSerialzier)
+from .serializers import *
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated 
 from rest_framework.parsers import MultiPartParser , FormParser
 from rest_framework.response import Response
 from .renderers import ErrorRenderer
 from django.contrib.gis.geos import Point 
-from .models import    PAP  , ConstructionSiteDetails , LabourCamp , labourcampDetails , Rehabilitation
+from .models import  *
 from .paginations import LimitsetPagination
 from .permissions import *
 
@@ -56,7 +53,6 @@ class PapView(generics.GenericAPIView):
         long = float(request.data['longitude'])
         location = Point(long, lat, srid=4326)
         papid= request.data['PAPID']
-        print(papid)
         try:
             if "RNR" in request.user.groups.values_list("name",flat=True):
                 data = PAP.objects.filter(PAPID = papid).exists()
@@ -100,6 +96,22 @@ class PapListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     queryset = PAP.objects.all()
 
+
+
+class RehabilatedPAPIDView(generics.GenericAPIView):
+    serializer_class = RehabilatedPAPIDSerializer
+    parser_classes = [MultiPartParser]
+
+    def get(self, request , PAPID):
+        try:
+            papdata = PAP.objects.get(PAPID=PAPID)
+        except:
+            return Response({'Message' : 'No data Avaialable for this PAPID'} , status= 400)
+        serializers = RehabilatedPAPIDSerializer(papdata).data
+        print(serializers)
+        return Response(serializers , status=200)
+        # except:
+        #     return Response({'Message' : 'No data Avaialable for this   PAPID Exception'} , status =400)
 
 
 # ------------------------------ Rehabilitation View ------------------------------
@@ -191,7 +203,7 @@ class labourCampUpdateView(generics.UpdateAPIView):
         else:
             return Response({"msg": "Please Enter a valid data"})
 
-# ------------------------------------ Construction site View 
+# ------------------------------------ Construction site View -----------------------------------------------------
 class constructionSiteView(generics.GenericAPIView):
     renderer_classes = [ErrorRenderer]
     parser_classes = [MultiPartParser]

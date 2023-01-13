@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'django.contrib.gis',
-    'rest_framework_gis'
+    'rest_framework_gis',
+    'django_filters',
     
 ]
 
@@ -175,16 +176,14 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
 
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        
     ),
 
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 
-
-    
-    # 'DEFAULT_PERMISSION_CLASSES': (
-    #     "rest_framework.permissions.DjangoModelPermissions",
-    # ),
    
 }
+
 
 DATE_FORMAT = '%d-%m-%y'
 

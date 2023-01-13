@@ -46,12 +46,11 @@ class PapSerailzer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     longitude = serializers.CharField(max_length=10, required=False)
     latitude = serializers.CharField(max_length=10, required=False)
-
     class Meta:
         model = PAP
         fields = ('quarter', 'packages', 'longitude', 'latitude','dateOfMonitoring', 'user','dateOfIdentification','PAPID','nameOfPAP', 
                   'addressLine1','streetName','pincode','eligibility', 'categoryOfPap', 
-                  'individualLandAsset','areaOfLand','typeOfAsset','legalStatus','legalDocuments',
+                    'areaOfAsset','typeOfAsset','legalStatus','legalDocuments',
                    'actionTaken', 'notAgreedReason','presentPhotograp','remarks' )
 
 
@@ -69,7 +68,7 @@ class PapUpdateSerialzier(serializers.ModelSerializer):
         model = PAP
         fields = ('quarter', 'packages', 'longitude', 'latitude', 'dateOfIdentification',
                   'addressLine1','streetName','pincode','eligibility', 'categoryOfPap',
-                  'individualLandAsset','areaOfLand','typeOfAsset','legalStatus','legalDocuments',
+                  'areaOfAsset','typeOfAsset','legalStatus','legalDocuments',
                    'actionTaken', 'notAgreedReason','presentPhotograp','remarks')
 
 
@@ -91,7 +90,7 @@ class RehabilitationSerializer(serializers.ModelSerializer):
     latitude = serializers.CharField(max_length=10, required=False)
     class Meta:
         model = Rehabilitation
-        fields = ('user','longitude', 'latitude','PAPID','dateOfRehabilitation' , 'PAPName' ,'cashCompensation', 'compensationStatus',
+        fields = ('user','longitude', 'latitude','ID','dateOfRehabilitation' ,'PAPID', 'PAPName' ,'cashCompensation', 'compensationStatus',
                    'typeOfCompensation', 'otherCompensationType' ,'addressLine1','streetName','pincode',
                    'isShiftingAllowance','shiftingAllowanceAmount','isLivelihoodSupport', 'livelihoodSupportAmount','livelihoodSupportCondition',
                    'livelihoodSupportPhotograph','livelihoodSupportRemarks','isTraining','trainingCondition',
@@ -113,7 +112,10 @@ class RehabilitationViewSerializer(GeoFeatureModelSerializer):
             geo_field = 'location'
 
 
-
+class RehabilatedPAPIDSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PAP
+        fields = ('id', 'PAPID' , 'nameOfPAP' )
 
 # -------------------------------- Labour camp details Serialzier --------------------------------         
 

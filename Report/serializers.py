@@ -41,14 +41,14 @@ class PAPReportSerializer(ModelSerializer):
         model = PAP
         fields = ('quarter', 'packages', 'location','dateOfMonitoring','dateOfIdentification','PAPID','nameOfPAP', 
                   'addressLine1','streetName','pincode','eligibility', 'categoryOfPap', 
-                  'individualLandAsset','areaOfLand','typeOfAsset','legalStatus','legalDocuments',
+                  'areaOfAsset','typeOfAsset','legalStatus','legalDocuments',
                    'actionTaken', 'notAgreedReason','presentPhotograp','remarks' )
 
 
 class RehabilitationReportSerializer(ModelSerializer):
     class Meta:
         model = Rehabilitation
-        fields =  ('location','PAPID','dateOfRehabilitation' , 'PAPName' ,'cashCompensation', 'compensationStatus',
+        fields =  ('location','ID','dateOfRehabilitation' ,'PAPID', 'PAPName' ,'cashCompensation', 'compensationStatus',
                    'typeOfCompensation', 'otherCompensationType' ,'addressLine1','streetName','pincode',
                    'isShiftingAllowance','shiftingAllowanceAmount','isLivelihoodSupport', 'livelihoodSupportAmount','livelihoodSupportCondition',
                    'livelihoodSupportPhotograph','livelihoodSupportRemarks','isTraining','trainingCondition',

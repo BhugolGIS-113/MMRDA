@@ -80,11 +80,18 @@ class occupationalHealthSafety(Baseclass):
 
 
 
-
-
 class Contactus(models.Model):
     name = models.CharField(max_length=255 , null = True , blank= True) 
     email = models.EmailField(max_length=255 , verbose_name= 'Email')
     messsage = models.TextField(max_length= 255 , blank= True , null = True )
-    location = LineStringField(blank = True , null = True )
+    location =PointField(blank = True , null = True )
+    
+
+class  ContactusImage(models.Model):
+    contactus = models.ForeignKey(Contactus, on_delete=models.CASCADE, related_name='images')
+    images = models.ImageField(upload_to = 'contactus/images', max_length= 255 , blank = True , null = True)
+
+    def __str__(self) -> str:
+        return self.contactus.location
+
     

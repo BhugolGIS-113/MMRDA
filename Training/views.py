@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from django.contrib.gis.geos import Point , MultiLineString
 from .models import traning, photographs
 from .permission import IsConsultant
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 
 # Create your views here.
 
@@ -108,23 +110,37 @@ class occupationalHealthSafety (generics.GenericAPIView):
 
 
 
+
+# def modify_input_for_multiple_files(images):
+#     dict = {}
+#     dict['images'] = images
+#     return dict
+
 class ContactUsView(generics.GenericAPIView):
     serializer_class = ContactusSerializezr
-    parser_classes = [MultiPartParser]
+    parser_classes = [MultiPartParser ]
 
     def post(self, request):
         lat = float(request.data['latitude'])
         long = float(request.data['longitude'])
-        location = MultiLineString(long, lat, srid=4326)
-        serializer = ContactusSerializezr(data = request.data )
+        location = Point(long, lat, srid=4326)
+
+        serializer = ContactusSerializezr(data = request.data)
         if serializer.is_valid(raise_exception=True):
-            contactus = serializer.save(location=location)
+            contactus = serializer.save(location=location )
             data = ContactusViewSerialzier(contactus).data
             return Response(data, status=200)
         else:
             return Response({"message": serializer.errors}, status=400)
+        # except:
+        #     return Response ({'Message' : 'No data found'} , status= 400)
 
 
+class ContactusListView(generics.ListAPIView):
+    queryset = Contactus.objects.all()
+    serializer_class = ContactusViewSerialzier
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['^name' , '^email']
 
 
 

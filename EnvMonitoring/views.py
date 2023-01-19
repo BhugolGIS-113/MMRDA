@@ -37,7 +37,7 @@ class AirView(generics.GenericAPIView):
                 else:
                     Serializer = AirSerializer(data = request.data , context={'request': request})
                     if Serializer.is_valid(raise_exception = True):
-                        air=Serializer.save(location=location)
+                        air=Serializer.save(location=location ,  user = request.user)
                         data=AirViewSerializer(air).data
                         return Response(data, status= status.HTTP_200_OK)
                     else:
@@ -45,7 +45,7 @@ class AirView(generics.GenericAPIView):
             else:
                 Serializer = AirSerializer(data = request.data , context={'request': request})
                 if Serializer.is_valid(raise_exception = True):
-                    air=Serializer.save(location=location)
+                    air=Serializer.save(location=location , user = request.user)
                     data=AirViewSerializer(air).data
                     return Response(data, status= status.HTTP_200_OK)
                 else:
@@ -57,6 +57,7 @@ class AirUpdateView(generics.UpdateAPIView):
     serializer_class = AirSerializer
     renderer_classes = [ErrorRenderer]
     permission_classes = [IsAuthenticated , IsConsultant]
+    parser_classes = [MultiPartParser]
 
     def update(self, request , id ,  **kwargs):
         try:
@@ -89,7 +90,7 @@ class WaterView(generics.GenericAPIView):
     serializer_class = WaterSerializer
     parser_classes = [MultiPartParser]
     permission_classes = [ IsAuthenticated & (IsConsultant | IsContractor)]
-    queryset = water.objects.all()
+
     
     def post(self , request):
         lat=float(request.data['latitude'])
@@ -105,19 +106,19 @@ class WaterView(generics.GenericAPIView):
                 else:
                     serializer = WaterSerializer(data = request.data , context={'request': request})
                     if serializer.is_valid(raise_exception = True):
-                        water_data =serializer.save(location=location)
+                        water_data =serializer.save(location=location , user = request.user)
                         data = waterviewserializer(water_data).data
                         return Response(data , status = 200)
                     else:
-                        return Response({'msg' : 'Enter a valid data'} , status = status.HTTP_400_BAD_REQUEST)
+                        return Response({'Message' : 'Enter a valid data'} , status = status.HTTP_400_BAD_REQUEST)
             else:
                 serializer = WaterSerializer(data = request.data , context={'request': request})
                 if serializer.is_valid(raise_exception = True):
-                    water_data =serializer.save(location=location)
+                    water_data =serializer.save(location=location , user = request.user)
                     data = waterviewserializer(water_data).data
                     return Response(data , status = 200)
                 else:
-                    return Response({'msg' : 'Enter a valid data'} , status = status.HTTP_400_BAD_REQUEST)
+                    return Response({'Message' : 'Enter a valid data'} , status = status.HTTP_400_BAD_REQUEST)
         except Exception:
             return  Response({'Message' : "Only consultant and Contractor can fill this form"}, status= status.HTTP_401_UNAUTHORIZED)
 
@@ -126,6 +127,7 @@ class waterupdateView(generics.UpdateAPIView):
     renderer_classes = [ErrorRenderer]
     serializer_class = waterviewserializer
     permission_classes = [IsAuthenticated , IsConsultant]
+    parser_classes = [MultiPartParser]
 
     def update(self, request , id , **kwargs):
         try:
@@ -141,6 +143,7 @@ class waterupdateView(generics.UpdateAPIView):
 
 class waterListView(generics.ListAPIView):
     serializer_class = waterviewserializer
+    parser_classes = [MultiPartParser]
     pagination_class = LimitsetPagination
     renderer_classes = [ErrorRenderer]
     queryset = water.objects.all()
@@ -170,7 +173,7 @@ class NoiseView(generics.GenericAPIView):
                 else:
                     serializer = NoiseSerializer(data = request.data , context={'request': request})
                     if serializer.is_valid(raise_exception = True):
-                        water_data =serializer.save(location=location)
+                        water_data =serializer.save(location=location , user = request.user)
                         data = Noiseviewserializer(water_data).data
                         return Response(data , status = 200)
                     else:
@@ -178,7 +181,7 @@ class NoiseView(generics.GenericAPIView):
             else:
                 serializer = NoiseSerializer(data = request.data , context={'request': request})
                 if serializer.is_valid(raise_exception = True):
-                    water_data =serializer.save(location=location)
+                    water_data =serializer.save(location=location , user = request.user)
                     data = Noiseviewserializer(water_data).data
                     return Response(data , status = 200)
                 else:
@@ -212,12 +215,12 @@ class NoiseListView(generics.ListAPIView):
 
 
 
-class TreeManagementView(generics.GenericAPIView):
+class ExistingTreeManagementView(generics.GenericAPIView):
     serializer_class = TreeManagementSerailizer
     renderer_classes = [ErrorRenderer]
     parser_classes = [MultiPartParser]
-    permission_classes = []
-    queryset = TreeManagment.objects.all()
+    # permission_classes = [IsAuthenticated]
+  
     
     def post(self , request):
         
@@ -232,7 +235,7 @@ class TreeManagementView(generics.GenericAPIView):
         month = request.data['month']
         try:
             if "contractor" in request.user.groups.values_list("name",flat=True):
-                data = TreeManagment.objects.filter( dateOfMonitoring__year = int(date[0]) , month = month ).exists()
+                data = ExistingTreeManagment.objects.filter( dateOfMonitoring__year = int(date[0]) , month = month ).exists()
                 if data == True:
                     return Response({'message':'already data filled for this Month'} , status=status.HTTP_400_BAD_REQUEST)
                 else:
@@ -246,7 +249,7 @@ class TreeManagementView(generics.GenericAPIView):
             else:
                 serializer = TreeManagementSerailizer(data = request.data )
                 if serializer.is_valid(raise_exception = True):
-                    water_data =serializer.save(location=Plocation ,user = request.user)
+                    water_data =serializer.save(location=Plocation , user = request.user)
                     data = TreeManagmentviewserializer(water_data).data
                     return Response(data , status = 200)
                 else:
@@ -254,15 +257,18 @@ class TreeManagementView(generics.GenericAPIView):
         except Exception:
             return  Response({'Message' : "Only consultant and Contractor can fill this form"}, status= status.HTTP_401_UNAUTHORIZED)
 
-class TreeManagmentUpdateView(generics.UpdateAPIView):
+
+            
+
+class ExistingTreeManagmentUpdateView(generics.UpdateAPIView):
     serializer_class = TreeManagementSerailizer
-    parser_classes = [MultiPartParser]
+    # parser_classes = [MultiPartParser]
     permission_classes = [IsAuthenticated, IsConsultant]
-    queryset = TreeManagment.objects.all()
+    queryset = ExistingTreeManagment.objects.all()
     
     def update(self, request , id , **kwargs):
         try:
-            instance = TreeManagment.objects.get(id=id,user=request.user.id)
+            instance = ExistingTreeManagment.objects.get(id=id,user=request.user.id)
         except Exception:
             return Response({"msg": "There is no Tree data for user %s" % (request.user.username)})
         serializer = TreeManagementSerailizer(instance , data=request.data , partial = True)
@@ -273,12 +279,51 @@ class TreeManagmentUpdateView(generics.UpdateAPIView):
             return Response({"msg": "Please Enter a valid data"})
 
             
-class TereeManagementView(generics.ListAPIView):
+class ExistingTereeManagementView(generics.ListAPIView):
     # permission_classes = [IsAuthenticated]
     serializer_class = TreeManagmentviewserializer
     pagination_class = LimitsetPagination
+    # parser_classes = [MultiPartParser]
+    queryset = ExistingTreeManagment.objects.all()
+
+
+
+class NewTereeManagementView(generics.GenericAPIView):
+    serializer_class = NewTreeManagmentSerializer
     parser_classes = [MultiPartParser]
-    queryset = TreeManagment.objects.all()
+
+    def post(self , request):
+        
+        lat=float(request.data['latitude'])
+        long=float(request.data['longitude'])
+        location=Point(long,lat,srid=4326)
+        date=request.data['dateOfMonitoring'].split('-')
+        month = request.data['month']
+        try:
+            if "contractor" in request.user.groups.values_list("name",flat=True):
+                data = NewTreeManagement.objects.filter( dateOfMonitoring__year = int(date[0]) , month = month ).exists()
+                if data == True:
+                    return Response({'message':'already data filled for this Month'} , status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    serializer = NewTreeManagmentSerializer(data = request.data )
+                    if serializer.is_valid(raise_exception = True):
+                        water_data =serializer.save(location=location , user = request.user)
+                        data = NewTreeManagmentviewserializer(water_data).data
+                        return Response(data , status = 200)
+                    else:
+                        return Response({'msg' : 'Enter a valid data'} , status = status.HTTP_400_BAD_REQUEST)
+            else:
+                serializer = NewTreeManagmentSerializer(data = request.data )
+                if serializer.is_valid(raise_exception = True):
+                    water_data =serializer.save(location=location , user = request.user)
+                    data = NewTreeManagmentviewserializer(water_data).data
+                    return Response(data , status = 200)
+                else:
+                    return Response({'msg' : 'Enter a valid data'} , status = status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            return  Response({'Message' : "Only consultant and Contractor can fill this form"}, status= status.HTTP_401_UNAUTHORIZED)
+
+
 
 
 
@@ -307,7 +352,7 @@ class WasteTreatmentsView(generics.GenericAPIView):
                 else:
                     serializer = WasteTreatmentsSerializer(data = request.data , context={'request': request})
                     if serializer.is_valid(raise_exception = True):
-                        waste_data =serializer.save(location=location , wasteHandlingLocation = waste_location)
+                        waste_data =serializer.save(location=location , wasteHandlingLocation = waste_location , user = request.user)
                         data = wastetreatmentsViewserializer(waste_data).data
                         return Response(data , status = 200)
                     else:
@@ -315,7 +360,7 @@ class WasteTreatmentsView(generics.GenericAPIView):
             else:
                 serializer = WasteTreatmentsSerializer(data = request.data , context={'request': request})
                 if serializer.is_valid(raise_exception = True):
-                    waste_data =serializer.save( location=location , wasteHandlingLocation = waste_location)
+                    waste_data =serializer.save( location=location , wasteHandlingLocation = waste_location , user = request.user)
                     data = wastetreatmentsViewserializer(waste_data).data
                     return Response(data , status = 200)
                 else:
@@ -367,7 +412,7 @@ class MaterialSourcingView(generics.GenericAPIView):
                 else:
                     serializer = MaterialManagmentSerializer(data = request.data , context={'request': request})
                     if serializer.is_valid(raise_exception = True):
-                        material_data =serializer.save(location=location , storageLocation = storageLocation)
+                        material_data =serializer.save(location=location , storageLocation = storageLocation , user = request.user)
                         data = MaterialSourcingViewserializer(material_data).data
                         return Response(data , status = 200)
                     else:
@@ -375,7 +420,7 @@ class MaterialSourcingView(generics.GenericAPIView):
             else:
                 serializer = MaterialManagmentSerializer(data = request.data , context={'request': request})
                 if serializer.is_valid(raise_exception = True):
-                    material_data =serializer.save( location=location , storageLocation = storageLocation)
+                    material_data =serializer.save( location=location , storageLocation = storageLocation , user = request.user)
                     data = MaterialSourcingViewserializer(material_data).data
                     return Response(data , status = 200)
                 else:
@@ -433,7 +478,7 @@ class TreemanagmentAPI(generics.GenericAPIView):
     serializer_class = TreemanagementSerializer
     def get(self, request,packages, *args, **kwargs):
             packages = packages
-            instance = TreeManagment.objects.filter(packages__iexact=packages)
+            instance = ExistingTreeManagment.objects.filter(packages__iexact=packages)
             if instance :
                 serializer = TreemanagementSerializer(instance, many=True)
                 return Response({'status': 200,'data': serializer.data,

@@ -17,9 +17,13 @@ urlpatterns = [
     path('noiseList' ,NoiseListView.as_view() , name = "Noise"),
 
     # path('envview' , envMonitoringView.as_view() , name = 'EnvQualityMonitoring'),
-    path('tree' , TreeManagementView.as_view() , name = "Tree Management"),
-    path('treeupdate<int:id>' , TreeManagmentUpdateView.as_view() , name =" Tree Management"),
-    path('treeView' , TereeManagementView.as_view() , name = "Tree Management list"),
+    path('IdentifiedTree' , ExistingTreeManagementView.as_view() , name = "Tree Management"),
+    path('treeupdate<int:id>' , ExistingTreeManagmentUpdateView.as_view() , name =" Tree Management"),
+    path('treeView' , ExistingTereeManagementView.as_view() , name = "Tree Management list"),
+
+    path('NewTree' , NewTereeManagementView.as_view() , name = "Tree Management"),
+
+
 
 
     path('waste' , WasteTreatmentsView.as_view() , name = "Waste Management"),

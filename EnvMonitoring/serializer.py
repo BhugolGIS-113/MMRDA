@@ -1,14 +1,14 @@
 from rest_framework import serializers 
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
-from .models import (User , Air , Noise , water , TreeManagment , WasteTreatments , MaterialManegmanet ,)
+from .models import *
 
 class AirSerializer(serializers.ModelSerializer):
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    # user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     longitude=serializers.CharField(max_length=10,required=False)
     latitude=serializers.CharField(max_length=10,required=False)
     class Meta:
         model = Air
-        fields = ('user','quarter','packages','month','longitude','latitude','dateOfMonitoring','PM10','standardPM10','SO2',
+        fields = ('quarter','packages','month','longitude','latitude','dateOfMonitoring','PM10','standardPM10','SO2',
                    'standardSO2','O3','standardO3','NOx', 'standardNOx','AQI' , 'Remarks')
         # geo_field='location'
     
@@ -26,13 +26,13 @@ class AirViewSerializer(GeoFeatureModelSerializer):
         geo_field='location'
 
 class WaterSerializer(serializers.ModelSerializer):
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    # user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     longitude=serializers.CharField(max_length=10,required=False)
     latitude=serializers.CharField(max_length=10,required=False)
     class Meta:
         model = water
-        fields = ('user' ,'quarter','packages','month', 'dateOfMonitoring','longitude','latitude',
-        'qualityOfWater' , 'sourceOfWater' ,'waterDisposal')
+        fields = ('quarter','packages','month', 'dateOfMonitoring','longitude','latitude',
+                    'qualityOfWater' , 'sourceOfWater' ,'waterDisposal')
 
     def create(self,data):
         data.pop('latitude')
@@ -65,12 +65,12 @@ class waterviewserializer(GeoFeatureModelSerializer):
 
 
 class NoiseSerializer(serializers.ModelSerializer):
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    # user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     longitude=serializers.CharField(max_length=10,required=False)
     latitude=serializers.CharField(max_length=10,required=False)
     class Meta:
         model = Noise
-        fields = ('user','quarter','month','packages','longitude','latitude' ,'dateOfMonitoring','noiseLevel' , 'monitoringPeriod', )
+        fields = ('quarter','month','packages','longitude','latitude' ,'dateOfMonitoring','noiseLevel' , 'monitoringPeriod', )
 
     def create(self,data):
         data.pop('latitude')
@@ -86,8 +86,6 @@ class NoiseSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('longitude cannot be empty!!')
         if data['latitude'] == "" or data['latitude'] == None:
             raise serializers.ValidationError('latitude cannot be empty!!')
-        # if data ['noise_id'] == "" or data['noise_id'] == None:
-        #     raise serializers.ValidationError('noise_id cannot be empty!!')
         if data['noiseLevel'] == "" or data['noiseLevel'] == None:
             raise serializers.ValidationError('noise_level cannot be empty!!')
         if data['monitoringPeriod'] == "" or data['monitoringPeriod'] == None:
@@ -100,44 +98,71 @@ class Noiseviewserializer(GeoFeatureModelSerializer):
         fields = '__all__'
         geo_field='location'
 
+
+
 class TreeManagementSerailizer(serializers.ModelSerializer):
     longitude=serializers.CharField(max_length=10,required=False)
     latitude=serializers.CharField(max_length=10,required=False)
-    # Clongitude = serializers.CharField(max_length=10,required=False)
-    # Clatitude = serializers.CharField(max_length=10,required=False)
 
 
     class Meta:
-        model = TreeManagment
-        fields = ('quarter','month','dateOfMonitoring','packages','longitude','latitude' ,'EtreeID','EcommanName' ,'EbotanicalName',
-                    'Econdition', 'noOfTreeCut','actionTaken', 'Ephotographs', 'Edocuments','Eremarks')
-                    # 'Clongitude','Clatitude','Cname','CbotonicalName','Ccondition','Cphotographs','Cdocuments','Cremarks')
-        
+        model = ExistingTreeManagment
+        fields = ('quarter','month','dateOfMonitoring','packages','longitude','latitude' ,'treeID','commanName' ,'botanicalName',
+                    'condition', 'noOfTreeCut','actionTaken', 'photographs', 'documents','remarks',)
+                   
     def create(self,data):
         data.pop('latitude')
         data.pop('longitude')
         # data.pop('Clongitude')
         # data.pop('Clatitude')
-        return TreeManagment.objects.create(**data)
-
-    
-
+        return ExistingTreeManagment.objects.create(**data)
 
 class TreeManagmentviewserializer(GeoFeatureModelSerializer):
     class Meta:
-        model = TreeManagment
+        model = ExistingTreeManagment
         fields = '__all__'
         geo_field = 'location'
 
+
+class NewTreeManagmentSerializer(serializers.ModelSerializer):
+    longitude = serializers.CharField(max_length=10,required=False)
+    latitude = serializers.CharField(max_length=10,required=False)
+    class Meta:
+        model = NewTreeManagement
+        fields = ('tree','quarter','month','dateOfMonitoring','packages','longitude','latitude',
+                   'commanName' ,'botanicalName', 'condition', 'photographs', 'documents','remarks' )
+
+    def create(self,data):
+        data.pop('latitude')
+        data.pop('longitude')
+        return NewTreeManagement.objects.create(**data)
+
+
+class NewTreeManagmentviewserializer(GeoFeatureModelSerializer):
+    class Meta:
+        model = NewTreeManagement
+        fields = '__all__'
+        geo_field = 'location'
+
+
+
+
+
+
+
+
+
+
+
 class WasteTreatmentsSerializer(serializers.ModelSerializer):
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    # user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     longitude=serializers.CharField(max_length=10,required=False)
     latitude=serializers.CharField(max_length=10,required=False)
     waste_longitude = serializers.CharField(max_length=10,required=False)
     waste_latitude = serializers.CharField(max_length=10,required=False)
     class Meta:
         model  = WasteTreatments
-        fields = ('user','quarter','month','packages','longitude','latitude'  ,'dateOfMonitoring' , 'wastetype' ,'quantity',
+        fields = ('quarter','month','packages','longitude','latitude'  ,'dateOfMonitoring' , 'wastetype' ,'quantity',
          'wastehandling' , 'waste_longitude' ,'waste_latitude', 'photographs' , 'documents','remarks')
 
     def create(self,data):
@@ -148,8 +173,6 @@ class WasteTreatmentsSerializer(serializers.ModelSerializer):
         return WasteTreatments.objects.create(**data)
 
 
-
-
 class wastetreatmentsViewserializer(GeoFeatureModelSerializer):
     class Meta: 
         model = WasteTreatments
@@ -157,9 +180,8 @@ class wastetreatmentsViewserializer(GeoFeatureModelSerializer):
         geo_field= 'location'
 
 
-
 class MaterialManagmentSerializer(serializers.ModelSerializer):
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    # user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     longitude=serializers.CharField(max_length=10,required=False)
     latitude=serializers.CharField(max_length=10,required=False)
     storageLongitude = serializers.CharField(max_length=10,required=False)
@@ -167,10 +189,10 @@ class MaterialManagmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MaterialManegmanet
-        fields = ('user','quarter','month','packages','longitude','dateOfMonitoring','latitude' ,
-         'typeOfMaterial','source','sourceOfQuarry','materialStorageType','storageLongitude' ,'storageLatitude',
-         'materialstorageCondition','materialstoragePhotograph','approvals' ,'photographs',
-          'documents','remarks')
+        fields = ('quarter','month','packages','longitude','dateOfMonitoring','latitude' ,
+                'typeOfMaterial','source','sourceOfQuarry','materialStorageType','storageLongitude' ,'storageLatitude',
+                'materialstorageCondition','materialstoragePhotograph','approvals' ,'photographs',
+                'documents','remarks')
 
 
 
@@ -192,7 +214,7 @@ class MaterialSourcingViewserializer(GeoFeatureModelSerializer):
 
 class TreemanagementSerializer(serializers.ModelSerializer):
     class Meta:
-        model = TreeManagment
+        model = ExistingTreeManagment
         fields = ['quarter','packages','location']
 
 class AirmanagementSerializer(serializers.ModelSerializer):

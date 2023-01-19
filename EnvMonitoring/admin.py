@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import ( Air , water ,
- Noise , TreeManagment , WasteTreatments , MaterialManegmanet)
+from .models import *
 
 # Register your models here.
 # admin.site.register(EnvMonitoring)
@@ -8,6 +7,7 @@ from .models import ( Air , water ,
 admin.site.register(Air)
 admin.site.register(water)
 admin.site.register(Noise)
-admin.site.register(TreeManagment)
+admin.site.register(ExistingTreeManagment)
+admin.site.register(NewTreeManagement)
 admin.site.register(WasteTreatments)
 admin.site.register(MaterialManegmanet)

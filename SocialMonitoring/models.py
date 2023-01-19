@@ -58,8 +58,8 @@ class PAP(Baseclass):
 
 
 class Rehabilitation(Baseclass):
+  
     user = models.ForeignKey( User, related_name='rehabilitationUser', on_delete=models.CASCADE, blank=True)
-
     location = models.PointField(null=True, blank=True)
     ID = models.ForeignKey(PAP, related_name='rehabilitation', on_delete=models.CASCADE)
     dateOfRehabilitation = models.DateField(blank=True, null=True)

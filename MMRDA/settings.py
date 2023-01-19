@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'drf_yasg',
     'rest_framework',
+    'Dashboard',
     'Auth.apps.AuthConfig',
     'EnvMonitoring',
     'SocialMonitoring',
@@ -179,7 +180,7 @@ REST_FRAMEWORK = {
         
     ),
 
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+    # 'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 
    
 }

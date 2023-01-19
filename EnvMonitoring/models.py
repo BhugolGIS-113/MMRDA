@@ -45,26 +45,29 @@ class Noise(Baseclass):
     #     return "filled By :- " + self.noise_id.eqm_id.env_monitoring.email
 
 
-class TreeManagment(Baseclass):
+class ExistingTreeManagment(Baseclass):
     user = models.ForeignKey( User ,  related_name="Tree_user" , on_delete= models.CASCADE , blank = True)
-    EtreeID = models.CharField(max_length=255,null = True ,blank = True)
-    EcommanName = models.CharField(max_length=255, blank=True, null=True)
-    EbotanicalName = models.CharField(max_length=255, null=True, blank=True)
-    Econdition = models.CharField(max_length=255, null=True, blank=True)
-
+    treeID = models.CharField(max_length=255,null = True ,blank = True , unique=True)
+    commanName = models.CharField(max_length=255, blank=True, null=True)
+    botanicalName = models.CharField(max_length=255, null=True, blank=True)
+    condition = models.CharField(max_length=255, null=True, blank=True)
     actionTaken = models.CharField(max_length=255 ,blank=True, null=True)
     noOfTreeCut = models.IntegerField(null=True, blank=True)
-    Ephotographs = models.ImageField(upload_to="Existingtree_photos/", null=True, blank=True)
-    Edocuments = models.FileField(upload_to='existingTree_documents/', null = True , blank=True)
-    Eremarks = models.TextField(blank=True, null=True )
+    photographs = models.ImageField(upload_to="Existingtree_photos/", null=True, blank=True)
+    documents = models.FileField(upload_to='existingTree_documents/', null = True , blank=True)
+    remarks = models.TextField(blank=True, null=True )
     
-    # Clocation = models.PointField(null = True , blank=True)
-    # Cname= models.CharField(max_length=255 ,blank=True, null=True )
-    # CbotonicalName = models.CharField(max_length=255 , blank=True , null= True)
-    # Ccondition = models.CharField(max_length= 255 ,blank = True , null = True)   
-    # Cphotographs = models.ImageField(upload_to="newTree_photographs/", null=True, blank=True)
-    # Cdocuments = models.FileField(upload_to="newTree_documents/", null  = True, blank=True  )
-    # Cremarks = models.TextField(max_length= 255 , null = True , blank = True)
+
+class NewTreeManagement(Baseclass):
+    user = models.ForeignKey(User , related_name="newTree_users" , on_delete=models.CASCADE , blank = True )
+    tree = models.ForeignKey( ExistingTreeManagment , related_name= 'ExistingTreeManagment' , on_delete=models.CASCADE )
+    location = models.PointField(null = True , blank=True)
+    commanName = models.CharField(max_length=255, blank=True, null=True)
+    botanicalName = models.CharField(max_length=255, null=True, blank=True)
+    condition = models.CharField(max_length=255, null=True, blank=True)   
+    photographs = models.ImageField(upload_to="newTree_photographs/", null=True, blank=True)
+    documents = models.FileField(upload_to="newTree_documents/", null  = True, blank=True  )
+    remarks = models.TextField(max_length= 255 , null = True , blank = True)
    
 
 

@@ -1,4 +1,4 @@
-from rest_framework.generics import GenericAPIView , ListAPIView
+from rest_framework.generics import ListAPIView
 from .serializers import *
 from SocialMonitoring.models import *
 from rest_framework.response import Response
@@ -9,162 +9,198 @@ from rest_framework.permissions import IsAuthenticated
 
 ''' --------------------------Labour Camp Report View----------------------------'''
 
+
 class LabourcampReportPackageView(ListAPIView):
     serializer_class = LabourcampReportSerializer
     parser_classes = [MultiPartParser]
-  
 
-    def get(self, request, packages, labourCampName ,*args, **kwargs):
+    def get(self, request, packages, labourCampName, *args, **kwargs):
         try:
-            previous = LabourCamp.objects.filter(packages = packages  , labourCampName = labourCampName ).order_by('-id')[1:]
-            latest = LabourCamp.objects.filter(packages = packages , labourCampName = labourCampName ).latest('id')
-            previousData = self.serializer_class(previous, many = True).data
-            latestData = self.serializer_class(latest).data
-            return Response({'Previous': previousData  , 'latest' : latestData}, status=status.HTTP_200_OK)
-            
-        except Exception as e:
-            return Response({'Message' : 'There is no data available for this Package or Quarter'} , status= status.HTTP_400_BAD_REQUEST)
+            previous = LabourCamp.objects.filter(
+                packages=packages, labourCampName=labourCampName).order_by('-id')[1:]
+            latest = LabourCamp.objects.filter(
+                packages=packages, labourCampName=labourCampName).latest('id')
+            previousData = self.serializer_class(previous, many=True)
+            latestData = self.serializer_class(latest)
 
+            return Response({'Message': 'data Fetched Successfully',
+                            'status' : 'success' , 
+                            'Previous': previousData.data,
+                             'latest': latestData.data}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({'Message': 'There is no data available for this Package or Quarter',
+                            'status' : 'Failed'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LabourCampReportQuarterView(ListAPIView):
 
     serializer_class = LabourcampReportSerializer
-    parser_classes = [MultiPartParser] 
+    parser_classes = [MultiPartParser]
 
-    def get(self, request, quarter, labourCampName,*args, **kwarges):
-        try: 
-            previous = LabourCamp.objects.filter(quarter = quarter , labourCampName = labourCampName).order_by('-id')[1:]
+    def get(self, request, quarter, labourCampName, year, *args, **kwarges):
+        try:
+            previous = LabourCamp.objects.filter(
+                quarter=quarter, labourCampName=labourCampName, dateOfMonitoring__year=year).order_by('-id')[1:]
 
-            latest = LabourCamp.objects.filter(quarter = quarter, labourCampName = labourCampName ).latest('id')
-            previousData = self.serializer_class(previous, many = True).data
+            latest = LabourCamp.objects.filter(
+                quarter=quarter, labourCampName=labourCampName).latest('id')
+            previousData = self.serializer_class(previous, many=True).data
             latestData = self.serializer_class(latest).data
-            
-            return Response({'Previous': previousData ,
-                            'latest' : latestData},    
+
+            return Response({'Message': 'data Fetched Successfully',
+                            'status' : 'success' , 
+                            'Previous': previousData,
+                            'latest': latestData},
                             status=status.HTTP_200_OK)
         except:
-            return Response({'Message': 'There is no data available for this Package or Quarter'} , status=400)
+            return Response({'Message': 'There is no data available for this Package or Quarter',
+                            'status' : 'Failed'}, status=400)
 
-#----------------------------------------------------------------
+# ----------------------------------------------------------------
+
 
 class ConstructionCampReportPackageView(ListAPIView):
     serializer_class = ConstructionCampReportSerializer
     parser_classes = [MultiPartParser]
 
-    def get(self, request, packages, constructionSiteName ,*args, **kwargs):
+    def get(self, request, packages, constructionSiteName, *args, **kwargs):
         try:
-            previous = ConstructionSiteDetails.objects.filter( packages = packages , constructionSiteName = constructionSiteName ).order_by('-id')[1:]
-            latest = ConstructionSiteDetails.objects.filter(packages = packages  , constructionSiteName = constructionSiteName ).latest('id')
-            previousData = ConstructionCampReportSerializer(previous, many = True)
+            previous = ConstructionSiteDetails.objects.filter(
+                packages=packages, constructionSiteName=constructionSiteName).order_by('-id')[1:]
+            latest = ConstructionSiteDetails.objects.filter(
+                packages=packages, constructionSiteName=constructionSiteName).latest('id')
+            previousData = ConstructionCampReportSerializer(
+                previous, many=True)
             latestData = ConstructionCampReportSerializer(latest)
 
-            return Response({'Previous': previousData.data  ,
-                             'latest' : latestData.data},
-                              status=status.HTTP_200_OK)
+            return Response({'Message': 'data Fetched Successfully',
+                            'status' : 'success' , 
+                            'Previous': previousData.data,
+                            'latest': latestData.data},
+                            status=status.HTTP_200_OK)
 
         except Exception:
-            return Response({'Message' : 'There is no data available for the Package or Quarter'} , status= status.HTTP_400_BAD_REQUEST)
+            return Response({'Message': 'There is no data available for the Package or Quarter',
+                            'status' : 'Failed'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ConstructionCampReportQuarterView(ListAPIView):
     serializer_class = ConstructionCampReportSerializer
     parser_classes = [MultiPartParser]
 
-    def get(self, request, quarter, constructionSiteName,*args, **kwargs):
+    def get(self, request, quarter, constructionSiteName, *args, **kwargs):
         try:
-            previous = ConstructionSiteDetails.objects.filter(quarter = quarter, constructionSiteName = constructionSiteName).order_by('-id')[1:]
-            latest = latest = ConstructionSiteDetails.objects.filter(quarter = quarter  , constructionSiteName = constructionSiteName ).latest('id')
-            previousData = ConstructionCampReportSerializer(previous, many = True)
+            previous = ConstructionSiteDetails.objects.filter(
+                quarter=quarter, constructionSiteName=constructionSiteName).order_by('-id')[1:]
+            latest = latest = ConstructionSiteDetails.objects.filter(
+                quarter=quarter, constructionSiteName=constructionSiteName).latest('id')
+            previousData = ConstructionCampReportSerializer(
+                previous, many=True)
             latestData = ConstructionCampReportSerializer(latest)
 
-            return Response({'Previous': previousData.data  ,
-                             'latest' : latestData.data},
-                              status=status.HTTP_200_OK)
+            return Response({'Message': 'data Fetched Successfully',
+                            'status' : 'success' , 
+                            'Previous': previousData.data,
+                            'latest': latestData.data},
+                            status=status.HTTP_200_OK)
         except Exception:
-            return Response({'Message' : 'There is no data available for the Package or Quarter'} , status= status.HTTP_400_BAD_REQUEST)
+            return Response({'Message': 'There is no data available for the Package or Quarter',
+                            'status' : 'Failed'}, status=status.HTTP_400_BAD_REQUEST)
+
+# -------------------------------------------------------------------------
 
 
-
-#-------------------------------------------------------------------------
 class PAPReportPackageView(ListAPIView):
     serializer_class = PAPReportSerializer
     parser_classes = [MultiPartParser]
 
-    def get(self, request, packages,*args, **kwargs):
+    def get(self, request, packages, *args, **kwargs):
         try:
-            data = PAP.objects.filter( packages = packages).order_by('-id') 
+            data = PAP.objects.filter(packages=packages).order_by('-id')
             if not data.exists():
-                return Response({'Message' : 'No data Found'}, status= status.HTTP_400_BAD_REQUEST) 
-            
-            papdata = PAPReportSerializer(data, many = True).data
-            return Response({'Message': 'Success', 
-                            "PAP's": papdata},
-                             status=status.HTTP_200_OK)
+                return Response({'Message': 'No data found',
+                                 'status' : 'success'},  status=status.HTTP_200_OK)
+            papdata = PAPReportSerializer(data, many=True).data
+            return Response({'Message': 'data Fetched Successfully',
+                            'status' : 'success' , 
+                            "PAP": papdata},
+                            status=status.HTTP_200_OK)
         except Exception:
-            return Response({'Message' : 'There is no data available for the Package or Quarter'},
-                             status= status.HTTP_400_BAD_REQUEST)
+            return Response({'Message': 'There is no data available for the Package or Quarter',
+                            'status' : 'Failed'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 class PAPReportQuarterView(ListAPIView):
     serializer_class = PAPReportSerializer
     parser_classes = [MultiPartParser]
 
-    def get(self , request , quarter):
+    def get(self, request, quarter, year):
         try:
-            data = PAP.objects.filter(quarter = quarter).order_by('-id') 
+            data = PAP.objects.filter(
+                quarter=quarter, dateOfMonitoring__year=year).order_by('-id')
             if not data.exists():
-                return Response({'Message' : 'No data Found'}, status= status.HTTP_400_BAD_REQUEST) 
-            papdata = PAPReportSerializer(data, many = True).data
-            return Response({'Message': 'Success',
-                            "PAP's": papdata},
+                return Response({'Message': 'No data found',
+                                 'status' : 'success'},  status=status.HTTP_200_OK)
+            papdata = PAPReportSerializer(data, many=True).data
+            return Response({'Message': 'data Fetched Successfully',
+                            'status' : 'success' , 
+                            "PAP": papdata},
                             status=status.HTTP_200_OK)
         except:
-            return Response({'Message' : 'There is no data available for the Package or Quarter'},
-                             status= status.HTTP_400_BAD_REQUEST)
+            return Response({'Message': 'There is no data available for the Package or Quarter',
+                            'status' : 'Failed'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
-
-#------------------------------------------------------------
+# ------------------------------------------------------------
 class RehabilitationReportPackageView(ListAPIView):
     serializer_class = RehabilitationReportSerializer
     parser_classes = [MultiPartParser]
 
-
-    def get(self, request, packages,*args, **kwargs):
+    def get(self, request, packages, *args, **kwargs):
         try:
-            data = Rehabilitation.objects.filter( packages = packages ).order_by('-id')
+            data = Rehabilitation.objects.filter(
+                packages=packages).order_by('-id')
             if not data.exists():
-                return Response({'Message' : 'No data Found'}, status= status.HTTP_400_BAD_REQUEST)
-            Rehabilitationdata = RehabilitationReportSerializer(data, many = True).data
+                return Response({'Message': 'No data found',
+                                 'status' : 'success'},  status=status.HTTP_200_OK)
+            Rehabilitationdata = RehabilitationReportSerializer(
+                data, many=True).data
 
-            return Response({'Message': 'Success', 
-                            "Rehabilated PAP's Quarter wise": Rehabilitationdata},
-                             status=status.HTTP_200_OK)
+            return Response({'Message': 'data Fetched Successfully',
+                            'status' : 'success' , 
+                            "Rehabilated_PAP_Package": Rehabilitationdata},
+                            status=status.HTTP_200_OK)
         except Exception:
-            return Response({'Message' : 'There is no data available for the Package or Quarter'},
-                            status= status.HTTP_400_BAD_REQUEST)
+            return Response({'Message': 'There is no data available for the Package or Quarter',
+                            'status' : 'Failed'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 class RehabilitationReportQuarterView(ListAPIView):
     serializer_class = RehabilitationReportSerializer
     parser_classes = [MultiPartParser]
 
-    def get(self, request, quarter,*args, **kwargs):
-            try:
-                data = Rehabilitation.objects.filter( quarter = quarter ).order_by('-id')
-                if not data.exists():
-                    return Response({'Message' : 'No data Found'}, status= status.HTTP_400_BAD_REQUEST)
-                Rehabilitation_data = RehabilitationReportSerializer(data, many = True).data
+    def get(self, request, quarter, year, *args, **kwargs):
+        try:
+            data = Rehabilitation.objects.filter(
+                quarter=quarter, dateOfRehabilitation__year=year).order_by('-id')
+            if not data.exists():
+                return Response({'Message': 'No data found',
+                                 'status' : 'success'},  status=status.HTTP_200_OK)
+            Rehabilitation_data = RehabilitationReportSerializer(
+                data, many=True).data
 
-                return Response({'Message': 'Success', 
-                                "Rehabilated PAP's Quarter wise": Rehabilitation_data},
-                                status=status.HTTP_200_OK)
-            except Exception:
-                return Response({'Message' : 'There is no data available for the Quarter'},
-                                status= status.HTTP_400_BAD_REQUEST)
-
-
-
+            return Response({'Message': 'data Fetched Successfully',
+                            'status' : 'success' , 
+                            "Rehabilated_PAP_Quarter_wise": Rehabilitation_data},
+                            status=status.HTTP_200_OK)
+        except Exception:
+            return Response({'Message': 'There is no data available for the Quarter',
+                            'status' : 'Failed'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 '''----------------------- Env Monitoring Report View------------------------------'''
@@ -176,35 +212,42 @@ class AirReportPackageView(ListAPIView):
 
     def get(self, request, packages, *args, **kwargs):
         try:
-            data = Air.objects.filter(packages = packages).order_by('-id')
+            data = Air.objects.filter(packages=packages).order_by('-id')
             if not data.exists():
-                return Response({'Message' : 'No data Found'}, status= status.HTTP_400_BAD_REQUEST)
-            
-            airdata = AirReportSerializer(data, many = True).data
-            return Response({'Message': 'Success', 
-                            "Air data": airdata},
-                            status=status.HTTP_200_OK)                 
+                return Response({'Message': 'No data found',
+                                 'status' : 'success'},  status=status.HTTP_200_OK)
+            airdata = AirReportSerializer(data, many=True).data
+            return Response({'Message': 'data Fetched Successfully',
+                            'status' : 'success' , 
+                            "Air_data": airdata},
+                            status=status.HTTP_200_OK)
         except:
-            return Response({'Message' : 'There is no data available for the Quarter'},
-                                status= status.HTTP_400_BAD_REQUEST)
+            return Response({'Message': 'There is no data available for the Quarter',
+                            'status' : 'Failed'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
 
 class AirReportQuarterView(ListAPIView):
     serializer_class = AirReportSerializer
-    permission_classes = [MultiPartParser]
+    parser_classes = [MultiPartParser]
 
-    def get(self, request, quarter , month, *args, **kwargs):
+    def get(self, request, month, year, *args, **kwargs):
         try:
-            data = Air.objects.filter(quarter = quarter , dateOfMonitoring__month = month ).order_by('-id')
+            data = Air.objects.filter(
+                month=month, dateOfMonitoring__year=year).order_by('-id')
             if not data.exists():
-                return Response({'Message' : 'No data Found'}, status= status.HTTP_400_BAD_REQUEST)
-            
-            airdata = AirReportSerializer(data, many = True).data
-            return Response({'Message': 'Success', 
-                            "Air data": airdata},
-                            status=status.HTTP_200_OK)                 
+                return Response({'Message': 'No data found',
+                                 'status' : 'success'},  status=status.HTTP_200_OK)
+
+            airdata = AirReportSerializer(data, many=True).data
+            return Response({'Message': 'data Fetched Successfully',
+                            'status' : 'success' , 
+                            "Air_data": airdata},
+                            status=status.HTTP_200_OK)
         except:
-            return Response({'Message' : 'There is no data available for the Quarter'},
-                                status= status.HTTP_400_BAD_REQUEST)
+            return Response({'Message': 'There is no data available for the Quarter',
+                            'status' : 'Failed'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 class NoiseReportpackageView(ListAPIView):
@@ -213,37 +256,43 @@ class NoiseReportpackageView(ListAPIView):
 
     def get(self, request, packages, *args, **kwargs):
         try:
-            data = Noise.objects.filter(packages = packages).order_by('-id')
+            data = Noise.objects.filter(packages=packages).order_by('-id')
             if not data.exists():
-                return Response({'Message' : 'No data Found'}, status= status.HTTP_400_BAD_REQUEST)
-            
-            Noise_data = NoiseReportSerializer(data, many = True).data
-            return Response({'Message': 'Success', 
-                            "Noise data": Noise_data},
-                            status=status.HTTP_200_OK)                 
+                return Response({'Message': 'No data found',
+                                 'status' : 'success'},  status=status.HTTP_200_OK)
+
+            Noise_data = NoiseReportSerializer(data, many=True).data
+            return Response({'Message': 'data Fetched Successfully',
+                            'status' : 'success' , 
+                            "Noise_data": Noise_data},
+                            status=status.HTTP_200_OK)
         except:
-            return Response({'Message' : 'There is no data available for the Package'},
-                                status= status.HTTP_400_BAD_REQUEST)
+            return Response({'Message': 'There is no data available for the Package',
+                            'status' : 'Failed'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 class NoiseReportQuarterView(ListAPIView):
     serializer_class = NoiseReportSerializer
-    parser_classes =   [MultiPartParser]
+    parser_classes = [MultiPartParser]
 
-    def get(self, request, quarter ,year, *args, **kwargs):
+    def get(self, request, quarter, year, *args, **kwargs):
         try:
-            data = Noise.objects.filter(quarter = quarter , dateOfMonitoring__year = year ).order_by('-id')
+            data = Noise.objects.filter(
+                quarter=quarter, dateOfMonitoring__year=year).order_by('-id')
             if not data.exists():
-                return Response({'Message' : 'No data Found'}, status= status.HTTP_400_BAD_REQUEST)
-            
-            Noise_data = NoiseReportSerializer(data, many = True).data
-            return Response({'Message': 'Success', 
-                            "Noise data": Noise_data},
-                            status=status.HTTP_200_OK)                 
-        except:
-            return Response({'Message' : 'There is no data available for the Quarter'},
-                                status= status.HTTP_400_BAD_REQUEST)    
+                return Response({'Message': 'No data found',
+                                 'status' : 'success'},  status=status.HTTP_200_OK)
 
+            Noise_data = NoiseReportSerializer(data, many=True).data
+            return Response({'Message': 'data Fetched Successfully',
+                            'status' : 'success' , 
+                            "Noise data": Noise_data},
+                            status=status.HTTP_200_OK)
+        except:
+            return Response({'Message': 'There is no data available for the Quarter',
+                            'status' : 'Failed'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 class waterReportPackageView(ListAPIView):
@@ -252,108 +301,177 @@ class waterReportPackageView(ListAPIView):
 
     def get(self, request, packages, *args, **kwargs):
         try:
-            data = water.objects.filter(packages = packages).order_by('-id')
+            data = water.objects.filter(packages=packages).order_by('-id')
             if not data.exists():
-                return Response({'Message' : 'No data Found'}, status= status.HTTP_400_BAD_REQUEST)
-            
-            water_data = waterReportSerializer(data, many = True).data
-            return Response({'Message': 'Success', 
-                            "water data": water_data},
-                            status=status.HTTP_200_OK)                 
+                return Response({'Message': 'No data found',
+                                 'status' : 'success'},  status=status.HTTP_200_OK)
+
+            water_data = waterReportSerializer(data, many=True).data
+            return Response({'Message': 'data Fetched Successfully',
+                            'status' : 'success' , 
+                            "water_data": water_data}, status=status.HTTP_200_OK)
         except:
-            return Response({'Message' : 'There is no data available for the Package'},
-                                status= status.HTTP_400_BAD_REQUEST)
+            return Response({'Message': 'There is no data available for the Package',
+                            'status' : 'Failed'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
 
 class waterReportQuarterView(ListAPIView):
     serializer_class = waterReportSerializer
-    parser_classes =   [MultiPartParser]
+    parser_classes = [MultiPartParser]
 
-    def get(self, request, quarter,year, *args, **kwargs):
+    def get(self, request, quarter, year, *args, **kwargs):
         try:
-            data = water.objects.filter(quarter = quarter, dateOfMonitoring__year = year ).order_by('-id')
+            data = water.objects.filter(
+                quarter=quarter, dateOfMonitoring__year=year).order_by('-id')
             if not data.exists():
-                return Response({'Message' : 'No data Found'}, status= status.HTTP_400_BAD_REQUEST)
-                
-            water_data = waterReportSerializer(data, many = True).data
-            return Response({'Message': 'Success', 
-                            "water data": water_data},
-                            status=status.HTTP_200_OK)                 
+                return Response({'Message': 'No data found',
+                                 'status' : 'success'},  status=status.HTTP_200_OK)
+
+            water_data = waterReportSerializer(data, many=True).data
+            return Response({'Message': 'data Fetched Successfully',
+                            'status' : 'success' , 
+                            "water_data": water_data},
+                            status=status.HTTP_200_OK)
         except:
-            return Response({'Message' : 'There is no data available for the Quarter'},
-                                status= status.HTTP_400_BAD_REQUEST)
+            return Response({'Message': 'There is no data available for the Quarter',
+                            'status' : 'Failed'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 class WasteTreatmentsPackageView(ListAPIView):
     serializer_class = wasteTreatmentsSerializer
-    parser_classes = [MultiPartParser]  
+    parser_classes = [MultiPartParser]
 
     def get(self, request, packages, *args, **kwargs):
         try:
-            data = WasteTreatments.objects.filter(packages = packages).order_by('-id')
+            data = WasteTreatments.objects.filter(
+                packages=packages).order_by('-id')
             if not data.exists():
-                return Response({'Message' : 'No data Found'}, status= status.HTTP_400_BAD_REQUEST)
-            
-            Waste_data = wasteTreatmentsSerializer(data, many = True).data
-            return Response({'Message': 'Success', 
-                            "waste Management data": Waste_data},
-                            status=status.HTTP_200_OK)                 
+                return Response({'Message': 'No data found',
+                                 'status' : 'success'},  status=status.HTTP_200_OK)
+            Waste_data = wasteTreatmentsSerializer(data, many=True).data
+
+            return Response({'Message': 'data Fetched Successfully',
+                            'status' : 'success' , 
+                            "waste_Management data": Waste_data},
+                            status=status.HTTP_200_OK)
         except:
-            return Response({'Message' : 'There is no data available for the Package'},
-                                status= status.HTTP_400_BAD_REQUEST)
+            return Response({'Message': 'There is no data available for the Package',
+                            'status' : 'Failed'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
 
 class WasteTreatmentsQuarterView(ListAPIView):
     serializer_class = wasteTreatmentsSerializer
-    parser_classes =   [MultiPartParser]
-    
-    def get(self, request, quarter,year, *args, **kwargs):
+    parser_classes = [MultiPartParser]
+
+    def get(self, request, quarter, year, *args, **kwargs):
         try:
-            data = WasteTreatments.objects.filter(quarter = quarter, dateOfMonitoring__year = year ).order_by('-id')
+            data = WasteTreatments.objects.filter(
+                quarter=quarter, dateOfMonitoring__year=year).order_by('-id')
             if not data.exists():
-                return Response({'Message' : 'No data Found'}, status= status.HTTP_400_BAD_REQUEST)
-                
-            Waste_data = wasteTreatmentsSerializer(data, many = True).data
-            return Response({'Message': 'Success',
-                             "waste Management data": Waste_data}, status= 200)
+                return Response({'Message': 'No data found',
+                                 'status' : 'success'},  status=status.HTTP_200_OK)
+
+            Waste_data = wasteTreatmentsSerializer(data, many=True).data
+            return Response({'Message': 'data Fetched Successfully',
+                            'status' : 'success' , 
+                             "waste_Management data": Waste_data}, status=200)
 
         except:
-            return Response({'Message' : 'There is no data available for the Quarter'},
-                                status= status.HTTP_400_BAD_REQUEST)  
+            return Response({'Message': 'There is no data available for the Quarter',
+                            'status' : 'Failed'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
-    
 class MaterialManagementReporetpackageView(ListAPIView):
     serializer_class = materialManagementSerializer
     parser_classes = [MultiPartParser]
 
     def get(self, request, packages, *args, **kwargs):
         try:
-            data = MaterialManegmanet.objects.filter(packages = packages).order_by('-id')
+            data = MaterialManegmanet.objects.filter(
+                packages=packages).order_by('-id')
             if not data.exists():
-                return Response({'Message' : 'No data Found'}, status= status.HTTP_400_BAD_REQUEST)
-            
-            Material_data = materialManagementSerializer(data, many = True).data
-            return Response({'Message': 'Success', 
-                            "Material Management data": Material_data},
-                            status=status.HTTP_200_OK)                 
+                return Response({'Message': 'No data found',
+                                 'status' : 'success'},  status=status.HTTP_200_OK)
+
+            Material_data = materialManagementSerializer(data, many=True).data
+            return Response({'Message': 'data Fetched Successfully',
+                            'status' : 'success' , 
+                            "Material_Management_data": Material_data},
+                            status=status.HTTP_200_OK)
         except:
-            return Response({'Message' : 'There is no data available for the Package'},
-                                status= status.HTTP_400_BAD_REQUEST)
+            return Response({'Message': 'There is no data available for the Package',
+                            'status' : 'Failed'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
 
 class MaterialManagementReporetQuarterView(ListAPIView):
     serializer_class = materialManagementSerializer
     parser_classes = [MultiPartParser]
 
-    def get(self, request, quarter,year, *args, **kwargs):
+    def get(self, request, quarter, year, *args, **kwargs):
         try:
-            data = MaterialManegmanet.objects.filter(quarter = quarter, dateOfMonitoring__year = year ).order_by('-id')
+            data = MaterialManegmanet.objects.filter(
+                quarter=quarter, dateOfMonitoring__year=year).order_by('-id')
             if not data.exists():
-                return Response({'Message' : 'No data Found'},
-                                 status= status.HTTP_400_BAD_REQUEST)
-                
-            Material_data = materialManagementSerializer(data, many = True).data
-            return Response({'Message': 'Success',
+                return Response({'Message': 'No data found',
+                                 'status' : 'success'},  status=status.HTTP_200_OK)
+
+            Material_data = materialManagementSerializer(data, many=True).data
+            return Response({'Message': 'data Fetched Successfully',
+                            'status' : 'success' , 
                              "material Management data": Material_data},
-                             status= 200)
+                            status=200)
         except:
-            return Response({'Message' : 'There is no data available for the Quarter'},
-                            status= status.HTTP_400_BAD_REQUEST)  
+            return Response({'Message': 'There is no data available for the Quarter',
+                            'status' : 'Failed'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+
+class TreeMangementReportPackage(ListAPIView):
+    serializer_class = treeManagementSerializer
+    parser_classes = [MultiPartParser]
+
+    def get(self, request, packages, *args, **kwargs):
+        try:
+            data = TreeManagment.objects.filter(
+                packages=packages).order_by('-id')
+            if not data.exists():
+                return Response({'Message': 'No data found',
+                                 'status' : 'success'},  status=status.HTTP_200_OK)
+
+            Material_data = treeManagementSerializer(data, many=True).data
+            return Response({'Message': 'data Fetched Successfully',
+                            'status' : 'success' , 
+                            "Tree Management data": Material_data},
+                            status=status.HTTP_200_OK)
+        except:
+            return Response({'Message': 'There is no data available for the Package',
+                            'status' : 'Failed'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+
+class TreeManagementReportQuarterView(ListAPIView):
+    serializer_class = treeManagementSerializer
+    parser_classes = [MultiPartParser]
+
+    def get(self, request, quarter, year, *args, **kwargs):
+        try:
+            data = TreeManagment.objects.filter(
+                quarter=quarter, dateOfMonitoring__year=year).order_by('-id')
+            if not data.exists():
+                return Response({'Message': 'No data found',
+                                 'status' : 'success'},  status=status.HTTP_200_OK)
+
+            Material_data = treeManagementSerializer(data, many=True).data
+            return Response({'Message': 'data Fetched Successfully',
+                            'status' : 'success' , 
+                             "Tree Management data": Material_data},
+                            status=200)
+        except:
+            return Response({'Message': 'There is no data available for the Quarter',
+                            'status' : 'Failed'},
+                            status=status.HTTP_400_BAD_REQUEST)

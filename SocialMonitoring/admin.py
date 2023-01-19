@@ -1,10 +1,11 @@
 from django.contrib import admin
-from .models import (labourcampDetails,PAP,Rehabilitation, LabourCamp, ConstructionSiteDetails)
+from .models import *
 # Register your models here.
 
 
 admin.site.register(labourcampDetails)
 admin.site.register(PAP)
+# admin.site.register(PAPPhotographs)
 admin.site.register(LabourCamp)
 admin.site.register(ConstructionSiteDetails)
 admin.site.register(Rehabilitation)

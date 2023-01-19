@@ -8,6 +8,7 @@ from django.contrib.gis.geos import Point
 from .models import  *
 from .paginations import LimitsetPagination
 from .permissions import *
+from rest_framework import status
 
 
 #---------------Labour camp Serializer for GEO jason Format--------------------------------
@@ -16,17 +17,23 @@ class labourCampdetails(generics.GenericAPIView):
     parser_classes = (MultiPartParser, )
     queryset =  labourcampDetails.objects.all()
     def post(self, request):
-    
         lat = float(request.data['latitude'])
         long = float(request.data['longitude'])
         location = Point(long, lat, srid=4326)
-        serializer = labourCampDetailSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            pap = serializer.save(location=location)
-            data = labourCampDetailviewSerializer(pap).data
-            return Response(data, status=200)
-        else:
-            return Response({"msg": serializer.errors}, status=400)
+        try:
+            serializer = labourCampDetailSerializer(data=request.data)
+            if serializer.is_valid(raise_exception=True):
+                pap = serializer.save(location=location)
+                data = labourCampDetailviewSerializer(pap).data
+                return Response({'status': 'success',
+                                'Message': 'Data saved successfully',
+                                'data': data }, status=status.HTTP_200_OK)
+            else:
+                return Response({"Message": 'Something Went Wrong , Please Checl all the details' ,
+                                'status' : 'failed'}, status=400)
+        except:
+            return Response({'status' : 'failed',
+                            'Message' : 'Something Went Wrong'} , status= 400)
 
 class labourCampdetailsView(generics.GenericAPIView):
     serializer_class = labourCampDetailGetviewSerializer
@@ -47,28 +54,29 @@ class PapView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated , IsRNR]
     parser_classes = [MultiPartParser]
 
+
     def post(self, request):
     
         lat = float(request.data['latitude'])
         long = float(request.data['longitude'])
         location = Point(long, lat, srid=4326)
         papid= request.data['PAPID']
-        try:
-            if "RNR" in request.user.groups.values_list("name",flat=True):
-                data = PAP.objects.filter(PAPID = papid).exists()
-                print(data)
-                if data == True:
-                    return Response({'Message':'already data filled for this PAP'} , status=400)
+        
+        if "RNR" in request.user.groups.values_list("name",flat=True):
+            data = PAP.objects.filter(PAPID = papid).exists()
+            print(data)
+            if data == True:
+                return Response({'Message':'already data filled for this PAP'} , status=400)
+            else:
+                serializer = PapSerailzer(data=request.data , context={'request': request} )
+                if serializer.is_valid(raise_exception=True):
+                    pap = serializer.save(location=location , user = request.user)
+                    data = papviewserialzer(pap).data
+                    return Response(data, status=200)
                 else:
-                    serializer = PapSerailzer(data=request.data , context={'request': request} )
-                    if serializer.is_valid(raise_exception=True):
-                        pap = serializer.save(location=location)
-                        data = papviewserialzer(pap).data
-                        return Response(data, status=200)
-                    else:
-                        return Response({"msg": serializer.errors}, status=400)
-        except:
-            return Response({"Message": "You are not Authourize person to fill this Details"}, status=400)
+                    return Response({"msg": serializer.errors}, status=400)
+        # except:
+        #     return Response({"Message": "You are not Authourize person to fill this Details"}, status=400)
             
 
 class papupdateView(generics.UpdateAPIView):
@@ -134,7 +142,7 @@ class RehabilitationView(generics.GenericAPIView):
                     serializer = RehabilitationSerializer(data = request.data  , context={'request': request})
                     print(serializer.context)
                     if serializer.is_valid():
-                        rehabilitation = serializer.save(location=location  )
+                        rehabilitation = serializer.save(location=location , user = request.user  )
                         data = RehabilitationViewSerializer(rehabilitation).data
                         return Response(data, status=200)
                     else:
@@ -168,6 +176,7 @@ class LabourCampDetailsView(generics.GenericAPIView):
                     if serializer.is_valid(raise_exception=True):
                         LabourCampDetails = serializer.save(location=location)
                         data = LabourCampDetailViewSerializer(LabourCampDetails).data
+                        
                         return Response(data, status=200)
                     else:
                         return Response({

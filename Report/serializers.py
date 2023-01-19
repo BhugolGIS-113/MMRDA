@@ -1,11 +1,12 @@
 from rest_framework.serializers import ModelSerializer
 from SocialMonitoring.models import *
 from EnvMonitoring.models import *
+from rest_framework.validators import ValidationError
 
 class LabourcampReportSerializer(ModelSerializer):
     class Meta:
         model = LabourCamp
-        fields =('location','quarter', 'packages','dateOfMonitoring', 'labourCampName', 'LabourCampID',
+        fields =('id','location','quarter', 'packages','dateOfMonitoring', 'labourCampName', 'LabourCampID',
                   'isToilet', 'toiletCondition','toiletPhotograph','toiletRemarks',
                   'isDrinkingWater','drinkingWaterCondition' ,'drinkingWaterPhotographs','drinkingWaterRemarks',
                     'isDemarkationOfPathways','demarkationOfPathwaysCondition','demarkationOfPathwaysPhotographs','demarkationOfPathwaysRemark' ,
@@ -20,11 +21,18 @@ class LabourcampReportSerializer(ModelSerializer):
                     'transportationFacility' ,'transportationFacilityCondition', 'modeOfTransportation','distanceFromSite',
                     'photographs' ,'documents','remarks')
 
+    def validate(self, data):
+        if data['packages'] == '' or data['packages'] == None:
+            raise ValidationError('packages can not be empty')
+        if data['labourCampName'] == '' or data['labourCampName'] ==None:
+            raise ValidationError('labourCampName can not be empty')
+        return data
+
 
 class ConstructionCampReportSerializer(ModelSerializer):
     class Meta:
         model = ConstructionSiteDetails
-        fields = ('location','quarter', 'packages','dateOfMonitoring' ,'constructionSiteName' , 'constructionSiteID',
+        fields = ('id','location','quarter', 'packages','dateOfMonitoring' ,'constructionSiteName' , 'constructionSiteID',
                     'isDemarkationOfPathways','demarkationOfPathwaysCondition','demarkationOfPathwaysPhotographs','demarkationOfPathwaysRemark' ,
                     'isSignagesLabeling','signagesLabelingCondition' ,'signagesLabelingPhotographs','signagesLabelingRemarks',
                     'isRegularHealthCheckup','regularHealthCheckupCondition','regularHealthCheckupPhotographs','regularHealthCheckupRemarks',
@@ -39,16 +47,16 @@ class ConstructionCampReportSerializer(ModelSerializer):
 class PAPReportSerializer(ModelSerializer):
     class Meta:
         model = PAP
-        fields = ('quarter', 'packages', 'location','dateOfMonitoring','dateOfIdentification','PAPID','nameOfPAP', 
+        fields = ('id','quarter', 'packages', 'location','dateOfMonitoring','dateOfIdentification','PAPID','nameOfPAP', 
                   'addressLine1','streetName','pincode','eligibility', 'categoryOfPap', 
                   'areaOfAsset','typeOfAsset','legalStatus','legalDocuments',
-                   'actionTaken', 'notAgreedReason','presentPhotograp','remarks' )
+                   'actionTaken', 'notAgreedReason','remarks' )
 
 
 class RehabilitationReportSerializer(ModelSerializer):
     class Meta:
         model = Rehabilitation
-        fields =  ('location','ID','dateOfRehabilitation' ,'PAPID', 'PAPName' ,'cashCompensation', 'compensationStatus',
+        fields =  ('id','location','ID','dateOfRehabilitation' ,'PAPID', 'PAPName' ,'cashCompensation', 'compensationStatus',
                    'typeOfCompensation', 'otherCompensationType' ,'addressLine1','streetName','pincode',
                    'isShiftingAllowance','shiftingAllowanceAmount','isLivelihoodSupport', 'livelihoodSupportAmount','livelihoodSupportCondition',
                    'livelihoodSupportPhotograph','livelihoodSupportRemarks','isTraining','trainingCondition',
@@ -64,32 +72,39 @@ class RehabilitationReportSerializer(ModelSerializer):
 class AirReportSerializer(ModelSerializer):
     class Meta:
         model = Air
-        fields =('quarter','packages','month','location','dateOfMonitoring','PM10','standardPM10','SO2',
+        fields =('id','quarter','packages','month','location','dateOfMonitoring','PM10','standardPM10','SO2',
                    'standardSO2','O3','standardO3','NOx', 'standardNOx','AQI' , 'Remarks')
 
 
 class NoiseReportSerializer(ModelSerializer):
     class Meta:
         model = Noise
-        fields = ('location' ,'quarter','month','packages','dateOfMonitoring' ,'noiseLevel' , 'monitoringPeriod', )
+        fields = ('id','location' ,'quarter','month','packages','dateOfMonitoring' ,'noiseLevel' , 'monitoringPeriod', )
 
 class waterReportSerializer(ModelSerializer):
     class Meta:
         model = water
-        fields =('location','quarter','packages','month', 'dateOfMonitoring','qualityOfWater' , 'sourceOfWater' ,'waterDisposal')
+        fields =('id','location','quarter','packages','month', 'dateOfMonitoring','qualityOfWater' , 'sourceOfWater' ,'waterDisposal')
 
 
 class wasteTreatmentsSerializer(ModelSerializer):
     class Meta:
         model = WasteTreatments
-        fields = ('location','quarter','month','packages','dateOfMonitoring' , 'wastetype' ,'quantity',
+        fields = ('id','location','quarter','month','packages','dateOfMonitoring' , 'wastetype' ,'quantity',
                     'wastehandling' , 'wasteHandlingLocation', 'photographs' , 'documents','remarks')
 
 
 class materialManagementSerializer(ModelSerializer):
     class Meta:
         model = MaterialManegmanet
-        fields = ('quarter','month','packages','location','dateOfMonitoring',
+        fields = ('id','quarter','month','packages','location','dateOfMonitoring',
          'typeOfMaterial','source','sourceOfQuarry','materialStorageType','storageLocation',
          'materialstorageCondition','materialstoragePhotograph','approvals' ,'photographs',
           'documents','remarks')
+
+
+class treeManagementSerializer(ModelSerializer):
+    class Meta:
+        model = ExistingTreeManagment
+        fields = ('id','quarter','month','dateOfMonitoring','packages','location','treeID','commanName' ,'botanicalName',
+                    'condition', 'noOfTreeCut','actionTaken', 'photographs', 'documents','remarks')

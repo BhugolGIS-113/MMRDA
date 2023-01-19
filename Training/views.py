@@ -1,7 +1,7 @@
 from rest_framework import generics
 from .serialzers import *
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.parsers import MultiPartParser
+from rest_framework.parsers import MultiPartParser , FormParser , FileUploadParser
 from rest_framework.response import Response
 from django.contrib.gis.geos import Point , MultiLineString
 from .models import traning, photographs
@@ -118,7 +118,6 @@ class occupationalHealthSafety (generics.GenericAPIView):
 
 class ContactUsView(generics.GenericAPIView):
     serializer_class = ContactusSerializezr
-    parser_classes = [MultiPartParser ]
 
     def post(self, request):
         lat = float(request.data['latitude'])

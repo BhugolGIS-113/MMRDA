@@ -85,12 +85,12 @@ class papviewserialzer(GeoFeatureModelSerializer):
 
 # ------------------------ Rehabiliation Serializer ----------------------------------------
 class RehabilitationSerializer(serializers.ModelSerializer):
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     longitude = serializers.CharField(max_length=10, required=False)
     latitude = serializers.CharField(max_length=10, required=False)
     class Meta:
         model = Rehabilitation
-        fields = ('user','longitude', 'latitude','ID','dateOfRehabilitation' ,'PAPID', 'PAPName' ,'cashCompensation', 'compensationStatus',
+        fields = ('quarter','longitude', 'latitude','ID','dateOfRehabilitation' ,'PAPID', 'PAPName' ,'cashCompensation', 'compensationStatus',
                    'typeOfCompensation', 'otherCompensationType' ,'addressLine1','streetName','pincode',
                    'isShiftingAllowance','shiftingAllowanceAmount','isLivelihoodSupport', 'livelihoodSupportAmount','livelihoodSupportCondition',
                    'livelihoodSupportPhotograph','livelihoodSupportRemarks','isTraining','trainingCondition',

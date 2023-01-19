@@ -61,7 +61,7 @@ class ContactusImageSerializers(serializers.ModelSerializer):
         fields = "__all__"
 
 class ContactusSerializezr(serializers.ModelSerializer):
-    images =  ContactusImageSerializers(many=True, read_only=True)
+    # images =  ContactusImageSerializers(many=True, read_only=True)
     longitude = serializers.CharField(max_length= 255 , required = False) # longitude
     latitude = serializers.CharField(max_length= 255, required = False) # latitude
     uploaded_images  = serializers.ListField(
@@ -70,18 +70,17 @@ class ContactusSerializezr(serializers.ModelSerializer):
     )
     class Meta:
         model = Contactus
-        fields = ('name','email','messsage' , 'longitude' , 'latitude', 'images' , 'uploaded_images')
+        fields = ('name','email','messsage' , 'longitude' , 'latitude' , 'uploaded_images')
 
     def create(self,data):
         data.pop('longitude')
         data.pop('latitude')
         uploaded_images = data.pop("uploaded_images")
-        print(uploaded_images )
         contactus = Contactus.objects.create(**data)
-        print(contactus)
 
         for image in uploaded_images:
             ContactusImage.objects.create(contactus=contactus, images=image)
+
         return contactus
         
 

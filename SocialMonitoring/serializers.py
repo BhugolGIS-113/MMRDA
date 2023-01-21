@@ -38,8 +38,6 @@ class labourCampDetailGetviewSerializer(serializers.ModelSerializer):
 
 
 
-
-
 # --------------- PAP Serializer --------------------------------
 
 class PapSerailzer(serializers.ModelSerializer):
@@ -120,13 +118,13 @@ class RehabilatedPAPIDSerializer(serializers.ModelSerializer):
 # -------------------------------- Labour camp details Serialzier --------------------------------         
 
 class LabourCampDetailSerializer(serializers.ModelSerializer):
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    # user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     longitude = serializers.CharField(max_length=10, required=False)
     latitude = serializers.CharField(max_length=10, required=False)
     
     class Meta:
         model = LabourCamp
-        fields = ('user','quarter', 'packages','dateOfMonitoring','longitude', 'latitude', 'labourCampName', 'LabourCampID',
+        fields = ('quarter', 'packages','dateOfMonitoring','longitude', 'latitude', 'labourCampName', 'LabourCampID',
                   'isToilet', 'toiletCondition','toiletPhotograph','toiletRemarks',
                   'isDrinkingWater','drinkingWaterCondition' ,'drinkingWaterPhotographs','drinkingWaterRemarks',
                     'isDemarkationOfPathways','demarkationOfPathwaysCondition','demarkationOfPathwaysPhotographs','demarkationOfPathwaysRemark' ,
@@ -186,13 +184,13 @@ class LabourCampUpdateSerialzier(serializers.ModelSerializer):
 
 # ----------------------------- Construction site serializer -----------------------------------
 class constructionSiteSerializer(serializers.ModelSerializer):
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    # user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     longitude = serializers.CharField(max_length=10, required=False)
     latitude = serializers.CharField(max_length=10, required=False)
 
     class Meta:
         model = ConstructionSiteDetails
-        fields = ('user','quarter', 'packages','dateOfMonitoring' ,'longitude', 'latitude', 'constructionSiteName' , 'constructionSiteID',
+        fields = ('quarter', 'packages','dateOfMonitoring' ,'longitude', 'latitude', 'constructionSiteName' , 'constructionSiteID',
                  'isDemarkationOfPathways','demarkationOfPathwaysCondition','demarkationOfPathwaysPhotographs','demarkationOfPathwaysRemark' ,
                 'isSignagesLabeling','signagesLabelingCondition' ,'signagesLabelingPhotographs','signagesLabelingRemarks',
                 'isRegularHealthCheckup','regularHealthCheckupCondition','regularHealthCheckupPhotographs','regularHealthCheckupRemarks',

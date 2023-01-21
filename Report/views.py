@@ -287,7 +287,7 @@ class NoiseReportQuarterView(ListAPIView):
             Noise_data = NoiseReportSerializer(data, many=True).data
             return Response({'Message': 'data Fetched Successfully',
                             'status' : 'success' , 
-                            "Noise data": Noise_data},
+                            "Noise_data": Noise_data},
                             status=status.HTTP_200_OK)
         except:
             return Response({'Message': 'There is no data available for the Quarter',
@@ -437,7 +437,7 @@ class TreeMangementReportPackage(ListAPIView):
 
     def get(self, request, packages, *args, **kwargs):
         try:
-            data = TreeManagment.objects.filter(
+            data = ExistingTreeManagment.objects.filter(
                 packages=packages).order_by('-id')
             if not data.exists():
                 return Response({'Message': 'No data found',
@@ -460,7 +460,7 @@ class TreeManagementReportQuarterView(ListAPIView):
 
     def get(self, request, quarter, year, *args, **kwargs):
         try:
-            data = TreeManagment.objects.filter(
+            data = ExistingTreeManagment.objects.filter(
                 quarter=quarter, dateOfMonitoring__year=year).order_by('-id')
             if not data.exists():
                 return Response({'Message': 'No data found',

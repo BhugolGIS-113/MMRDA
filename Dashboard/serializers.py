@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from SocialMonitoring.models import *
+from EnvMonitoring.models import *
 
 class PAPDashboardSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,3 +19,10 @@ class LabourcampDashboardSerializer(serializers.ModelSerializer):
         fields = ('id','labourCampName','toiletCondition' ,'drinkingWaterCondition' ,'demarkationOfPathwaysCondition',
                 'signagesLabelingCondition','kitchenAreaCondition','fireExtinguishCondition','roomsOrDomsCondition',
                 'segregationOfWasteCondition')
+
+
+class ExistingTreeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExistingTreeManagment
+        fields = ('quarter','month','dateOfMonitoring','packages','location','treeID','commanName' ,'botanicalName',
+                    'condition', 'noOfTreeCut','actionTaken', 'photographs', 'documents','remarks')

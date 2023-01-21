@@ -227,10 +227,6 @@ class ExistingTreeManagementView(generics.GenericAPIView):
         lat=float(request.data['latitude'])
         long=float(request.data['longitude'])
         Plocation=Point(long,lat,srid=4326)
-        
-        # Clat = float(request.data['Clatitude'])
-        # Clong = float(request.data['Clongitude'])
-        # Clocation = Point(Clat,Clong,srid=4326)
         date=request.data['dateOfMonitoring'].split('-')
         month = request.data['month']
         try:
@@ -322,10 +318,6 @@ class NewTereeManagementView(generics.GenericAPIView):
                     return Response({'msg' : 'Enter a valid data'} , status = status.HTTP_400_BAD_REQUEST)
         except Exception:
             return  Response({'Message' : "Only consultant and Contractor can fill this form"}, status= status.HTTP_401_UNAUTHORIZED)
-
-
-
-
 
 
 class WasteTreatmentsView(generics.GenericAPIView):
@@ -452,7 +444,6 @@ class TotalenvMonitoringView(generics.ListAPIView):
     queryset = Air.objects.all()
 
     def get(self , request):
-        # env = EnvQualityMonitoring.objects.prefetch_related('airs').get(id = 2)
     
         air = Air.objects.all()
         airSerialzier = AirSerializer(self.get_queryset() , many = True).data

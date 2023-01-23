@@ -23,6 +23,8 @@ urlpatterns = [
      path('Sourceofmaterial',MaterialSourceTypeCountChart.as_view() , name = 'Material'),
      path('Materilcondition',MaterialConditionChart.as_view() , name = 'Material'),
      path('Incidenttype',IncidenttypeCountchart.as_view() , name = 'Incident Type char'),
+     path('WaterCondition',WaterConditionChart.as_view() , name = 'Water condition char'),
+     path('watercon',Water.as_view() , name = 'Water condition char'),
 
 
 

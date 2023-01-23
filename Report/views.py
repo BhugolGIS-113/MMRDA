@@ -5,7 +5,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
-
+from rest_framework import generics
+from Report.models import Package54Alignment , Package12Alignment
+from .paginations import LimitsetPagination
 
 ''' --------------------------Labour Camp Report View----------------------------'''
 
@@ -475,3 +477,113 @@ class TreeManagementReportQuarterView(ListAPIView):
             return Response({'Message': 'There is no data available for the Quarter',
                             'status' : 'Failed'},
                             status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class Package54AlignmentView(generics.GenericAPIView):
+    serializer_class = Package54AlignmentSerializer
+
+    def get(self, request, *args, **kwargs):
+        try:
+            package54 = Package54Alignment.objects.all()
+            serializers = Package54AlignmentSerializer(package54 , many = True).data
+            return Response({'status': 'success',
+                                'message' : 'data was successfully fetched',
+                                'data': serializers},
+                                status= 200)
+        except :
+            return Response({'status' : 'failed',
+                            'message' : 'Something went wrong !! Please try again'}, status = 400)
+        
+
+class package12AlignmentView(generics.GenericAPIView):
+    serializer_class = Package12AlignmentSerializer 
+
+    def get(self, request, *args, **kwargs):
+        try:
+            package12 = Package12Alignment.objects.all()
+            serializers = Package12AlignmentSerializer(package12 , many = True).data
+            return Response({'status': 'success',
+                            'message' : 'data was successfully fetched',
+                            'data': serializers},
+                            status= 200)
+        except :
+            return Response({'status' : 'failed',
+                            'message' : 'Something went wrong !! Please try again'}, status = 400)
+
+class package11AlignmentView(generics.GenericAPIView):
+    serializer_class = Package11AlignmentSerializer 
+
+    def get(self, request, *args, **kwargs):
+        try:
+            package11 = Package11Alignment.objects.all()
+            serializer = Package11AlignmentSerializer(package11 , many = True).data
+            return Response({'status': 'success',
+                            'message' : 'data was successfully fetched',
+                            'data': serializer},
+                             status= 200)
+        except :
+            return Response({'status' : 'failed',
+                            'message' : 'Something went wrong !! Please try again'}, status = 400)
+
+class package10AlignmentView(generics.GenericAPIView):
+    serializer_class = Package10AlignmentSerializer
+
+    def get(self , request):
+        try:
+            package10 = Package10Alignment.objects.all()
+            serializer = Package10AlignmentSerializer(package10 , many = True).data
+            return Response({'status': 'success',
+                            'message' : 'data was successfully fetched',
+                            'data': serializer},
+                             status= 200)
+        except :
+            return Response({'status' : 'failed',
+                            'message' : 'Something went wrong !! Please try again'}, status = 400)
+
+class package09AlignmentView(generics.GenericAPIView):
+    serializer_class = Package09AlignmentSerializer  
+
+    def get(self , request):
+        try:
+            package09 = Package09Alignment.objects.all()
+            serializer = Package09AlignmentSerializer(package09 , many = True).data
+            return Response({'status': 'success',
+                            'message' : 'data was successfully fetched',
+                            'data': serializer},
+                             status= 200)
+        except :
+            return Response({'status' : 'failed',
+                            'message' : 'Something went wrong !! Please try again'}, status = 400)
+
+class package08AlignmentView(generics.GenericAPIView):
+    serializer_class = Package08AlignmentSerializer  
+
+    def get(self , request):
+        try:
+            package08 = Package08Alignment.objects.all()
+            serializer = Package08AlignmentSerializer(package08 , many = True).data
+            return Response({'status': 'success',
+                            'message' : 'data was successfully fetched',
+                            'data': serializer},
+                             status= 200)
+        except :
+            return Response({'status' : 'failed',
+                            'message' : 'Something went wrong !! Please try again'}, status = 400)
+
+
+class MetroStationView(generics.GenericAPIView):
+    serializer_class = MetroStationSerializer  
+
+    def get(self , request):
+        try:
+            metroStation = MetroStation.objects.all()
+            serializer = MetroStationSerializer(metroStation , many = True).data
+            return Response({'status': 'success',
+                            'message' : 'data was successfully fetched',
+                            'data': serializer},
+                             status= 200)
+        except :
+            return Response({'status' : 'failed',
+                            'message' : 'Something went wrong !! Please try again'}, status = 400)
+

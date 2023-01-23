@@ -53,5 +53,14 @@ urlpatterns = [
      path('TreeMangementReportPackage/<str:packages>',
          TreeMangementReportPackage.as_view(), name='Tree Management Package'),
      path('TreeManagementReportQuarterView/<str:quarter>/<int:year>',
-         TreeManagementReportQuarterView.as_view(), name='Tree Management Quarter')
+         TreeManagementReportQuarterView.as_view(), name='Tree Management Quarter'),
+
+     path('package54Aligment' , Package54AlignmentView.as_view() , name = 'Package54AlignmentView'),
+     path('package12Aligment' , package12AlignmentView.as_view() , name = 'package12Aligment '),
+     path('package11Aligment' , package11AlignmentView.as_view() , name = 'package11Aligment '),
+     path('package10Aligment' , package10AlignmentView.as_view() , name = 'package10Aligment '),
+     path('package09Aligment' , package09AlignmentView.as_view() , name = 'package09Aligment '),
+     path('package08Aligment' , package08AlignmentView.as_view() , name = 'package08Aligment '),
+     path('MetroStation' , MetroStationView.as_view() , name = 'MetroStationView '),
+    
 ]

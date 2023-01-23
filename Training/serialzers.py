@@ -2,7 +2,7 @@
 from rest_framework import serializers
 from .models import *
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
-
+from Report.models import Package54Alignment
 class TraningSerializer(serializers.ModelSerializer):
     class Meta:
         model = traning
@@ -90,3 +90,9 @@ class ContactusViewSerialzier(GeoFeatureModelSerializer):
         model = Contactus
         fields = '__all__'
         geo_field = 'location'
+
+
+class Package54AlignmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Package54Alignment
+        fields = ('gid' ,'descriptio' , 'geom' )

@@ -29,6 +29,8 @@ class Air(Baseclass):
     Remarks = models.TextField ( blank = True, max_length  = 100, null = True )
 
 class water(Baseclass):
+    dateOfMonitoring = None
+    dateOfMonitoringTwo =  models.DateField(null=True, blank=True)
     user = models.ForeignKey(User, related_name='waters', on_delete=models.CASCADE , null= True   , blank=True)
     qualityOfWater = models.CharField(max_length=255, null=True, blank=True)
     sourceOfWater = models.CharField(max_length=255, null=True, blank=True)
@@ -36,6 +38,8 @@ class water(Baseclass):
 
 
 class Noise(Baseclass):
+    dateOfMonitoring = None
+    dateOfMonitoringThree = models.DateField(null=True, blank=True)
     user = models.ForeignKey(User, related_name="noises", on_delete=models.CASCADE , blank=True )
     noiseLevel = models.CharField(max_length=255, null=True, blank=True)
     monitoringPeriod = models.CharField(

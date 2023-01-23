@@ -31,7 +31,7 @@ class WaterSerializer(serializers.ModelSerializer):
     latitude=serializers.CharField(max_length=10,required=False)
     class Meta:
         model = water
-        fields = ('quarter','packages','month', 'dateOfMonitoring','longitude','latitude',
+        fields = ('quarter','packages','month', 'dateOfMonitoringTwo','longitude','latitude',
                     'qualityOfWater' , 'sourceOfWater' ,'waterDisposal')
 
     def create(self,data):
@@ -70,7 +70,7 @@ class NoiseSerializer(serializers.ModelSerializer):
     latitude=serializers.CharField(max_length=10,required=False)
     class Meta:
         model = Noise
-        fields = ('quarter','month','packages','longitude','latitude' ,'dateOfMonitoring','noiseLevel' , 'monitoringPeriod', )
+        fields = ('quarter','month','packages','longitude','latitude' ,'dateOfMonitoringThree','noiseLevel' , 'monitoringPeriod', )
 
     def create(self,data):
         data.pop('latitude')

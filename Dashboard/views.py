@@ -4,6 +4,7 @@ from EnvMonitoring.models import *
 from Training.models import *
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import generics
 
 
 
@@ -241,38 +242,73 @@ class MaterialConditionChart(APIView):
 class IncidenttypeCountchart(APIView):
 
     def get(self, request):
-        dataset = []
-        Reportable_Accident = occupationalHealthSafety.objects.filter(typeOfIncident='Reportable Accident').count()
-        Reportable_NonFatal_Accident = occupationalHealthSafety.objects.filter(typeOfIncident= 'Reportable Non-Fatal Accident').count()
-        First_Aid_Cases = occupationalHealthSafety.objects.filter(typeOfIncident= 'First Aid Cases').count()
-        Dangerous_Occurrences = occupationalHealthSafety.objects.filter(typeOfIncident= 'Dangerous Occurrences').count()
-        Man_Days_lost = occupationalHealthSafety.objects.filter(typeOfIncident= 'Man Days Lost').count()
-        Major_Road_accident = occupationalHealthSafety.objects.filter(typeOfIncident= 'Major (Road accident)').count()
-        Road_Incident = occupationalHealthSafety.objects.filter(typeOfIncident= 'Road Incident').count()
-        Tree_Broken = occupationalHealthSafety.objects.filter(typeOfIncident= 'Tree Broken').count()
-        Natural_Death = occupationalHealthSafety.objects.filter(typeOfIncident= 'Natural Death').count()
-        Third_Party_Incident = occupationalHealthSafety.objects.filter(typeOfIncident= '3rd Party Incident').count()
-        dataset.append(Reportable_Accident) , dataset.append(Reportable_NonFatal_Accident) , dataset.append(First_Aid_Cases)
-        dataset.append(Dangerous_Occurrences) , dataset.append(Man_Days_lost),dataset.append(Major_Road_accident)
-        dataset.append(Road_Incident),dataset.append(Tree_Broken) , dataset.append(Natural_Death) , dataset.append(Third_Party_Incident)
+        try:
+            dataset = []
+            Reportable_Accident = self.request.query_params.get('Reportable Accident', None)
+            Reportable_Accident = occupationalHealthSafety.objects.filter(typeOfIncident='Reportable Accident').count()
+            Reportable_NonFatal_Accident = occupationalHealthSafety.objects.filter(typeOfIncident= 'Reportable Non-Fatal Accident').count()
+            First_Aid_Cases = occupationalHealthSafety.objects.filter(typeOfIncident= 'First Aid Cases').count()
+            Dangerous_Occurrences = occupationalHealthSafety.objects.filter(typeOfIncident= 'Dangerous Occurrences').count()
+            Man_Days_lost = occupationalHealthSafety.objects.filter(typeOfIncident= 'Man Days Lost').count()
+            Major_Road_accident = occupationalHealthSafety.objects.filter(typeOfIncident= 'Major (Road accident)').count()
+            Road_Incident = occupationalHealthSafety.objects.filter(typeOfIncident= 'Road Incident').count()
+            Tree_Broken = occupationalHealthSafety.objects.filter(typeOfIncident= 'Tree Broken').count()
+            Natural_Death = occupationalHealthSafety.objects.filter(typeOfIncident= 'Natural Death').count()
+            Third_Party_Incident = occupationalHealthSafety.objects.filter(typeOfIncident= '3rd Party Incident').count()
+            dataset.append(Reportable_Accident) , dataset.append(Reportable_NonFatal_Accident) , dataset.append(First_Aid_Cases)
+            dataset.append(Dangerous_Occurrences) , dataset.append(Man_Days_lost),dataset.append(Major_Road_accident)
+            dataset.append(Road_Incident),dataset.append(Tree_Broken) , dataset.append(Natural_Death) , dataset.append(Third_Party_Incident)
 
-        return Response({'status': 'success',
-                            'Message': 'Data was successfully fetched',
-                            'dataset' : dataset,} , status= 200)
+            return Response({'status': 'success',
+                                'Message': 'Data was successfully fetched',
+                                'dataset' : dataset,} , status= 200)
+        except:
+            return Response({'status': 'error',
+                            'Message': 'Something went wrong'},status=400)
+
                             
 
 
 
+class WaterConditionChart(APIView):
+
+    def get(self, request):
+        try:
+            dataset = []
+            Good = water.objects.filter(qualityOfWater = 'Good').count()
+            Average = water.objects.filter(qualityOfWater = 'Average').count()
+            Bad = water.objects.filter(qualityOfWater = 'Bad').count()
+            dataset.append(Good) , dataset.append(Average) , dataset.append(Bad)
+
+            return Response({'status': 'success',
+                                'Message': 'Data was successfully fetched',
+                                'dataset' : dataset ,
+                                } , status= 200)
+        except:
+            return Response({'status': 'error',
+                            'Message': 'Something went wrong'},status=400)
+
+
+from django.db.models import Count
+
+class Water(generics.ListAPIView):
+    queryset = water.objects.all()
+    serializer_class = waterserializer
+
+
+    def get_queryset(self):
+        queryset = water.objects.all()
+        field = self.request.query_params.get('Good', None)
+        print(field)
+        if field is not None:
+            queryset = queryset.filter(qualityOfWater=field).annotate(count=Count('qualityOfWater'))
+            print(queryset)
+            return queryset 
 
 
 
 
 
-
-
-
-
-          
         
 
 

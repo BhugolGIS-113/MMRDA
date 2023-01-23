@@ -2,6 +2,7 @@ from rest_framework.serializers import ModelSerializer
 from SocialMonitoring.models import *
 from EnvMonitoring.models import *
 from rest_framework.validators import ValidationError
+from Report.models import *
 
 class LabourcampReportSerializer(ModelSerializer):
     class Meta:
@@ -79,12 +80,12 @@ class AirReportSerializer(ModelSerializer):
 class NoiseReportSerializer(ModelSerializer):
     class Meta:
         model = Noise
-        fields = ('id','location' ,'quarter','month','packages','dateOfMonitoring' ,'noiseLevel' , 'monitoringPeriod', )
+        fields = ('id','location' ,'quarter','month','packages','dateOfMonitoringThree' ,'noiseLevel' , 'monitoringPeriod', )
 
 class waterReportSerializer(ModelSerializer):
     class Meta:
         model = water
-        fields =('id','location','quarter','packages','month', 'dateOfMonitoring','qualityOfWater' , 'sourceOfWater' ,'waterDisposal')
+        fields =('id','location','quarter','packages','month', 'dateOfMonitoringTwo','qualityOfWater' , 'sourceOfWater' ,'waterDisposal')
 
 
 class wasteTreatmentsSerializer(ModelSerializer):
@@ -108,3 +109,41 @@ class treeManagementSerializer(ModelSerializer):
         model = ExistingTreeManagment
         fields = ('id','quarter','month','dateOfMonitoring','packages','location','treeID','commanName' ,'botanicalName',
                     'condition', 'noOfTreeCut','actionTaken', 'photographs', 'documents','remarks')
+
+class Package54AlignmentSerializer(ModelSerializer):
+    class Meta:
+        model = Package54Alignment
+        fields = ('gid' ,'descriptio' , 'geom' )
+
+class Package12AlignmentSerializer(ModelSerializer):
+    class Meta:
+        model = Package12Alignment
+        fields = ('gid' ,'descriptio' , 'geom')
+
+class Package11AlignmentSerializer(ModelSerializer):
+    class Meta:
+        model = Package11Alignment
+        fields = ('gid' ,'descriptio' , 'geom')
+
+
+class Package10AlignmentSerializer(ModelSerializer):
+    class Meta:
+        model = Package10Alignment
+        fields = ('gid' ,'descriptio' , 'geom')
+
+class Package09AlignmentSerializer(ModelSerializer):
+    class Meta:
+        model = Package09Alignment
+        fields = ('gid' ,'descriptio' , 'geom')
+
+
+
+class Package08AlignmentSerializer(ModelSerializer):
+    class Meta:
+        model = Package08Alignment
+        fields = ('gid' ,'descriptio' , 'geom')
+
+class MetroStationSerializer(ModelSerializer):
+    class Meta:
+        model = MetroStation
+        fields = ('gid' ,'descriptio' , 'geom')

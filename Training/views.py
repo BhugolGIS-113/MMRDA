@@ -8,6 +8,8 @@ from .models import traning, photographs
 from .permission import IsConsultant
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
+from Report.models import Package54Alignment
+
 
 # Create your views here.
 

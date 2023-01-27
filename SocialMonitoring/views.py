@@ -9,7 +9,7 @@ from .models import *
 from .paginations import LimitsetPagination
 from .permissions import *
 from rest_framework import status
-
+from rest_framework import filters
 
 # ---------------Labour camp Serializer for GEO jason Format--------------------------------
 
@@ -38,15 +38,12 @@ class labourCampdetails(generics.GenericAPIView):
                             'Message': 'Something Went Wrong'}, status=400)
 
 
-class labourCampdetailsView(generics.GenericAPIView):
+class labourCampdetailsView(generics.ListAPIView):
+    queryset = labourcampDetails.objects.all()
     serializer_class = labourCampDetailGetviewSerializer
-    parser_classes = [MultiPartParser]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['LabourCampName' ,'LabourCampID']
 
-    def get(self, request, *args, **kwargs):
-
-        details = labourcampDetails.objects.all()
-        serializer = labourCampDetailGetviewSerializer(details, many=True)
-        return Response(serializer.data, status=200)
 
 
 # ---------------------------- PAP View--------------------------------------------------
@@ -74,11 +71,14 @@ class PapView(generics.GenericAPIView):
                     if serializer.is_valid(raise_exception=True):
                         pap = serializer.save(location=location, user=request.user)
                         data = papviewserialzer(pap).data
-                        return Response(data, status=200)
+                        return Response ({'Message': 'data saved successfully',
+                                        'status' : 'success'}, status=200)
                     else:
-                        return Response({"msg": 'data Invalid please Try Again'}, status=400)
+                        return Response({"Message": 'data Invalid please Try Again',
+                                          'status' : 'failed'  }, status=400)
         except:
-            return Response({"Message": "You are not Authourize person to fill this Details"}, status=401)
+            return Response({"Message": "You are not Authourize person to fill this Details" ,
+                             'status' : 'failed' }, status=401)
 
 
 class papupdateView(generics.UpdateAPIView):
@@ -100,7 +100,7 @@ class papupdateView(generics.UpdateAPIView):
             serializer.save()
             return Response(serializer.data)
         else:
-            return Response({"msg": "Please Enter a valid data"})
+            return Response({"Message": "Please Enter a valid data"})
 
 
 class PapListView(generics.ListAPIView):
@@ -117,9 +117,9 @@ class RehabilatedPAPIDView(generics.GenericAPIView):
         try:
             papdata = PAP.objects.get(PAPID=PAPID)
         except:
-            return Response({'Message': 'No data Avaialable for this PAPID'}, status=400)
+            return Response({'Message': 'No data Avaialable for this PAPID',
+                            'status' : 'success'}, status=200)
         serializers = RehabilatedPAPIDSerializer(papdata).data
-        print(serializers)
         return Response(serializers, status=200)
         # except:
         #     return Response({'Message' : 'No data Avaialable for this   PAPID Exception'} , status =400)
@@ -140,30 +140,33 @@ class RehabilitationView(generics.GenericAPIView):
             if "RNR" in request.user.groups.values_list("name", flat=True):
                 data = Rehabilitation.objects.filter(PAPID=papid).exists()
                 if data == True:
-                    return Response({'Message': 'already data filled for this PAP'}, status=400)
+                    return Response({'Message': 'already data filled for this PAP' ,
+                                    'status' : 'success'}, status=400)
                 else:
                     serializer = RehabilitationSerializer(
-                        data=request.data, context={'request': request})
+                        data=request.data )
                     print(serializer.context)
                     if serializer.is_valid():
                         rehabilitation = serializer.save(
                             location=location, user=request.user)
                         data = RehabilitationViewSerializer(
                             rehabilitation).data
-                        return Response(data, status=200)
+                        return Response({'Message': 'data saved successfully',
+                                        'status' : 'success'}, status=200)
                     else:
-                        return Response({"Message": serializer.errors}, status=400)
+                        return Response({"Message": serializer.errors ,
+                                        'status' : 'failed'}, status=400)
         except Exception:
-            return Response({"Message": "You are not Authourize person to fill this Details"}, status=401)
+            return Response({"Message": "You are not Authourize person to fill this Details" ,
+                            'status' : 'failed'}, status=401)
 
 
 # ----------------------------- Labour Camp details View --------------------------------
+
 class LabourCampDetailsView(generics.GenericAPIView):
-    renderer_classes = [ErrorRenderer]
-    parser_classes = [MultiPartParser]
     permission_classes = [IsAuthenticated & (IsConsultant | IsContractor)]
+    parser_classes = [MultiPartParser]
     serializer_class = LabourCampDetailSerializer
-    queryset = LabourCamp.objects.all()
 
     def post(self, request):
         lat = float(request.data['latitude'])
@@ -176,32 +179,32 @@ class LabourCampDetailsView(generics.GenericAPIView):
                 data = LabourCamp.objects.filter(
                     quarter=quarter, dateOfMonitoring__year=int(date[0])).exists()
                 if data == True:
-                    return Response({'message': 'already data filled for this Quarter'}, status=400)
+                    return Response({'Message': 'already data filled for this Quarter'}, status=400)
                 else:
-                    serializer = LabourCampDetailSerializer(
-                        data=request.data, context={'request': request})
+                    serializer = LabourCampDetailSerializer(data=request.data )
                     if serializer.is_valid(raise_exception=True):
                         LabourCampDetails = serializer.save(location=location , user = request.user)
-                        data = LabourCampDetailViewSerializer(
-                            LabourCampDetails).data
+                        data = LabourCampDetailViewSerializer(LabourCampDetails).data
 
-                        return Response(data, status=200)
+                        return Response({'Message': 'data saved successfully',
+                                        'status' : 'success'}, status=200)
                     else:
-                        return Response({
-                            'msg': "Please enter a valid data", 'error': serializer.errors, 'Status': 400})
+                        return Response({'Message': "Please enter a valid data", 
+                                            'error': serializer.errors, 'Status': 'failed'}, status=400)
             else:
                 serializer = LabourCampDetailSerializer(
-                    data=request.data, context={'request': request})
+                    data=request.data)
                 if serializer.is_valid(raise_exception=True):
                     LabourCampDetails = serializer.save(location=location , user = request.user)
                     data = LabourCampDetailViewSerializer(
                         LabourCampDetails).data
-                    return Response(data, status=200)
+                    return Response({'Message': 'data saved successfully',
+                                     'status' : 'success'}, status=200)
                 else:
-                    return Response({
-                        'msg': "Please enter a valid data", 'error': serializer.errors, 'Status': 400})
+                    return Response({'Message': "Please enter a valid data",
+                                     'error': serializer.errors, 'Status': 'failed'} , status= 400)
         except Exception:
-            return Response({"msg": "Only consultant and contractor can fill this form"}, status=400)
+            return Response({"msg": "Only consultant and contractor can fill this form"}, status=401)
 
 
 class labourCampUpdateView(generics.UpdateAPIView):
@@ -220,9 +223,11 @@ class labourCampUpdateView(generics.UpdateAPIView):
             instance, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response(serializer.data)
+            return Response({'Message': 'data saved successfully',
+                                     'status' : 'success'}, status=200)
         else:
-            return Response({"msg": "Please Enter a valid data"})
+            return Response({'Message': "Please enter a valid data",
+                            'error': serializer.errors, 'Status': 'failed'} , status= 400)
 
 # ------------------------------------ Construction site View -----------------------------------------------------
 
@@ -238,14 +243,15 @@ class constructionSiteView(generics.GenericAPIView):
         lat = float(request.data['latitude'])
         long = float(request.data['longitude'])
         location = Point(long, lat, srid=4326)
-        constructionSiteID = request.data['constructionSiteID']
+        constructionSiteId = request.data['constructionSiteId']
         constructionSiteName = request.data['constructionSiteName']
         try:
             if "contractor" in request.user.groups.values_list("name", flat=True):
                 data = ConstructionSiteDetails.objects.filter(
-                    constructionSiteID=constructionSiteID, constructionSiteName=constructionSiteName).exists()
+                    constructionSiteId=constructionSiteId, constructionSiteName=constructionSiteName).exists()
                 if data == True:
-                    return Response({'message': 'already data filled for this Construction Site'}, status=400)
+                    return Response({'message': 'already data filled for this Construction Site',
+                                    'status': 'success'}, status=400)
                 else:
                     serialzier = constructionSiteSerializer(
                         data=request.data, context={'request': request})
@@ -253,9 +259,11 @@ class constructionSiteView(generics.GenericAPIView):
                         construction = serialzier.save(location=location , user = request.user)
                         data = ConstructionSiteDetailsViewSerializer(
                             construction).data
-                        return Response(data, status=200)
+                        return  Response({'Message': 'data saved successfully',
+                                     'status' : 'success'}, status=200)
                     else:
-                        return Response({'msg': 'Please Enter a valid data'})
+                        return Response({'Message': "Please enter a valid data",
+                                         'Status': 'failed'} , status= 400)
             else:
                 serialzier = constructionSiteSerializer(
                     data=request.data, context={'request': request})
@@ -263,9 +271,11 @@ class constructionSiteView(generics.GenericAPIView):
                     construction = serialzier.save(location=location , user = request.user)
                     data = ConstructionSiteDetailsViewSerializer(
                         construction).data
-                    return Response(data, status=200)
+                    return  Response({'Message': 'data saved successfully',
+                                     'status' : 'success'}, status=200)
                 else:
-                    return Response({'msg': 'Please Enter a valid data'})
+                    return Response({'Message': "Please enter a valid data",
+                                         'Status': 'failed'} , status= 400)
         except Exception:
             return Response({"msg": "Only consultant and contractor can fill this form"}, status=401)
 
@@ -281,15 +291,18 @@ class ConstructionSiteUpdateView(generics.GenericAPIView):
             instance = ConstructionSiteDetails.objects.get(
                 id=id, user=request.user.id)
         except Exception:
-            return Response({"msg": "There is no Construction site data for user %s" % (request.user.username)})
+            return Response({"Message": "There is no Construction site data for user %s" % (request.user.username),
+                            'status': 'success'} , status=200)
 
         serializer = constructionSiteSerializer(
             instance, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response(serializer.data)
+            return Response({'Message': 'data updated successfully',
+                            'status' : 'success'}, status=200)
         else:
-            return Response({"msg": "Please Enter a valid data"})
+            return Response({"Message": "Please Enter a valid data" ,
+                            'status' : 'failed'}, status= 400)
 
 
 class ConstructionSiteListView(generics.ListAPIView):
@@ -305,10 +318,11 @@ class PAPmanagmentAPI(generics.GenericAPIView):
         instance = PAP.objects.filter(packages__iexact=packages)
         if instance:
             serializer = PAPSerializer(instance, many=True)
-            return Response({'status': 200, 'data': serializer.data,
-                             'message': 'successfully'})
+            return Response({'Message': 'data updated successfully',
+                            'status' : 'success'}, status=200)
         else:
-            return Response({'status': 403, 'message': 'invalid package'})
+            return Response({'status': 'failed',
+                             'Message': 'invalid package'} , status= 400)
 
 
 class ConstructionSitemanagment(generics.GenericAPIView):
@@ -320,10 +334,10 @@ class ConstructionSitemanagment(generics.GenericAPIView):
             packages__iexact=packages)
         if instance:
             serializer = ConstructionSiteDetailsserializer(instance, many=True)
-            return Response({'status': 200, 'data': serializer.data,
-                             'message': 'successfully'})
+            return Response({'status': 'success', 'data': serializer.data,
+                             'Message': 'successfully'} , status = 200)
         else:
-            return Response({'status': 403, 'message': 'invalid package'})
+            return Response({'status': 'failed', 'Message': 'invalid package'} , status =  400)
 
 
 class LabourCampManagmentAPI(generics.GenericAPIView):
@@ -334,7 +348,7 @@ class LabourCampManagmentAPI(generics.GenericAPIView):
         instance = LabourCamp.objects.filter(packages__iexact=packages)
         if instance:
             serializer = LabourCampserializer(instance, many=True)
-            return Response({'status': 200, 'data': serializer.data,
-                             'message': 'successfully'})
+            return Response({'status': 'success', 'data': serializer.data,
+                             'Message': 'successfully'} , status=200)
         else:
-            return Response({'status': 403, 'message': 'invalid package'})
+            return Response({'status': 'failed', 'Message': 'invalid package'}, status= 400)

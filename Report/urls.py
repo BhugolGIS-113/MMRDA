@@ -62,5 +62,6 @@ urlpatterns = [
      path('package09Aligment' , package09AlignmentView.as_view() , name = 'package09Aligment '),
      path('package08Aligment' , package08AlignmentView.as_view() , name = 'package08Aligment '),
      path('MetroStation' , MetroStationView.as_view() , name = 'MetroStationView '),
+     path('ProjectAffectedTrees' , ProjectAffectedTreesView.as_view() , name = 'MetroStationView '),
     
 ]

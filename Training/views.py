@@ -1,18 +1,15 @@
 from rest_framework import generics
 from .serialzers import *
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.parsers import MultiPartParser , FormParser , FileUploadParser
+from rest_framework.parsers import MultiPartParser 
 from rest_framework.response import Response
-from django.contrib.gis.geos import Point , MultiLineString
+from django.contrib.gis.geos import Point 
 from .models import traning, photographs
 from .permission import IsConsultant
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
-from Report.models import Package54Alignment
 
 
 # Create your views here.
-
 
 class TraningView(generics.GenericAPIView):
     serializer_class = TraningSerializer
@@ -21,7 +18,7 @@ class TraningView(generics.GenericAPIView):
 
     def post(self, request):
         try:
-            serializer = TraningSerializer(data=request.data)
+            serializer = self.get_serializer(data=request.data)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return Response(serializer.data, status=200)
@@ -104,19 +101,11 @@ class occupationalHealthSafety (generics.GenericAPIView):
         location = Point(long, lat, srid=4326)
         serializer = occupationalHealthSafetySerialziers(data = request.data )
         if serializer.is_valid(raise_exception=True):
-            rehabilitation = serializer.save(location=location)
-            data = occupationalHealthSafetyViewSerializer(rehabilitation).data
+            data = serializer.save(location=location , user = request.user)
+            data = occupationalHealthSafetyViewSerializer(data).data
             return Response(data, status=200)
         else:
             return Response({"message": serializer.errors}, status=400)
-
-
-
-
-# def modify_input_for_multiple_files(images):
-#     dict = {}
-#     dict['images'] = images
-#     return dict
 
 class ContactUsView(generics.GenericAPIView):
     serializer_class = ContactusSerializezr
@@ -144,4 +133,36 @@ class ContactusListView(generics.ListAPIView):
     search_fields = ['^name' , '^email']
 
 
+class PreConstructionStageComplianceView(generics.GenericAPIView):
+    serializer_class = PreConstructionStageComplianceSerialzier
+    parser_classes = [MultiPartParser]
+    permission_classes = [IsAuthenticated]
+    
+    def post(self , request):
+        data = request.data
+        serializer= PreConstructionStageComplianceSerialzier (data = data)
+        if serializer.is_valid(raise_exception= True):
+            serializer.save(user = self.request.user)
+            return Response({'status': 'success' ,
+                            'Message': 'Data saved successfully'} , status= 200)
+        else:
+            return Response({'status': 'failed' ,
+                            'Message': 'something went Wrong please check again'} , status= 400)
+                    
 
+
+class ConstructionStageComplainceView(generics.CreateAPIView):
+    serializer_class = ConstructionStageComplainceSerializer
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser]
+
+    def post(self , request):
+        data = request.data
+        serializer= ConstructionStageComplainceSerializer(data = data)
+        if serializer.is_valid(raise_exception= True):
+            serializer.save(user = self.request.user)
+            return Response({'status': 'success' ,
+                            'Message': 'Data saved successfully'} , status= 200)
+        else:
+            return Response({'status': 'failed' ,
+                            'Message': 'something went Wrong please check again'} , status= 400)

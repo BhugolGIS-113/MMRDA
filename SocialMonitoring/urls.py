@@ -2,6 +2,9 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
+
+    
+    # path ('test' , testAPiView.as_view() , name = "testAPiView "),
     path ('labourcampdetails' , labourCampdetails.as_view() , name = "labourCampdetails "),
     path('labourCampdetailsView' , labourCampdetailsView.as_view() , name = "labourCampdetailsView"),
  

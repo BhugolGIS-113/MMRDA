@@ -7,7 +7,7 @@ from Report.models import *
 class LabourcampReportSerializer(ModelSerializer):
     class Meta:
         model = LabourCamp
-        fields =('id','location','quarter', 'packages','dateOfMonitoring', 'labourCampName', 'LabourCampID',
+        fields =('id','location','quarter', 'packages','dateOfMonitoring', 'labourCampName', 'labourCampId',
                   'isToilet', 'toiletCondition','toiletPhotograph','toiletRemarks',
                   'isDrinkingWater','drinkingWaterCondition' ,'drinkingWaterPhotographs','drinkingWaterRemarks',
                     'isDemarkationOfPathways','demarkationOfPathwaysCondition','demarkationOfPathwaysPhotographs','demarkationOfPathwaysRemark' ,
@@ -33,7 +33,7 @@ class LabourcampReportSerializer(ModelSerializer):
 class ConstructionCampReportSerializer(ModelSerializer):
     class Meta:
         model = ConstructionSiteDetails
-        fields = ('id','location','quarter', 'packages','dateOfMonitoring' ,'constructionSiteName' , 'constructionSiteID',
+        fields = ('id','location','quarter', 'packages','dateOfMonitoring' ,'constructionSiteName' , 'constructionSiteId',
                     'isDemarkationOfPathways','demarkationOfPathwaysCondition','demarkationOfPathwaysPhotographs','demarkationOfPathwaysRemark' ,
                     'isSignagesLabeling','signagesLabelingCondition' ,'signagesLabelingPhotographs','signagesLabelingRemarks',
                     'isRegularHealthCheckup','regularHealthCheckupCondition','regularHealthCheckupPhotographs','regularHealthCheckupRemarks',
@@ -113,37 +113,43 @@ class treeManagementSerializer(ModelSerializer):
 class Package54AlignmentSerializer(ModelSerializer):
     class Meta:
         model = Package54Alignment
-        fields = ('gid' ,'descriptio' , 'geom' )
+        fields = ('gid' ,'name' , 'geom' )
 
 class Package12AlignmentSerializer(ModelSerializer):
     class Meta:
         model = Package12Alignment
-        fields = ('gid' ,'descriptio' , 'geom')
+        fields = ('gid' ,'name' , 'geom')
 
 class Package11AlignmentSerializer(ModelSerializer):
     class Meta:
         model = Package11Alignment
-        fields = ('gid' ,'descriptio' , 'geom')
+        fields = ('gid' ,'name' , 'geom')
 
 
 class Package10AlignmentSerializer(ModelSerializer):
     class Meta:
         model = Package10Alignment
-        fields = ('gid' ,'descriptio' , 'geom')
+        fields = ('gid' ,'name' , 'geom')
 
 class Package09AlignmentSerializer(ModelSerializer):
     class Meta:
         model = Package09Alignment
-        fields = ('gid' ,'descriptio' , 'geom')
+        fields = ('gid' ,'name' , 'geom')
 
 
 
 class Package08AlignmentSerializer(ModelSerializer):
     class Meta:
         model = Package08Alignment
-        fields = ('gid' ,'descriptio' , 'geom')
+        fields = ('gid' ,'name' , 'geom')
 
 class MetroStationSerializer(ModelSerializer):
     class Meta:
-        model = MetroStation
-        fields = ('gid' ,'descriptio' , 'geom')
+        model = Station
+        fields = ('gid' , 'name', 'geom')
+
+
+class ProjectAffectedTreesSerializer(ModelSerializer):
+    class Meta:
+        model = ProjectAffectedTrees
+        fields = ('gid','tree_no_field' , 'common_nam' , 'botanical' ,'proposed_a','condition','survey_dat','layer','geom')

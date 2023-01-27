@@ -31,8 +31,7 @@ class labourcampDetails(models.Model):
 class PAP(Baseclass):
     user = models.ForeignKey(User, related_name='papUser',
                              on_delete=models.CASCADE, null=True)
-    PAPID = models.CharField(
-        max_length=255, blank=True, null=True, unique=True)
+    PAPID = models.CharField( max_length=255,unique=True)
     nameOfPAP = models.CharField(max_length=255, blank=True, null=True)
     addressLine1 = models.TextField(max_length=255, blank=True, null=True)
     streetName = models.CharField(max_length=255, blank=True, null=True)
@@ -125,12 +124,11 @@ class Rehabilitation(Baseclass):
 
 
 # Labour  Camp Model ----------------------------------------------
-
 class LabourCamp(Baseclass):
     user = models.ForeignKey(User, related_name='LaboursCamp_User',
                              on_delete=models.CASCADE, blank=True, null=True)
-    LabourCampID = models.CharField(max_length=255, null=True, blank=True)
-    labourCampName = models.CharField(max_length=255,  null=True, blank=True)
+    labourCampId = models.CharField(max_length=255  , blank = True , null = True )
+    labourCampName = models.CharField(max_length=255 , blank = True , null = True)
 
     isToilet = models.BooleanField(max_length=255, blank=True)
     toiletCondition = models.CharField(max_length=255, blank=True, null=True)
@@ -233,13 +231,14 @@ class LabourCamp(Baseclass):
     remarks = models.TextField(max_length=255, blank=True, null=True)
 
 
+
 class ConstructionSiteDetails(Baseclass):
     user = models.ForeignKey(User, related_name='constructionsite_user',
                              on_delete=models.CASCADE, blank=True, null=True)
 
     constructionSiteName = models.CharField(
         max_length=255,   blank=True, null=True)
-    constructionSiteID = models.CharField(
+    constructionSiteId = models.CharField(
         max_length=255,  blank=True, null=True)
 
     isDemarkationOfPathways = models.BooleanField(blank=True)

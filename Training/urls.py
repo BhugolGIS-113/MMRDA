@@ -14,6 +14,9 @@ urlpatterns = [
     path('occupational' , occupationalHealthSafety.as_view() , name = 'occupational Health & Safety') ,
     path('contactus' , ContactUsView.as_view() , name = 'occupational update'),
     path('contactussearch' , ContactusListView.as_view() , name = 'occupational update'),
-   
+    
+    path(' PreConstructionStageCompliance' , PreConstructionStageComplianceView.as_view() , name = ' PreConstructionStageCompliance'),
+    path(' ConstructionStageComplaince' , ConstructionStageComplainceView.as_view() , name = ' PreConstructionStageCompliance'),
+
 
 ]

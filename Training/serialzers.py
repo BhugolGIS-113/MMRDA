@@ -2,7 +2,7 @@
 from rest_framework import serializers
 from .models import *
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
-from Report.models import Package54Alignment
+# from Report.models import Package54Alignment
 class TraningSerializer(serializers.ModelSerializer):
     class Meta:
         model = traning
@@ -36,7 +36,7 @@ class occupationalHealthSafetySerialziers(serializers.ModelSerializer):
     latitude = serializers.CharField(max_length= 255, required = False) # latitude
     class Meta:
         model = occupationalHealthSafety
-        fields = ['dateOfMonitoring' ,'packages', 'quarter','longitude', 'latitude' ,
+        fields = [ 'user', 'dateOfMonitoring' ,'packages', 'quarter','longitude', 'latitude' ,
         'joiningMedicalCheckup' , 'ppeKit' ,'trainingToWorkers','houseKeeping' ,
         'powerSupplySystem' ,'assemblyArea' ,'ambulanceArrangement' ,'toiletFacility',
         'safeMomentPassage' ,'materialKeepingPractice','accidentalCheck','safetyGearStatus',
@@ -92,7 +92,20 @@ class ContactusViewSerialzier(GeoFeatureModelSerializer):
         geo_field = 'location'
 
 
-class Package54AlignmentSerializer(serializers.ModelSerializer):
+class PreConstructionStageComplianceSerialzier(serializers.ModelSerializer):
     class Meta:
-        model = Package54Alignment
-        fields = ('gid' ,'descriptio' , 'geom' )
+        model =  PreConstructionStage
+        fields = ('ShiftingofUtilities' , 'ResponsibilityOfShiftingofUtilities','CurrentStatusOfShiftingofUtilities',
+                    'PermissionForFellingOfTrees', 'ResponsibilityOfPermissionForFellingOfTrees','CurrentStatusPermissionForFellingOfTrees',
+                   'CRZClearance','ResponsibilityOfCRZClearance' ,  'CurrentStatusCRZClearance' ,
+                   'ForestClearance' , 'ResponsibilityOfForestClearance', 'CurrentStatusOfForestClearance')
+
+
+class ConstructionStageComplainceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConstructionStage 
+        # fields = '__all__'
+        exclude = ('RulesOfConsenttToEstablishOoperate', 'RulesOfSandMiningFromRiverbed',
+        'RulesForGroundWaterWithdrawal' , 'RulesForCollectionDisposalManagement', 'RulesForSolidWaste',
+       'RulesForDisposalOfBituminousAndOtherWaste', 'RulesForDisposalOfsewagefromLabourCamps' , 'RulesForPollutionUnderControl',
+       'RulesForRoofTopRainWaterHarvesting',)

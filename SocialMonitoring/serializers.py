@@ -1,9 +1,8 @@
 from rest_framework import serializers
-from .models import PAP, ConstructionSiteDetails, LabourCamp ,Rehabilitation , labourcampDetails
+from .models import *
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 from rest_framework.fields import CurrentUserDefault
-
-
+from django.core.validators import MinLengthValidator, MaxLengthValidator
 
 
 
@@ -115,16 +114,19 @@ class RehabilatedPAPIDSerializer(serializers.ModelSerializer):
         model = PAP
         fields = ('id', 'PAPID' , 'nameOfPAP' )
 
-# -------------------------------- Labour camp details Serialzier --------------------------------         
-
+# -------------------------------- Labour camp details Serialzier --------------------------------      
 class LabourCampDetailSerializer(serializers.ModelSerializer):
     # user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    longitude = serializers.CharField(max_length=10, required=False)
-    latitude = serializers.CharField(max_length=10, required=False)
+    dateOfMonitoring = serializers.DateField(required=True)
+    packages = serializers.CharField(validators=[MinLengthValidator(3)] , required=True)
+    longitude = serializers.CharField(max_length=10, required=True)
+    latitude = serializers.CharField(max_length=10, required=True)
+    labourCampName = serializers.CharField(validators=[MinLengthValidator(3)] , required=True)
+    labourCampId = serializers.CharField(validators=[MinLengthValidator(3)] , required=True)
     
     class Meta:
         model = LabourCamp
-        fields = ('quarter', 'packages','dateOfMonitoring','longitude', 'latitude', 'labourCampName', 'LabourCampID',
+        fields = ('quarter', 'packages','dateOfMonitoring','longitude', 'latitude', 'labourCampName', 'labourCampId',
                   'isToilet', 'toiletCondition','toiletPhotograph','toiletRemarks',
                   'isDrinkingWater','drinkingWaterCondition' ,'drinkingWaterPhotographs','drinkingWaterRemarks',
                     'isDemarkationOfPathways','demarkationOfPathwaysCondition','demarkationOfPathwaysPhotographs','demarkationOfPathwaysRemark' ,
@@ -139,32 +141,18 @@ class LabourCampDetailSerializer(serializers.ModelSerializer):
                     'transportationFacility' ,'transportationFacilityCondition', 'modeOfTransportation','distanceFromSite',
                     'photographs' ,'documents','remarks')
 
+    
     def create(self,data):
         data.pop('longitude')
         data.pop('latitude')
         return LabourCamp.objects.create(**data)
+
         
-    # def validate(self , data):
-    #     if data['quarter']=="" or data['quarter']==None:
-    #         raise serializers.ValidationError("quarter cannot be empty!!")
-    #     if data['packages'] == "" or data['packages'] == None:
-    #         raise serializers.ValidationError('package cannot be empty!!')
-    #     if data['longitude'] == "" or data['longitude'] == None:
-    #         raise serializers.ValidationError('longitude cannot be empty!!')
-    #     if data['latitude'] == "" or data['latitude'] == None:
-    #         raise serializers.ValidationError('latitude cannot be empty!!')
-    #     if data['isToilet'] == "" or data['isToilet'] == None:
-    #         raise serializers.ValidationError('toilets cannot be empty!!')
-    #     if data['labourCampName'] == "" or data['labourCampName'] == None:
-    #         raise serializers.ValidationError('labourcamp Title cannot be empty!!')
-    #     if data['LabourCampID'] == "" or data['LabourCampID'] == None:
-    #         raise serializers.ValidationError('LabourCamp ID cannot be empty!!')
-    #     return data
 
 class LabourCampUpdateSerialzier(serializers.ModelSerializer):
     class Meta:
         model = LabourCamp
-        fields = ('LabourCampID' , 'labourCampName','isToilet','toiletCondition','toiletPhotograph','toiletRemarks',
+        fields = ('labourCampId' , 'labourCampName','isToilet','toiletCondition','toiletPhotograph','toiletRemarks',
                  'isDrinkingWater','drinkingWaterCondition' , 'drinkingWaterPhotographs', 'drinkingWaterRemarks',
                  'isDemarkationOfPathways','demarkationOfPathwaysCondition','demarkationOfPathwaysPhotographs' ,'demarkationOfPathwaysRemark',
                  'isSignagesLabeling','signagesLabelingPhotographs' ,'signagesLabelingRemarks' ,
@@ -185,12 +173,17 @@ class LabourCampUpdateSerialzier(serializers.ModelSerializer):
 # ----------------------------- Construction site serializer -----------------------------------
 class constructionSiteSerializer(serializers.ModelSerializer):
     # user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    longitude = serializers.CharField(max_length=10, required=False)
-    latitude = serializers.CharField(max_length=10, required=False)
+    quarter = serializers.CharField(validators=[MinLengthValidator(3)] , required=True)
+    dateOfMonitoring = serializers.DateField(required=True)
+    packages = serializers.CharField(validators=[MinLengthValidator(3)] , required=True)
+    longitude = serializers.CharField(max_length=10, required=True)
+    latitude = serializers.CharField(max_length=10, required=True)
+    constructionSiteId = serializers.CharField(max_length = 255 , required = True)
+    constructionSiteName = serializers.CharField(max_length = 255 , required = True)
 
     class Meta:
         model = ConstructionSiteDetails
-        fields = ('quarter', 'packages','dateOfMonitoring' ,'longitude', 'latitude', 'constructionSiteName' , 'constructionSiteID',
+        fields = ('quarter', 'packages','dateOfMonitoring' ,'longitude', 'latitude', 'constructionSiteName' , 'constructionSiteId',
                  'isDemarkationOfPathways','demarkationOfPathwaysCondition','demarkationOfPathwaysPhotographs','demarkationOfPathwaysRemark' ,
                 'isSignagesLabeling','signagesLabelingCondition' ,'signagesLabelingPhotographs','signagesLabelingRemarks',
                 'isRegularHealthCheckup','regularHealthCheckupCondition','regularHealthCheckupPhotographs','regularHealthCheckupRemarks',
@@ -205,26 +198,6 @@ class constructionSiteSerializer(serializers.ModelSerializer):
         data.pop('latitude', None)
         return ConstructionSiteDetails.objects.create(**data)
     
-    def validate(self,data):
-        if data['quarter']=="" or data['quarter']==None:
-            raise serializers.ValidationError("quarter cannot be empty!!")
-        if data['packages'] == "" or data['packages'] == None:
-            raise serializers.ValidationError('package cannot be empty!!')
-        if data['longitude'] == "" or data['longitude'] == None:
-            raise serializers.ValidationError('longitude cannot be empty!!')
-        if data['latitude'] == "" or data['latitude'] == None:
-            raise serializers.ValidationError('latitude cannot be empty!!')
-        if data['constructionSiteName'] == "" or data['constructionSiteName'] == None:
-            raise serializers.ValidationError('construction Site Name cannot be empty!!')
-        if data['constructionSiteID'] == "" or data['constructionSiteID'] == None:  
-            raise serializers.ValidationError('construction Site ID cannot be empty!!')
-   
-        return data
-
-
-
-
-
 
 
 

@@ -1,4 +1,4 @@
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView , ListAPIView
 from .serializers import *
 from EnvMonitoring.models import *
 from Training.models import *
@@ -10,7 +10,7 @@ from rest_framework import generics
 
 # Create your views here.
 
-class PAPCategoryDashboardView(GenericAPIView):
+class PAPCategoryDashboardView(ListAPIView):
     serializer_class = PAPDashboardSerializer
     queryset = PAP.objects.all()
 
@@ -106,6 +106,7 @@ class LabourCampFacilitiesDashboardView(GenericAPIView):
                             'Message': 'Something went wrong'},status=400)
 
 class CashCompensationTypeCharView(GenericAPIView):
+    serializer_class = RehabilationDashboardSerializer
 
     def get(self, request):
         try:

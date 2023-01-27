@@ -6,8 +6,8 @@ from rest_framework import status
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
-from Report.models import Package54Alignment , Package12Alignment
-from .paginations import LimitsetPagination
+# from Report.models import Package54Alignment , Package12Alignment
+
 
 ''' --------------------------Labour Camp Report View----------------------------'''
 
@@ -573,11 +573,11 @@ class package08AlignmentView(generics.GenericAPIView):
 
 
 class MetroStationView(generics.GenericAPIView):
-    serializer_class = MetroStationSerializer  
+    serializer_class = MetroStationSerializer   
 
     def get(self , request):
         try:
-            metroStation = MetroStation.objects.all()
+            metroStation = Station.objects.all()
             serializer = MetroStationSerializer(metroStation , many = True).data
             return Response({'status': 'success',
                             'message' : 'data was successfully fetched',
@@ -587,3 +587,8 @@ class MetroStationView(generics.GenericAPIView):
             return Response({'status' : 'failed',
                             'message' : 'Something went wrong !! Please try again'}, status = 400)
 
+
+
+class ProjectAffectedTreesView(generics.ListAPIView):
+    serializer_class = ProjectAffectedTreesSerializer
+    queryset = ProjectAffectedTrees.objects.all()

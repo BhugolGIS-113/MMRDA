@@ -2,149 +2,82 @@
 from django.contrib.gis.db import models
 
 
-class MetroStation(models.Model):
+# class MetroStation(models.Model):
+class Station(models.Model):
     gid = models.AutoField(primary_key=True)
     name = models.CharField(max_length=254, blank=True, null=True)
-    descriptio = models.CharField(max_length=254, blank=True, null=True)
-    timestamp = models.CharField(max_length=24, blank=True, null=True)
-    begin = models.CharField(max_length=24, blank=True, null=True)
-    end = models.CharField(max_length=24, blank=True, null=True)
-    altitudemo = models.CharField(max_length=254, blank=True, null=True)
-    tessellate = models.FloatField(blank=True, null=True)
-    extrude = models.FloatField(blank=True, null=True)
-    visibility = models.FloatField(blank=True, null=True)
-    draworder = models.FloatField(blank=True, null=True)
     icon = models.CharField(max_length=254, blank=True, null=True)
-    layer = models.CharField(max_length=254, blank=True, null=True)
-    path = models.CharField(max_length=254, blank=True, null=True)
-    geom = models.MultiLineStringField(srid=0, dim=4, blank=True, null=True)
+    geom = models.PointField(dim=4, blank=True, null=True)
 
     class Meta:
         managed = False
-        db_table = 'metro station'
-        app_label = 'Training.apps.TrainingConfig' 
+        db_table = 'station'
 
 
 class Package08Alignment(models.Model):
     gid = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=254, blank=True, null=True)
-    descriptio = models.CharField(max_length=254, blank=True, null=True)
-    timestamp = models.CharField(max_length=24, blank=True, null=True)
-    begin = models.CharField(max_length=24, blank=True, null=True)
-    end = models.CharField(max_length=24, blank=True, null=True)
-    altitudemo = models.CharField(max_length=254, blank=True, null=True)
-    tessellate = models.FloatField(blank=True, null=True)
-    extrude = models.FloatField(blank=True, null=True)
-    visibility = models.FloatField(blank=True, null=True)
-    draworder = models.FloatField(blank=True, null=True)
-    icon = models.CharField(max_length=254, blank=True, null=True)
-    geom = models.MultiLineStringField(dim=4, blank=True, null=True)
+    id = models.FloatField(blank=True, null=True)
+    name = models.CharField(max_length=100, blank=True, null=True)
+    geom = models.MultiLineStringField(srid=32643, dim=4, blank=True, null=True)
 
     class Meta:
         managed = False
-        db_table = 'package 08 alignment'
-        
+        db_table = 'Package08Alignment'
 
 
 class Package09Alignment(models.Model):
     gid = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=254, blank=True, null=True)
-    descriptio = models.CharField(max_length=254, blank=True, null=True)
-    timestamp = models.CharField(max_length=24, blank=True, null=True)
-    begin = models.CharField(max_length=24, blank=True, null=True)
-    end = models.CharField(max_length=24, blank=True, null=True)
-    altitudemo = models.CharField(max_length=254, blank=True, null=True)
-    tessellate = models.FloatField(blank=True, null=True)
-    extrude = models.FloatField(blank=True, null=True)
-    visibility = models.FloatField(blank=True, null=True)
-    draworder = models.FloatField(blank=True, null=True)
-    icon = models.CharField(max_length=254, blank=True, null=True)
-    geom = models.MultiLineStringField(dim=4, blank=True, null=True)
+    id = models.FloatField(blank=True, null=True)
+    name = models.CharField(max_length=10, blank=True, null=True)
+    geom = models.MultiLineStringField(srid=32643, dim=4, blank=True, null=True)
 
     class Meta:
         managed = False
-        db_table = 'package 09 alignment'
+        db_table = 'Package09Alignment'
 
 
 class Package10Alignment(models.Model):
     gid = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=254, blank=True, null=True)
-    descriptio = models.CharField(max_length=254, blank=True, null=True)
-    timestamp = models.CharField(max_length=24, blank=True, null=True)
-    begin = models.CharField(max_length=24, blank=True, null=True)
-    end = models.CharField(max_length=24, blank=True, null=True)
-    altitudemo = models.CharField(max_length=254, blank=True, null=True)
-    tessellate = models.FloatField(blank=True, null=True)
-    extrude = models.FloatField(blank=True, null=True)
-    visibility = models.FloatField(blank=True, null=True)
-    draworder = models.FloatField(blank=True, null=True)
-    icon = models.CharField(max_length=254, blank=True, null=True)
-    geom = models.MultiLineStringField(dim=4, blank=True, null=True)
+    id = models.FloatField(blank=True, null=True)
+    name = models.CharField(max_length=10, blank=True, null=True)
+    geom = models.MultiLineStringField(srid=32643, dim=4, blank=True, null=True)
 
     class Meta:
         managed = False
-        db_table = 'package 10 alignment'
+        db_table = 'Package10Alignment'
 
 
 class Package11Alignment(models.Model):
     gid = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=254, blank=True, null=True)
-    descriptio = models.CharField(max_length=254, blank=True, null=True)
-    timestamp = models.CharField(max_length=24, blank=True, null=True)
-    begin = models.CharField(max_length=24, blank=True, null=True)
-    end = models.CharField(max_length=24, blank=True, null=True)
-    altitudemo = models.CharField(max_length=254, blank=True, null=True)
-    tessellate = models.FloatField(blank=True, null=True)
-    extrude = models.FloatField(blank=True, null=True)
-    visibility = models.FloatField(blank=True, null=True)
-    draworder = models.FloatField(blank=True, null=True)
-    icon = models.CharField(max_length=254, blank=True, null=True)
-    geom = models.MultiLineStringField(dim=4, blank=True, null=True)
+    id = models.FloatField(blank=True, null=True)
+    name = models.CharField(max_length=100, blank=True, null=True)
+    geom = models.MultiLineStringField(srid=32643, dim=4, blank=True, null=True)
 
     class Meta:
         managed = False
-        db_table = 'package 11 alignment'
+        db_table = 'Package11Alignment'
 
 
 class Package12Alignment(models.Model):
     gid = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=254, blank=True, null=True)
-    descriptio = models.CharField(max_length=254, blank=True, null=True)
-    timestamp = models.CharField(max_length=24, blank=True, null=True)
-    begin = models.CharField(max_length=24, blank=True, null=True)
-    end = models.CharField(max_length=24, blank=True, null=True)
-    altitudemo = models.CharField(max_length=254, blank=True, null=True)
-    tessellate = models.FloatField(blank=True, null=True)
-    extrude = models.FloatField(blank=True, null=True)
-    visibility = models.FloatField(blank=True, null=True)
-    draworder = models.FloatField(blank=True, null=True)
-    icon = models.CharField(max_length=254, blank=True, null=True)
-    geom = models.MultiLineStringField(dim=4, blank=True, null=True)
+    id = models.FloatField(blank=True, null=True)
+    name = models.CharField(max_length=100, blank=True, null=True)
+    geom = models.MultiLineStringField(srid=32643, dim=4, blank=True, null=True)
 
     class Meta:
         managed = False
-        db_table = 'package 12 alignment'
+        db_table = 'Package12Alignment'
 
 
 class Package54Alignment(models.Model):
     gid = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=254, blank=True, null=True)
-    descriptio = models.CharField(max_length=254, blank=True, null=True)
-    timestamp = models.CharField(max_length=24, blank=True, null=True)
-    begin = models.CharField(max_length=24, blank=True, null=True)
-    end = models.CharField(max_length=24, blank=True, null=True)
-    altitudemo = models.CharField(max_length=254, blank=True, null=True)
-    tessellate = models.FloatField(blank=True, null=True)
-    extrude = models.FloatField(blank=True, null=True)
-    visibility = models.FloatField(blank=True, null=True)
-    draworder = models.FloatField(blank=True, null=True)
-    icon = models.CharField(max_length=254, blank=True, null=True)
-    geom = models.MultiLineStringField(dim=4, blank=True, null=True)
+    id = models.FloatField(blank=True, null=True)
+    name = models.CharField(max_length=100, blank=True, null=True)
+    geom = models.MultiLineStringField(srid=32643, dim=4, blank=True, null=True)
 
     class Meta:
         managed = False
-        db_table = 'package 54 alignment'
-
+        db_table = 'Package54Alignment'
 
 class ProjectAffectedTrees(models.Model):
     gid = models.AutoField(primary_key=True)

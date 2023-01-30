@@ -3,11 +3,12 @@ from SocialMonitoring.models import *
 from EnvMonitoring.models import *
 from rest_framework.validators import ValidationError
 from Report.models import *
+from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
-class LabourcampReportSerializer(ModelSerializer):
+class LabourcampReportSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = LabourCamp
-        fields =('id','location','quarter', 'packages','dateOfMonitoring', 'labourCampName', 'labourCampId',
+        fields =('id','quarter', 'packages','dateOfMonitoring', 'labourCampName', 'labourCampId',
                   'isToilet', 'toiletCondition','toiletPhotograph','toiletRemarks',
                   'isDrinkingWater','drinkingWaterCondition' ,'drinkingWaterPhotographs','drinkingWaterRemarks',
                     'isDemarkationOfPathways','demarkationOfPathwaysCondition','demarkationOfPathwaysPhotographs','demarkationOfPathwaysRemark' ,
@@ -21,6 +22,7 @@ class LabourcampReportSerializer(ModelSerializer):
                       'isFirstAidKit','firstAidKitCondition' ,'firstAidKitPhotographs','firstAidKitRemarks',
                     'transportationFacility' ,'transportationFacilityCondition', 'modeOfTransportation','distanceFromSite',
                     'photographs' ,'documents','remarks')
+        geo_field= ('location')
 
     def validate(self, data):
         if data['packages'] == '' or data['packages'] == None:
@@ -30,10 +32,10 @@ class LabourcampReportSerializer(ModelSerializer):
         return data
 
 
-class ConstructionCampReportSerializer(ModelSerializer):
+class ConstructionCampReportSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = ConstructionSiteDetails
-        fields = ('id','location','quarter', 'packages','dateOfMonitoring' ,'constructionSiteName' , 'constructionSiteId',
+        fields = ('id','quarter', 'packages','dateOfMonitoring' ,'constructionSiteName' , 'constructionSiteId',
                     'isDemarkationOfPathways','demarkationOfPathwaysCondition','demarkationOfPathwaysPhotographs','demarkationOfPathwaysRemark' ,
                     'isSignagesLabeling','signagesLabelingCondition' ,'signagesLabelingPhotographs','signagesLabelingRemarks',
                     'isRegularHealthCheckup','regularHealthCheckupCondition','regularHealthCheckupPhotographs','regularHealthCheckupRemarks',
@@ -42,114 +44,130 @@ class ConstructionCampReportSerializer(ModelSerializer):
                     'isDrinkingWater','drinkingWaterCondition' ,'drinkingWaterPhotographs','drinkingWaterRemarks',
                         'isToilet', 'toiletCondition','toiletPhotograph','toiletRemarks',
                         'genralphotographs','documents','remarks')
+        geo_field= ('location')
 
                     
 
-class PAPReportSerializer(ModelSerializer):
+class PAPReportSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = PAP
-        fields = ('id','quarter', 'packages', 'location','dateOfMonitoring','dateOfIdentification','PAPID','nameOfPAP', 
+        fields = ('id','quarter', 'packages','dateOfMonitoring','dateOfIdentification','PAPID','nameOfPAP', 
                   'addressLine1','streetName','pincode','eligibility', 'categoryOfPap', 
                   'areaOfAsset','typeOfAsset','legalStatus','legalDocuments',
                    'actionTaken', 'notAgreedReason','remarks' )
+        geo_field= ('location')
 
-
-class RehabilitationReportSerializer(ModelSerializer):
+class RehabilitationReportSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = Rehabilitation
-        fields =  ('id','location','ID','dateOfRehabilitation' ,'PAPID', 'PAPName' ,'cashCompensation', 'compensationStatus',
+        fields =  ('id','ID','dateOfRehabilitation' ,'PAPID', 'PAPName' ,'cashCompensation', 'compensationStatus',
                    'typeOfCompensation', 'otherCompensationType' ,'addressLine1','streetName','pincode',
                    'isShiftingAllowance','shiftingAllowanceAmount','isLivelihoodSupport', 'livelihoodSupportAmount','livelihoodSupportCondition',
                    'livelihoodSupportPhotograph','livelihoodSupportRemarks','isTraining','trainingCondition',
                    'trainingPhotograph' ,'trainingRemarks' , 'typeOfTenaments'  ,'areaOfTenament' , 'tenamentsPhotograph',
                     'isRelocationAllowance' ,'RelocationAllowanceAmount' ,'isfinancialSupport',
                    'financialSupportAmount','isCommunityEngagement','isEngagementType', 'photographs' , 'documents','remarks')
-
+        geo_field= ('location')
 
         
 
 '''----------------------- Env Monitoring Report Serilaizer------------------------------'''
 
-class AirReportSerializer(ModelSerializer):
+class AirReportSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = Air
-        fields =('id','quarter','packages','month','location','dateOfMonitoring','PM10','standardPM10','SO2',
+        fields =('id','quarter','packages','month','dateOfMonitoring','PM10','standardPM10','SO2',
                    'standardSO2','O3','standardO3','NOx', 'standardNOx','AQI' , 'Remarks')
+        geo_field= ('location')
 
-
-class NoiseReportSerializer(ModelSerializer):
+class NoiseReportSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = Noise
         fields = ('id','location' ,'quarter','month','packages','dateOfMonitoringThree' ,'noiseLevel' , 'monitoringPeriod', )
+        geo_field= ('location')
 
-class waterReportSerializer(ModelSerializer):
+class waterReportSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = water
-        fields =('id','location','quarter','packages','month', 'dateOfMonitoringTwo','qualityOfWater' , 'sourceOfWater' ,'waterDisposal')
+        fields =('id','quarter','packages','month', 'dateOfMonitoringTwo','qualityOfWater' , 'sourceOfWater' ,'waterDisposal')
+        geo_field= ('location')
 
 
-class wasteTreatmentsSerializer(ModelSerializer):
+class wasteTreatmentsSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = WasteTreatments
-        fields = ('id','location','quarter','month','packages','dateOfMonitoring' , 'wastetype' ,'quantity',
+        fields = ('id','quarter','month','packages','dateOfMonitoring' , 'wastetype' ,'quantity',
                     'wastehandling' , 'wasteHandlingLocation', 'photographs' , 'documents','remarks')
+        geo_field= ('location')
 
 
-class materialManagementSerializer(ModelSerializer):
+class materialManagementSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = MaterialManegmanet
-        fields = ('id','quarter','month','packages','location','dateOfMonitoring',
+        fields = ('id','quarter','month','packages','dateOfMonitoring',
          'typeOfMaterial','source','sourceOfQuarry','materialStorageType','storageLocation',
          'materialstorageCondition','materialstoragePhotograph','approvals' ,'photographs',
           'documents','remarks')
+        geo_field= ('location')
 
 
-class treeManagementSerializer(ModelSerializer):
+class treeManagementSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = ExistingTreeManagment
-        fields = ('id','quarter','month','dateOfMonitoring','packages','location','treeID','commanName' ,'botanicalName',
+        fields = ('id','quarter','month','dateOfMonitoring','packages','treeID','commanName' ,'botanicalName',
                     'condition', 'noOfTreeCut','actionTaken', 'photographs', 'documents','remarks')
+        geo_field= ('location')
 
-class Package54AlignmentSerializer(ModelSerializer):
+class Package54AlignmentSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = Package54Alignment
-        fields = ('gid' ,'name' , 'geom' )
+        fields = ('gid' ,'name' )
+        geo_field= ('geom')
 
-class Package12AlignmentSerializer(ModelSerializer):
+class Package12AlignmentSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = Package12Alignment
-        fields = ('gid' ,'name' , 'geom')
+        fields = ('gid' ,'name')
+        geo_field= ('geom')
 
-class Package11AlignmentSerializer(ModelSerializer):
+class Package11AlignmentSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = Package11Alignment
-        fields = ('gid' ,'name' , 'geom')
+        fields = ('gid' ,'name' )
+        geo_field= ('geom')
 
 
-class Package10AlignmentSerializer(ModelSerializer):
+class Package10AlignmentSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = Package10Alignment
-        fields = ('gid' ,'name' , 'geom')
+        fields = ('gid' ,'name' )
+        geo_field= ('geom')
 
-class Package09AlignmentSerializer(ModelSerializer):
+
+class Package09AlignmentSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = Package09Alignment
-        fields = ('gid' ,'name' , 'geom')
+        fields = ('gid' ,'name')
+        geo_field= ('geom')
 
 
 
-class Package08AlignmentSerializer(ModelSerializer):
+class Package08AlignmentSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = Package08Alignment
-        fields = ('gid' ,'name' , 'geom')
+        fields = ('gid' ,'name')
+        geo_field= ('geom')
 
-class MetroStationSerializer(ModelSerializer):
+
+class MetroStationSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = Station
-        fields = ('gid' , 'name', 'geom')
+        fields = ('gid' , 'name')
+        geo_field= ('geom')
 
 
-class ProjectAffectedTreesSerializer(ModelSerializer):
+class ProjectAffectedTreesSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = ProjectAffectedTrees
-        fields = ('gid','tree_no_field' , 'common_nam' , 'botanical' ,'proposed_a','condition','survey_dat','layer','geom')
+        fields = ('gid','tree_no_field' , 'common_nam' , 'botanical' ,'proposed_a','condition','survey_dat','layer')
+        geo_field= ('geom')

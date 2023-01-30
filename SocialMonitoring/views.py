@@ -86,7 +86,6 @@ class papupdateView(generics.UpdateAPIView):
     renderer_classes = [ErrorRenderer]
     parser_classes = [MultiPartParser]
     permission_classes = [IsAuthenticated, IsRNR]
-    queryset = PAP.objects.all()
 
     def update(self, request, id,  **kwargs):
         try:

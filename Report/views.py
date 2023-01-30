@@ -589,6 +589,17 @@ class MetroStationView(generics.GenericAPIView):
 
 
 
-class ProjectAffectedTreesView(generics.ListAPIView):
+class ProjectAffectedTreesView(generics.GenericAPIView):
     serializer_class = ProjectAffectedTreesSerializer
-    queryset = ProjectAffectedTrees.objects.all()
+    
+    def get(self , request):
+        try:
+            AffectedTrees = ProjectAffectedTrees.objects.all()
+            serializer = ProjectAffectedTreesSerializer(AffectedTrees , many = True).data
+            return Response({'status': 'success',
+                            'message' : 'data was successfully fetched',
+                            'data' : serializer},status= 200)
+        except :
+            return Response({'status' : 'failed',
+                            'message' : 'Something went wrong !! Please try again'}, status = 400)
+

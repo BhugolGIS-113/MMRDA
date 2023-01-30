@@ -48,8 +48,6 @@ class WaterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('longitude cannot be empty!!')
         if data['latitude'] == "" or data['latitude'] == None:
             raise serializers.ValidationError('latitude cannot be empty!!')
-        # if data['water_id'] == "" or data['water_id'] == None:
-        #     raise serializers.ValidationError('water_id cannot be empty!!')
         if data['qualityOfWater'] == "" or data['qualityOfWater'] == None:
             raise serializers.ValidationError('quality_of_water cannot be empty!!')
         if data['sourceOfWater'] == "" or data['sourceOfWater'] == None:
@@ -113,8 +111,6 @@ class TreeManagementSerailizer(serializers.ModelSerializer):
     def create(self,data):
         data.pop('latitude')
         data.pop('longitude')
-        # data.pop('Clongitude')
-        # data.pop('Clatitude')
         return ExistingTreeManagment.objects.create(**data)
 
 class TreeManagmentviewserializer(GeoFeatureModelSerializer):

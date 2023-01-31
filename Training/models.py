@@ -92,8 +92,8 @@ class Contactus(models.Model):
 
 
 class ContactusImage(models.Model):
-    contactus = models.ForeignKey(
-        Contactus, on_delete=models.CASCADE, related_name='images')
+    # contactus = models.ForeignKey(
+    #     Contactus, on_delete=models.CASCADE, related_name='images')
     images = models.ImageField(
         upload_to='contactus/images', max_length=255, blank=True, null=True)
 

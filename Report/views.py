@@ -603,3 +603,8 @@ class ProjectAffectedTreesView(generics.GenericAPIView):
             return Response({'status' : 'failed',
                             'message' : 'Something went wrong !! Please try again'}, status = 400)
 
+
+# from Training.models import ContactusImage
+# class compresserImage(generics.CreateAPIView):
+#     serializer_class = GisSerializer
+#     queryset = ContactusImage.objects.all()

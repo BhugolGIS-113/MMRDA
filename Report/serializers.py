@@ -169,5 +169,34 @@ class MetroStationSerializer(GeoFeatureModelSerializer):
 class ProjectAffectedTreesSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = ProjectAffectedTrees
-        fields = ('gid','tree_no_field' , 'common_nam' , 'botanical' ,'proposed_a','condition','survey_dat','layer')
+        fields = ('gid','tree_no_field' , 'common_nam' , 'botanical' ,'proposed_a','condition','survey_dat')
         geo_field= ('geom')
+
+
+# import io
+# from PIL import Image
+# from rest_framework import serializers
+# from django.core.files.base import ContentFile
+# import base64
+# class CompressedImageField(serializers.ImageField):
+#     def to_internal_value(self, data):
+#         print("kjsdf ")
+#         if isinstance(data, str) and data.startswith('data:image'):
+#             # Base64 encoded image - decode
+#             format, imgstr = data.split(';base64,')
+#             ext = format.split('/')[-1]
+#             data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
+
+#         # Compress the image
+#         image = Image.open(data)
+#         io_stream = io.BytesIO()
+#         image.save(io_stream, format='JPEG', quality=60)
+#         return ContentFile(io_stream.getvalue(), name=data.name)
+
+# from Training.models import ContactusImage
+# class GisSerializer(serializers.ModelSerializer):
+#     # image = CompressedImageField()
+
+#     model = ContactusImage
+#     fields = ('image',)
+

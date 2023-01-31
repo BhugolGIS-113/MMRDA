@@ -2,7 +2,6 @@
 from rest_framework import serializers
 from .models import *
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
-# from Report.models import Package54Alignment
 class TraningSerializer(serializers.ModelSerializer):
     class Meta:
         model = traning
@@ -36,7 +35,7 @@ class occupationalHealthSafetySerialziers(serializers.ModelSerializer):
     latitude = serializers.CharField(max_length= 255, required = False) # latitude
     class Meta:
         model = occupationalHealthSafety
-        fields = [ 'user', 'dateOfMonitoring' ,'packages', 'quarter','longitude', 'latitude' ,
+        fields = ['dateOfMonitoring' ,'packages', 'quarter','longitude', 'latitude' ,
         'joiningMedicalCheckup' , 'ppeKit' ,'trainingToWorkers','houseKeeping' ,
         'powerSupplySystem' ,'assemblyArea' ,'ambulanceArrangement' ,'toiletFacility',
         'safeMomentPassage' ,'materialKeepingPractice','accidentalCheck','safetyGearStatus',

@@ -94,6 +94,7 @@ class updatephotographview(generics.UpdateAPIView):
 class occupationalHealthSafety (generics.GenericAPIView):
     serializer_class = occupationalHealthSafetySerialziers
     parser_classes = [MultiPartParser]
+    permission_classes = [IsAuthenticated]
     
     def post(self, request):
         lat = float(request.data['latitude'])

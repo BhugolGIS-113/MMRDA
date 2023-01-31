@@ -64,4 +64,7 @@ urlpatterns = [
      path('MetroStation' , MetroStationView.as_view() , name = 'MetroStationView '),
      path('ProjectAffectedTrees' , ProjectAffectedTreesView.as_view() , name = 'MetroStationView '),
     
+
+     # path('compresserImage' , compresserImage.as_view() , name = 'MetroStationView '),
+
 ]

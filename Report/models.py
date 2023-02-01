@@ -18,7 +18,7 @@ class Package08Alignment(models.Model):
     gid = models.AutoField(primary_key=True)
     id = models.FloatField(blank=True, null=True)
     name = models.CharField(max_length=100, blank=True, null=True)
-    geom = models.MultiLineStringField(srid=32643, dim=4, blank=True, null=True)
+    geom = models.MultiLineStringField( blank=True, null=True)
 
     class Meta:
         managed = False

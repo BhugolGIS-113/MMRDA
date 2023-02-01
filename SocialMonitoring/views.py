@@ -41,8 +41,8 @@ class labourCampdetails(generics.GenericAPIView):
 class labourCampdetailsView(generics.ListAPIView):
     queryset = labourcampDetails.objects.all()
     serializer_class = labourCampDetailGetviewSerializer
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['LabourCampName' ,'LabourCampID']
+    # filter_backends = [filters.SearchFilter]
+    # search_fields = ['LabourCampName' ,'LabourCampID']
 
 
 

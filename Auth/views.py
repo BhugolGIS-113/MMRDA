@@ -29,7 +29,6 @@ class UserRegister(generics.GenericAPIView):
     serializer_class = RegisterSerializer
     ErrorRenderer = [ErrorRenderer]
     parser_classes = [MultiPartParser]
-    permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)

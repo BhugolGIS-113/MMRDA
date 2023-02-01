@@ -147,7 +147,7 @@ class Package10AlignmentSerializer(GeoFeatureModelSerializer):
 class Package09AlignmentSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = Package09Alignment
-        fields = ('gid' ,'name')
+        fields = ('gid' ,'name' ,)
         geo_field= ('geom')
 
 

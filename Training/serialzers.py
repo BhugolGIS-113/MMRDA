@@ -108,3 +108,10 @@ class ConstructionStageComplainceSerializer(serializers.ModelSerializer):
         'RulesForGroundWaterWithdrawal' , 'RulesForCollectionDisposalManagement', 'RulesForSolidWaste',
        'RulesForDisposalOfBituminousAndOtherWaste', 'RulesForDisposalOfsewagefromLabourCamps' , 'RulesForPollutionUnderControl',
        'RulesForRoofTopRainWaterHarvesting',)
+
+
+
+class ContactusImagesSeilizer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactusImage
+        fields = '__all__'

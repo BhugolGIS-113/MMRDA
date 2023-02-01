@@ -167,3 +167,9 @@ class ConstructionStageComplainceView(generics.CreateAPIView):
         else:
             return Response({'status': 'failed' ,
                             'Message': 'something went Wrong please check again'} , status= 400)
+
+
+class ContactUsimagesCompress(generics.CreateAPIView):
+    serializer_class =  ContactusImagesSeilizer
+    parser_classes = [MultiPartParser]
+    queryset = ContactusImage.objects.all()

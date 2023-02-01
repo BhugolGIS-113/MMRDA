@@ -533,6 +533,7 @@ class package10AlignmentView(generics.GenericAPIView):
         try:
             package10 = Package10Alignment.objects.all()
             serializer = Package10AlignmentSerializer(package10 , many = True).data
+            print(serializer)
             return Response({'status': 'success',
                             'message' : 'data was successfully fetched',
                             'data': serializer},
@@ -560,16 +561,17 @@ class package08AlignmentView(generics.GenericAPIView):
     serializer_class = Package08AlignmentSerializer  
 
     def get(self , request):
-        try:
+        
             package08 = Package08Alignment.objects.all()
-            serializer = Package08AlignmentSerializer(package08 , many = True).data
+            serializer = Package08AlignmentSerializer(package08 , many = True)
+            print(serializer.data)
             return Response({'status': 'success',
                             'message' : 'data was successfully fetched',
-                            'data': serializer},
+                            'data': serializer.data},
                              status= 200)
-        except :
-            return Response({'status' : 'failed',
-                            'message' : 'Something went wrong !! Please try again'}, status = 400)
+        # except :
+        #     return Response({'status' : 'failed',
+        #                     'message' : 'Something went wrong !! Please try again'}, status = 400)
 
 
 class MetroStationView(generics.GenericAPIView):

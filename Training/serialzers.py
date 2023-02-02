@@ -107,7 +107,7 @@ class ConstructionStageComplainceSerializer(serializers.ModelSerializer):
         exclude = ('RulesOfConsenttToEstablishOoperate', 'RulesOfSandMiningFromRiverbed',
         'RulesForGroundWaterWithdrawal' , 'RulesForCollectionDisposalManagement', 'RulesForSolidWaste',
        'RulesForDisposalOfBituminousAndOtherWaste', 'RulesForDisposalOfsewagefromLabourCamps' , 'RulesForPollutionUnderControl',
-       'RulesForRoofTopRainWaterHarvesting',)
+       'RulesForRoofTopRainWaterHarvesting','user')
 
 
 

@@ -21,7 +21,7 @@ class Baseclass(models.Model):
 
 class labourcampDetails(models.Model):
     LabourCampName = models.CharField(max_length=255, blank=True, null=True)
-    LabourCampID = models.CharField(max_length=255, blank=True, null=True)
+    LabourCampId = models.CharField(max_length=255, blank=True, null=True)
     location = models.PointField(blank=True, null=True)
 
     def __str__(self):

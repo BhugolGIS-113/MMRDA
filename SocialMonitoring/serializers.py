@@ -14,7 +14,7 @@ class labourCampDetailSerializer(serializers.ModelSerializer):
     latitude = serializers.CharField(max_length=10, required=False)
     class Meta:
         model = labourcampDetails
-        fields = ('LabourCampName' , 'LabourCampID' , 'longitude' , 'latitude')
+        fields = ('LabourCampName' , 'LabourCampId' , 'longitude' , 'latitude')
 
     def create(self, data):
         data.pop('longitude')

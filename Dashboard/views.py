@@ -16,29 +16,21 @@ class PAPCategoryDashboardView(ListAPIView):
     queryset = PAP.objects.all()
 
     def get(self, request , *args, **kwargs):
-            try:
-                dataSet = []
-                Residential = PAP.objects.filter(categoryOfPap = 'Residential').count()
-                Commercial = PAP.objects.filter(categoryOfPap = 'Commercial').count()
-                Private_Land = PAP.objects.filter(categoryOfPap = 'Private Land').count()
-                Government_Land = PAP.objects.filter(categoryOfPap = 'Government Land').count()
-                Institutional = PAP.objects.filter(categoryOfPap = 'Institutional').count()
-                Other = PAP.objects.filter(categoryOfPap = 'Other').count()
-                dataSet.append(Residential) , dataSet.append(Commercial) ,dataSet.append(Private_Land)
-                dataSet.append(Government_Land) , dataSet.append(Other) , dataSet.append(Institutional)
-               
-                return Response({'status': 'success',
-                                'Message' : 'Data Fetched successfully',
-                                'dataset': dataSet,
-                                'Residential' : Residential,
-                                'Commercial' : Commercial,
-                                'Private_Land':Private_Land,
-                                'Government_Land' : Government_Land,
-                                'Institutional' : Institutional,
-                                'Other' : Other
-                                }, status=200)
-            except:
-                return Response({'Message': 'Invalid category'}, status=400)
+
+            dataSet = []
+                # q = PAP.objects.annotate(Count('categoryOfPap'))
+            Residential = PAP.objects.filter(categoryOfPap = 'Residential').count()
+            Commercial = PAP.objects.filter(categoryOfPap = 'Commercial').count()
+            Private_Land = PAP.objects.filter(categoryOfPap = 'Private Land').count()
+            Government_Land = PAP.objects.filter(categoryOfPap = 'Government Land').count()
+            Institutional = PAP.objects.filter(categoryOfPap = 'Institutional').count()
+            Other = PAP.objects.filter(categoryOfPap = 'Other').count()
+            dataSet.append(Residential) , dataSet.append(Commercial) ,dataSet.append(Private_Land)
+            dataSet.append(Government_Land) , dataSet.append(Other) , dataSet.append(Institutional)
+            return Response({'status': 'success',
+                            'Message' : 'Data Fetched successfully',
+                            'dataset': dataSet,})
+           
 
 
 class IdentifiedPAPDashboardView(APIView):
@@ -49,7 +41,7 @@ class IdentifiedPAPDashboardView(APIView):
             IdentifiedPAP = PAP.objects.all().count()
             if IdentifiedPAP == 0:
                 return Response({'Message': 'No data Found',
-                                'status' : 'success'}, status=200)
+                                'status' : 'success'})
 
             return Response({'status' : 'success' ,
                             'Message': IdentifiedPAP}, status=200)

@@ -356,7 +356,7 @@ class WasteTreatmentsPackageView(ListAPIView):
 
             return Response({'Message': 'data Fetched Successfully',
                             'status' : 'success' , 
-                            "waste_Management data": Waste_data},
+                            "wasteManagementdata": Waste_data},
                             status=status.HTTP_200_OK)
         except:
             return Response({'Message': 'There is no data available for the Package',
@@ -379,7 +379,7 @@ class WasteTreatmentsQuarterView(ListAPIView):
             Waste_data = wasteTreatmentsSerializer(data, many=True).data
             return Response({'Message': 'data Fetched Successfully',
                             'status' : 'success' , 
-                             "waste_Management data": Waste_data}, status=200)
+                             "wasteManagementData": Waste_data}, status=200)
 
         except:
             return Response({'Message': 'There is no data available for the Quarter',
@@ -402,7 +402,7 @@ class MaterialManagementReporetpackageView(ListAPIView):
             Material_data = materialManagementSerializer(data, many=True).data
             return Response({'Message': 'data Fetched Successfully',
                             'status' : 'success' , 
-                            "Material_Management_data": Material_data},
+                            "materialManagementData": Material_data},
                             status=status.HTTP_200_OK)
         except:
             return Response({'Message': 'There is no data available for the Package',
@@ -533,14 +533,13 @@ class package10AlignmentView(generics.GenericAPIView):
         try:
             package10 = Package10Alignment.objects.all()
             serializer = Package10AlignmentSerializer(package10 , many = True).data
-            print(serializer)
+    
             return Response({'status': 'success',
                             'message' : 'data was successfully fetched',
-                            'data': serializer},
-                             status= 200)
+                            'data': serializer})
         except :
             return Response({'status' : 'failed',
-                            'message' : 'Something went wrong !! Please try again'}, status = 400)
+                            'message' : 'Something went wrong !! Please try again'})
 
 class package09AlignmentView(generics.GenericAPIView):
     serializer_class = Package09AlignmentSerializer  
@@ -564,7 +563,6 @@ class package08AlignmentView(generics.GenericAPIView):
         
             package08 = Package08Alignment.objects.all()
             serializer = Package08AlignmentSerializer(package08 , many = True)
-            print(serializer.data)
             return Response({'status': 'success',
                             'message' : 'data was successfully fetched',
                             'data': serializer.data},

@@ -18,7 +18,7 @@ class TraningView(generics.GenericAPIView):
 
     def post(self, request):
         try:
-            serializer = self.get_serializer(data=request.data)
+            serializer = TraningSerializer(data=request.data)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return Response(serializer.data, status=200)

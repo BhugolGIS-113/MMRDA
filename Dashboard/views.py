@@ -5,6 +5,7 @@ from Training.models import *
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import generics
+from rest_framework.parsers import MultiPartParser
 
 
 
@@ -292,25 +293,41 @@ class WaterConditionChart(APIView):
 
 from django.db.models import Count
 
-class Water(generics.ListAPIView):
-    queryset = water.objects.all()
-    serializer_class = waterserializer
+# class Water(generics.ListAPIView):
+#     queryset = water.objects.all()
+#     serializer_class = waterserializer
 
 
-    def get_queryset(self):
-        queryset = water.objects.all()
-        field = self.request.query_params.get('Good', None)
-        print(field)
-        if field is not None:
-            queryset = queryset.filter(qualityOfWater=field).annotate(count=Count('qualityOfWater'))
-            print(queryset)
-            return queryset 
+#     def get_queryset(self):
+#         queryset = water.objects.all()
+#         field = self.request.query_params.get('Good', None)
+#         print(field)
+#         if field is not None:
+#             queryset = queryset.filter(qualityOfWater=field).annotate(count=Count('qualityOfWater'))
+#             print(queryset)
+#             return queryset 
 
 
+class AirChartView(generics.GenericAPIView):
+    serializer_class = AirChartSerializer
+    parser_classes = [MultiPartParser]
 
-
-
-        
+    def get(self, request, month , year, **kwargs):
+        try:
+            airdata = Air.objects.get(month=month , dateOfMonitoring__year = year )
+        except:
+            return Response({'Message': 'No data Avaialable for this Month or Year',
+                            'status' : 'error'},)
+        dataset = []
+        serializers = AirChartSerializer(airdata).data
+        dataset.append(serializers.get('PM10')) , dataset.append(serializers.get('SO2')) , dataset.append(serializers.get('O3')),
+        dataset.append(serializers.get('NOx')) , dataset.append(serializers.get('AQI')) 
+        return Response({'status': 'success',
+                                'Message': 'Data was successfully fetched',
+                                'dataset' : dataset ,
+                                'PM10' : serializers.get('PM10') ,'SO2' : serializers.get('SO2'),
+                                'O3':  serializers.get('O3') ,'Nox' : serializers.get('NOx'),
+                                'AQI' : serializers.get('AQI')})
 
 
 

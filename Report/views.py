@@ -16,10 +16,10 @@ class LabourcampReportPackageView(ListAPIView):
     serializer_class = LabourcampReportSerializer
     parser_classes = [MultiPartParser]
 
-    def get(self, request, packages, labourCampName, *args, **kwargs):
+    def get(self, request, packages, labourCampName ,*args, **kwargs):
         try:
             previous = LabourCamp.objects.filter(
-                packages=packages, labourCampName=labourCampName).order_by('-id')[1:]
+                packages=packages, labourCampName=labourCampName ).order_by('-id')[1:]
             latest = LabourCamp.objects.filter(
                 packages=packages, labourCampName=labourCampName).latest('id')
             previousData = self.serializer_class(previous, many=True)
@@ -46,7 +46,7 @@ class LabourCampReportQuarterView(ListAPIView):
                 quarter=quarter, labourCampName=labourCampName, dateOfMonitoring__year=year).order_by('-id')[1:]
 
             latest = LabourCamp.objects.filter(
-                quarter=quarter, labourCampName=labourCampName).latest('id')
+                quarter=quarter, labourCampName=labourCampName , dateOfMonitoring__year=year).latest('id')
             previousData = self.serializer_class(previous, many=True).data
             latestData = self.serializer_class(latest).data
 
@@ -66,10 +66,10 @@ class ConstructionCampReportPackageView(ListAPIView):
     serializer_class = ConstructionCampReportSerializer
     parser_classes = [MultiPartParser]
 
-    def get(self, request, packages, constructionSiteName, *args, **kwargs):
+    def get(self, request, packages, constructionSiteName,*args, **kwargs):
         try:
             previous = ConstructionSiteDetails.objects.filter(
-                packages=packages, constructionSiteName=constructionSiteName).order_by('-id')[1:]
+                packages=packages, constructionSiteName=constructionSiteName  ).order_by('-id')[1:]
             latest = ConstructionSiteDetails.objects.filter(
                 packages=packages, constructionSiteName=constructionSiteName).latest('id')
             previousData = ConstructionCampReportSerializer(
@@ -91,12 +91,12 @@ class ConstructionCampReportQuarterView(ListAPIView):
     serializer_class = ConstructionCampReportSerializer
     parser_classes = [MultiPartParser]
 
-    def get(self, request, quarter, constructionSiteName, *args, **kwargs):
+    def get(self, request, quarter, constructionSiteName, year ,*args, **kwargs):
         try:
             previous = ConstructionSiteDetails.objects.filter(
-                quarter=quarter, constructionSiteName=constructionSiteName).order_by('-id')[1:]
+                quarter=quarter, constructionSiteName=constructionSiteName ,dateOfMonitoring__year=year).order_by('-id')[1:]
             latest = latest = ConstructionSiteDetails.objects.filter(
-                quarter=quarter, constructionSiteName=constructionSiteName).latest('id')
+                quarter=quarter, constructionSiteName=constructionSiteName , dateOfMonitoring__year=year).latest('id')
             previousData = ConstructionCampReportSerializer(
                 previous, many=True)
             latestData = ConstructionCampReportSerializer(latest)
@@ -110,8 +110,8 @@ class ConstructionCampReportQuarterView(ListAPIView):
             return Response({'Message': 'There is no data available for the Package or Quarter',
                             'status' : 'Failed'}, status=status.HTTP_400_BAD_REQUEST)
 
-# -------------------------------------------------------------------------
 
+# -------------------------------------------------------------------------
 
 class PAPReportPackageView(ListAPIView):
     serializer_class = PAPReportSerializer
@@ -122,7 +122,7 @@ class PAPReportPackageView(ListAPIView):
             data = PAP.objects.filter(packages=packages).order_by('-id')
             if not data.exists():
                 return Response({'Message': 'No data found',
-                                 'status' : 'success'},  status=status.HTTP_200_OK)
+                                 'status' : 'Failed'},  status=status.HTTP_200_OK)
             papdata = PAPReportSerializer(data, many=True).data
             return Response({'Message': 'data Fetched Successfully',
                             'status' : 'success' , 

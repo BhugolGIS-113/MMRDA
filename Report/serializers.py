@@ -24,6 +24,8 @@ class LabourcampReportSerializer(GeoFeatureModelSerializer):
                     'photographs' ,'documents','remarks')
         geo_field= ('location')
 
+
+
     def validate(self, data):
         if data['packages'] == '' or data['packages'] == None:
             raise ValidationError('packages can not be empty')

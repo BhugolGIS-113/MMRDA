@@ -10,7 +10,7 @@ urlpatterns = [
 
     path('constructioncampreportPackage/<str:packages>/<str:constructionSiteName>',
          ConstructionCampReportPackageView.as_view(), name='ConstructionSite Report'),
-    path('constructioncampreportQuarter/<str:packages>/<str:constructionSiteName>',
+    path('constructioncampreportQuarter/<int:year>/<str:quarter>/<str:constructionSiteName>',
          ConstructionCampReportQuarterView.as_view(), name='ConstructionSite Report'),
 
     path('papreportpackage/<str:packages>',
@@ -40,7 +40,7 @@ urlpatterns = [
     path('waterReportquarter/<str:quarter>/<int:year>',
          waterReportQuarterView.as_view(), name='Water Report Package View'),
 
-    path('wastetreatmentpackage/<str:package>',
+    path('wastetreatmentpackage/<str:packages>',
          WasteTreatmentsPackageView.as_view(), name='Water Report Package View'),
     path('wastetreatmentquarter/<str:quarter>/<int:year>',
          WasteTreatmentsQuarterView.as_view(), name='Water Report Quarter View'),

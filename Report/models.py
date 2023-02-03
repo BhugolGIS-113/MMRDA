@@ -18,66 +18,66 @@ class Package08Alignment(models.Model):
     gid = models.AutoField(primary_key=True)
     id = models.FloatField(blank=True, null=True)
     name = models.CharField(max_length=100, blank=True, null=True)
-    geom = models.MultiLineStringField( blank=True, null=True)
+    geom = models.MultiLineStringField(blank=True, null=True)
 
     class Meta:
         managed = False
-        db_table = 'Package08Alignment'
+        db_table = 'package08Alignment'
 
 
 class Package09Alignment(models.Model):
     gid = models.AutoField(primary_key=True)
     id = models.FloatField(blank=True, null=True)
     name = models.CharField(max_length=10, blank=True, null=True)
-    geom = models.MultiLineStringField(srid=32643, dim=4, blank=True, null=True)
+    geom = models.MultiLineStringField(blank=True, null=True)
 
     class Meta:
         managed = False
-        db_table = 'Package09Alignment'
+        db_table = 'package09Alignment'
 
 
 class Package10Alignment(models.Model):
     gid = models.AutoField(primary_key=True)
     id = models.FloatField(blank=True, null=True)
     name = models.CharField(max_length=10, blank=True, null=True)
-    geom = models.MultiLineStringField(srid=32643, dim=4, blank=True, null=True)
+    geom = models.MultiLineStringField(blank=True, null=True)
 
     class Meta:
         managed = False
-        db_table = 'Package10Alignment'
+        db_table = 'package10Alignment'
 
 
 class Package11Alignment(models.Model):
     gid = models.AutoField(primary_key=True)
     id = models.FloatField(blank=True, null=True)
     name = models.CharField(max_length=100, blank=True, null=True)
-    geom = models.MultiLineStringField(srid=32643, dim=4, blank=True, null=True)
+    geom = models.MultiLineStringField(blank=True, null=True)
 
     class Meta:
         managed = False
-        db_table = 'Package11Alignment'
+        db_table = 'package11Alignment'
 
 
 class Package12Alignment(models.Model):
     gid = models.AutoField(primary_key=True)
     id = models.FloatField(blank=True, null=True)
     name = models.CharField(max_length=100, blank=True, null=True)
-    geom = models.MultiLineStringField(srid=32643, dim=4, blank=True, null=True)
+    geom = models.MultiLineStringField(blank=True, null=True)
 
     class Meta:
         managed = False
-        db_table = 'Package12Alignment'
+        db_table = 'package12Alignment'
 
 
 class Package54Alignment(models.Model):
     gid = models.AutoField(primary_key=True)
     id = models.FloatField(blank=True, null=True)
     name = models.CharField(max_length=100, blank=True, null=True)
-    geom = models.MultiLineStringField(srid=32643, dim=4, blank=True, null=True)
+    geom = models.MultiLineStringField(blank=True, null=True)
 
     class Meta:
         managed = False
-        db_table = 'Package54Alignment'
+        db_table = 'package54Alignment'
 
 class ProjectAffectedTrees(models.Model):
     gid = models.AutoField(primary_key=True)

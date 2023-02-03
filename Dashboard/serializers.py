@@ -23,6 +23,13 @@ class LabourcampDashboardSerializer(serializers.ModelSerializer):
                 'segregationOfWasteCondition')
 
 
+class ConstructionSiteDashboardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConstructionSiteDetails
+        fields = ('id','constructionSiteName','toiletCondition' ,'drinkingWaterCondition' ,'demarkationOfPathwaysCondition',
+                'signagesLabelingCondition',)
+
+
 class ExistingTreeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExistingTreeManagment

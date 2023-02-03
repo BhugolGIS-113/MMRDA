@@ -1,4 +1,5 @@
-from rest_framework.generics import GenericAPIView , ListAPIView
+from django.db.models import Count
+from rest_framework.generics import GenericAPIView, ListAPIView
 from .serializers import *
 from EnvMonitoring.models import *
 from Training.models import *
@@ -8,321 +9,213 @@ from rest_framework import generics
 from rest_framework.parsers import MultiPartParser
 
 
-
 # Create your views here.
 
 class PAPCategoryDashboardView(ListAPIView):
     serializer_class = PAPDashboardSerializer
     queryset = PAP.objects.all()
 
-    def get(self, request , *args, **kwargs):
-
-            dataSet = []
-                # q = PAP.objects.annotate(Count('categoryOfPap'))
-            Residential = PAP.objects.filter(categoryOfPap = 'Residential').count()
-            Commercial = PAP.objects.filter(categoryOfPap = 'Commercial').count()
-            Private_Land = PAP.objects.filter(categoryOfPap = 'Private Land').count()
-            Government_Land = PAP.objects.filter(categoryOfPap = 'Government Land').count()
-            Institutional = PAP.objects.filter(categoryOfPap = 'Institutional').count()
-            Other = PAP.objects.filter(categoryOfPap = 'Other').count()
-            dataSet.append(Residential) , dataSet.append(Commercial) ,dataSet.append(Private_Land)
-            dataSet.append(Government_Land) , dataSet.append(Other) , dataSet.append(Institutional)
-            return Response({'status': 'success',
-                            'Message' : 'Data Fetched successfully',
-                            'dataset': dataSet,})
-           
+    def get(self, request, *args, **kwargs):
+        counts = PAP.objects.values('categoryOfPap').annotate(
+            count=Count('categoryOfPap'))
+        print(counts)
+        dataset = [count['count'] for count in counts]
+        return Response({'status': 'success',
+                        'Message': 'Data Fetched successfully',
+                         'dataset': dataset,
+                         'counts': counts})
 
 
 class IdentifiedPAPDashboardView(APIView):
     serializer_class = PAPDashboardSerializer
 
     def get(self, request, *args, **kwargs):
-        try:
-            IdentifiedPAP = PAP.objects.all().count()
-            if IdentifiedPAP == 0:
-                return Response({'Message': 'No data Found',
-                                'status' : 'success'})
+        IdentifiedPAP = PAP.objects.all().count()
+        if IdentifiedPAP == 0:
+            return Response({'Message': 'No data Found',
+                            'status': 'success'})
 
-            return Response({'status' : 'success' ,
-                            'Message': IdentifiedPAP}, status=200)
-        except:
-            return Response({'Message': 'Something went Wrong'}, status=400)
+        return Response({'status': 'success',
+                        'Message': 'Data Fetched successfully',
+                         'dataset': IdentifiedPAP}, status=200)
+
 
 class RehabilitatedPAPDashboardView(GenericAPIView):
     serializer_class = RehabilationDashboardSerializer
-    def get(self , request ):
-        try:
-            dataset = []
-            totalcount = Rehabilitation.objects.all().count()
-            Cash_Compensation = Rehabilitation.objects.filter(compensationStatus='Cash Compensation').count()
-            Land_Provided_Area = Rehabilitation.objects.filter(compensationStatus='Land Provided Area').count()
-            Alternate_accommodation = Rehabilitation.objects.filter(compensationStatus='Alternate accommodation').count()
-            Commercial_Unit = Rehabilitation.objects.filter(compensationStatus='Commercial Unit').count()
-            Pending = Rehabilitation.objects.filter(compensationStatus='Pending').count()
-            dataset.append(Cash_Compensation) , dataset.append( Land_Provided_Area) , 
-            dataset.append(Alternate_accommodation) , dataset.append(Commercial_Unit) , dataset.append(Pending) 
 
-            return Response({'status': 'success',
-                            'Message': 'Data fetched successfully',
-                            'dataset': dataset,
-                            'totalcount': totalcount,
-                            'Cash_Compensation' : Cash_Compensation ,
-                            'Land_Provided_Area' : Land_Provided_Area,
-                            'Alternate_accommodation' : Alternate_accommodation,
-                            'Commercial_Unit' : Commercial_Unit,
-                            'Pending': Pending ,
-                                } , status= 200)
-        except Exception:
-            return Response({'Message': 'Something went wrong Please try again'} , status= 400)
-
-
+    def get(self, request):
+        counts = Rehabilitation.objects.values(
+            'compensationStatus').annotate(count=Count('compensationStatus'))
+        print(counts)
+        dataset = [count['count'] for count in counts]
+        print(dataset)
+        return Response({'status': 'success',
+                        'Message': 'Data fetched successfully',
+                         'dataset': dataset,
+                         'Counts': counts})
 
 
 class LabourCampFacilitiesDashboardView(GenericAPIView):
     serializer_class = LabourcampDashboardSerializer
 
-    def get(self, request,labourCampName ,*args, **kwargs):
+    def get(self, request, labourCampName, *args, **kwargs):
+
+        labour = LabourCamp.objects.filter(
+            labourCampName=labourCampName).latest('id')
+        data = LabourcampDashboardSerializer(labour).data
+        values = list(data.values())
         dataset = []
-        try:
-            labour = LabourCamp.objects.filter(labourCampName = labourCampName).latest('id')
-            data = LabourcampDashboardSerializer(labour).data
-            values=list(data.values())
-            dataset.append(values.count('Good')) ,dataset.append(values.count('Average'))
-            dataset.append(values.count('Bad'))
+        dataset.append(values.count('Good')), dataset.append(
+            values.count('Average'))
+        dataset.append(values.count('Bad'))
 
-            return Response({'status': 'success',
-                            'Message': 'data Fetched successfully',
-                            'dataset':dataset ,
-                            'data' : data}, status=200)
-        except:
-            return Response({'status': 'error',
-                            'Message': 'Something went wrong'},status=400)
+        return Response({'status': 'success',
+                        'Message': 'data Fetched successfully',
+                        'dataset': dataset,
+                        'data': data}, status=200)
+        
+class ConstructionChartView(GenericAPIView):
+    serializer_class = ConstructionSiteDashboardSerializer
 
+    def get(self, request,constructionSiteName, *args, **kwargs):
+        ConstructionCamp = ConstructionSiteDetails.objects.filter(constructionSiteName = constructionSiteName).latest('id')
+        data = ConstructionSiteDashboardSerializer(ConstructionCamp).data
+        values = list(data.values())
+        dataset = []
+        dataset.append(values.count('Good')) , dataset.append(values.count('Average')) , dataset.append(values.count('Bad'))
+        return Response({'status': 'success',
+                        'Message': 'data Fetched successfully',
+                        'dataset': dataset,
+                        'data': data}, status=200)
 class CashCompensationTypeCharView(GenericAPIView):
     serializer_class = RehabilationDashboardSerializer
 
     def get(self, request):
-        try:
-            dataset = []
-            Area = Rehabilitation.objects.filter(typeOfCompensation = '2.5 x Area').count()
-            Cash = Rehabilitation.objects.filter(typeOfCompensation = 'Cash').count()
-            Both = Rehabilitation.objects.filter(typeOfCompensation = 'Both').count()
-            Pending = Rehabilitation.objects.filter(typeOfCompensation = 'Pending').count()
-            dataset.append(Area) , dataset.append(Cash) , dataset.append(Both),dataset.append(Pending)
+        counts = Rehabilitation.objects.values(
+            'typeOfCompensation').annotate(count=Count('typeOfCompensation'))
+        dataset = [count['count'] for count in counts]
 
-            return Response ({'status': 'success',
-                                'Message': 'data fetched Successfully',
-                                'dataset':dataset,
-                                '2.5x_Area': Area,
-                                'Cash':Cash,
-                                'Both':Both,
-                                'Pending':Pending} , status=200)
-        except:
-            return Response({'status': 'error',
-                            'Message': 'Something went wrong'},status=400)
-
+        return Response({'status': 'success',
+                         'Message': 'data fetched Successfully',
+                         'dataset': dataset})
 
 
 class ExistingTreeCount(GenericAPIView):
-    serializer_class = ExistingTreeSerializer   
+    serializer_class = ExistingTreeSerializer
+
     def get(self, request):
         try:
             ExistingTreeCount = []
             NewtreeCount = []
             treecount = ExistingTreeManagment.objects.all().count()
             NewTreeCount = NewTreeManagement.objects.all().count()
-            ExistingTreeCount.append(treecount) , NewtreeCount.append(NewTreeCount)
+            ExistingTreeCount.append(
+                treecount), NewtreeCount.append(NewTreeCount)
             return Response({'status': 'success',
                             'Message': 'Data was successfully fetched',
-                            'ExistingTreeCount': ExistingTreeCount,
-                            'NewtreeCount' : NewtreeCount ,
-                            },status=200)
+                             'ExistingTreeCount': ExistingTreeCount,
+                             'NewtreeCount': NewtreeCount,
+                             }, status=200)
         except:
             return Response({'status': 'error',
-                            'Message': 'Something went wrong'},status=400)
-
-                    
+                            'Message': 'Something went wrong'}, status=400)
 
 
 class WasteTypeCount(APIView):
-    
-    def get(self, request):
-        try:
-            dataset = []
-            Hazardous_Waste = WasteTreatments.objects.filter(wastetype = 'Hazardous Waste').count()
-            Bio_Waste = WasteTreatments.objects.filter(wastetype = 'Bio Waste').count()
-            Electrical_Waste = WasteTreatments.objects.filter(wastetype = 'Electrical Waste').count()
-            Non_Bio_Waste = WasteTreatments.objects.filter(wastetype = 'Non-Bio Waste').count()
-            dataset.append(Hazardous_Waste) , dataset.append(Bio_Waste) , dataset.append(Electrical_Waste)
-            dataset.append(Non_Bio_Waste)
 
-            return Response ({'status': 'success',
+    def get(self, request):
+        counts = WasteTreatments.objects.values('wastetype').annotate(count = Count('wastetype'))
+        dataset = [count['count'] for count in counts]
+
+        return Response({'status': 'success',
                             'Message': 'Data was successfully fetched',
-                            'dataset': dataset ,
-                            'Hazardous_Waste' : Hazardous_Waste,
-                            'Bio_Waste' : Bio_Waste ,
-                            'Electrical_Waste' : Electrical_Waste,
-                            'Non_Bio_Waste' : Non_Bio_Waste}, status= 200)
-        except:
-            return Response({'status': 'error',
-                            'Message': 'Something went wrong'},status=400)
+                            'dataset': dataset,
+                            'counts' : counts})
+        
+
 
 class WasteHandelingChart(APIView):
     def get(self, request):
-        try:
-            dataset = []
-            Disposal = WasteTreatments.objects.filter(wastehandling = 'Disposal').count()
-            Dump = WasteTreatments.objects.filter(wastehandling = 'Dump').count()
-            Transportation = WasteTreatments.objects.filter(wastehandling = 'Transportation').count()
-            Recycling = WasteTreatments.objects.filter(wastehandling = 'Recycling').count()
-
-            dataset.append(Disposal) , dataset.append(Dump) , dataset.append(Transportation) , dataset.append(Recycling)
-            return Response ({'status': 'success',
-                                'Message': 'Data was successfully fetched',
-                                'dataset': dataset ,
-                                'Disposal' : Disposal,
-                                'Dump' : Dump,
-                                'Transportation' : Transportation,
-                                'Recycling' : Recycling},status=200)
-        except:
-            return Response({'status': 'error',
-                            'Message': 'Something went wrong'},status=400)
-
+        counts = WasteTreatments.objects.values('wastehandling').annotate(count = Count('wastehandling'))
+        dataset = [count['count'] for count in counts]
+        return Response({'status': 'success',
+                            'Message': 'Data was successfully fetched',
+                            'dataset': dataset,
+                            'counts' : counts})
+    
 
 class MaterialSourceTypeCountChart(APIView):
-    
-    def get(self, request):
-        try:
-            dataset = []
-            quarry = MaterialManegmanet.objects.filter(source = 'Quarry').count()
-            Factory = MaterialManegmanet.objects.filter(source = 'Factory').count()
-            Casting_Yard = MaterialManegmanet.objects.filter(source = 'Casting Yard').count()
-            Local_Vendor = MaterialManegmanet.objects.filter(source = 'Local Vendor').count()
-            Others = MaterialManegmanet.objects.filter(source = 'Others').count()
-            dataset.append(quarry) , dataset.append(Factory) , dataset.append(Casting_Yard)
-            dataset.append(Local_Vendor) , dataset.append(Others)
 
-            return Response ({'status': 'success',
-                                'Message': 'Data was successfully fetched',
-                                'dataset': dataset ,
-                                'quarry' : quarry, 'Factory' : Factory,
-                                'Casting_Yard' : Casting_Yard , 'Local_Vendor' : Local_Vendor,
-                                'Others' : Others} , status=200)
-        except:
-            return Response({'status': 'error',
-                            'Message': 'Something went wrong'},status=400)
+    def get(self, request):
+        counts = MaterialManegmanet.objects.values('source').annotate(count = Count('source'))
+        dataset = [count['count'] for count in counts]
+        return Response({'status': 'success',
+                         'Message': 'Data was successfully fetched',
+                         'dataset': dataset,
+                         'counts' : counts}, status=200)
+       
+
 
 class MaterialConditionChart(APIView):
     def get(self, request):
-        try:
-            dataset = []
-            Safe = MaterialManegmanet.objects.filter(materialstorageCondition = 'Safe').count()
-            Unsafe = MaterialManegmanet.objects.filter(materialstorageCondition = 'Unsafe').count()
-            Need_Improvement = MaterialManegmanet.objects.filter(materialstorageCondition = 'Need Improvement').count()
-            dataset.append(Safe) , dataset.append(Unsafe) ,dataset.append(Need_Improvement)
 
-
-            return Response ({'status': 'success',
+        counts = MaterialManegmanet.objects.values('materialstorageCondition').annotate(count = Count('materialstorageCondition'))
+        dataset = [count['count'] for count in counts]
+        return Response({'status': 'success',
                             'Message': 'Data was successfully fetched',
-                            'dataset' : dataset,
-                            'Safe' : Safe,
-                            'Unsafe' : Unsafe ,
-                            'Need_Improvement' : Need_Improvement }, status= 200)
-        except:
-            return Response({'status': 'error',
-                            'Message': 'Something went wrong'},status=400)
-        
-            
+                            'dataset': dataset,
+                            'counts' : counts}, status=200)
+    
+
+
 class IncidenttypeCountchart(APIView):
 
     def get(self, request):
-        try:
-            dataset = []
-            Reportable_Accident = self.request.query_params.get('Reportable Accident', None)
-            Reportable_Accident = occupationalHealthSafety.objects.filter(typeOfIncident='Reportable Accident').count()
-            Reportable_NonFatal_Accident = occupationalHealthSafety.objects.filter(typeOfIncident= 'Reportable Non-Fatal Accident').count()
-            First_Aid_Cases = occupationalHealthSafety.objects.filter(typeOfIncident= 'First Aid Cases').count()
-            Dangerous_Occurrences = occupationalHealthSafety.objects.filter(typeOfIncident= 'Dangerous Occurrences').count()
-            Man_Days_lost = occupationalHealthSafety.objects.filter(typeOfIncident= 'Man Days Lost').count()
-            Major_Road_accident = occupationalHealthSafety.objects.filter(typeOfIncident= 'Major (Road accident)').count()
-            Road_Incident = occupationalHealthSafety.objects.filter(typeOfIncident= 'Road Incident').count()
-            Tree_Broken = occupationalHealthSafety.objects.filter(typeOfIncident= 'Tree Broken').count()
-            Natural_Death = occupationalHealthSafety.objects.filter(typeOfIncident= 'Natural Death').count()
-            Third_Party_Incident = occupationalHealthSafety.objects.filter(typeOfIncident= '3rd Party Incident').count()
-            dataset.append(Reportable_Accident) , dataset.append(Reportable_NonFatal_Accident) , dataset.append(First_Aid_Cases)
-            dataset.append(Dangerous_Occurrences) , dataset.append(Man_Days_lost),dataset.append(Major_Road_accident)
-            dataset.append(Road_Incident),dataset.append(Tree_Broken) , dataset.append(Natural_Death) , dataset.append(Third_Party_Incident)
+        counts = occupationalHealthSafety.objects.values('typeOfIncident').annotate(count = Count('typeOfIncident'))
+        dataset = [count['count'] for count in counts]
+        
 
-            return Response({'status': 'success',
-                                'Message': 'Data was successfully fetched',
-                                'dataset' : dataset,} , status= 200)
-        except:
-            return Response({'status': 'error',
-                            'Message': 'Something went wrong'},status=400)
-
-                            
-
+        return Response({'status': 'success',
+                        'Message': 'Data was successfully fetched',
+                        'dataset': dataset,
+                        'counts' : counts })
+        
 
 
 class WaterConditionChart(APIView):
 
     def get(self, request):
-        try:
-            dataset = []
-            Good = water.objects.filter(qualityOfWater = 'Good').count()
-            Average = water.objects.filter(qualityOfWater = 'Average').count()
-            Bad = water.objects.filter(qualityOfWater = 'Bad').count()
-            dataset.append(Good) , dataset.append(Average) , dataset.append(Bad)
-
-            return Response({'status': 'success',
-                                'Message': 'Data was successfully fetched',
-                                'dataset' : dataset ,
-                                } , status= 200)
-        except:
-            return Response({'status': 'error',
-                            'Message': 'Something went wrong'},status=400)
-
-
-from django.db.models import Count
-
-# class Water(generics.ListAPIView):
-#     queryset = water.objects.all()
-#     serializer_class = waterserializer
-
-
-#     def get_queryset(self):
-#         queryset = water.objects.all()
-#         field = self.request.query_params.get('Good', None)
-#         print(field)
-#         if field is not None:
-#             queryset = queryset.filter(qualityOfWater=field).annotate(count=Count('qualityOfWater'))
-#             print(queryset)
-#             return queryset 
-
+        counts = water.objects.values('qualityOfWater').annotate(count = Count('qualityOfWater'))
+        dataset = [count['count'] for count in counts]
+        return Response({'status': 'success',
+                            'Message': 'Data was successfully fetched',
+                            'dataset': dataset,
+                            'counts': counts }, status=200)
+        
 
 class AirChartView(generics.GenericAPIView):
     serializer_class = AirChartSerializer
     parser_classes = [MultiPartParser]
 
-    def get(self, request, month , year, **kwargs):
+    def get(self, request, month, year, **kwargs):
         try:
-            airdata = Air.objects.get(month=month , dateOfMonitoring__year = year )
+            airdata = Air.objects.get(month=month, dateOfMonitoring__year=year)
         except:
             return Response({'Message': 'No data Avaialable for this Month or Year',
-                            'status' : 'error'},)
+                            'status': 'error'},)
         dataset = []
         serializers = AirChartSerializer(airdata).data
-        dataset.append(serializers.get('PM10')) , dataset.append(serializers.get('SO2')) , dataset.append(serializers.get('O3')),
-        dataset.append(serializers.get('NOx')) , dataset.append(serializers.get('AQI')) 
+        dataset.append(serializers.get('PM10')), dataset.append(
+        serializers.get('SO2')), dataset.append(serializers.get('O3')),
+        dataset.append(serializers.get('NOx')), dataset.append(
+            serializers.get('AQI'))
         return Response({'status': 'success',
-                                'Message': 'Data was successfully fetched',
-                                'dataset' : dataset ,
-                                'PM10' : serializers.get('PM10') ,'SO2' : serializers.get('SO2'),
-                                'O3':  serializers.get('O3') ,'Nox' : serializers.get('NOx'),
-                                'AQI' : serializers.get('AQI')})
+                         'Message': 'Data was successfully fetched',
+                         'dataset': dataset,})
+                        #  'PM10': serializers.get('PM10'), 'SO2': serializers.get('SO2'),
+                        #  'O3':  serializers.get('O3'), 'Nox': serializers.get('NOx'),
+                        #  'AQI': serializers.get('AQI')})
 
 
 
     
-        
-            

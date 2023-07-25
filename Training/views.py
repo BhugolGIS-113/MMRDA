@@ -55,11 +55,11 @@ class PhotographsView(generics.GenericAPIView):
     parser_classes = [MultiPartParser]
 
     def post(self, request):
-        lat = float(request.data['latitude'])
-        long = float(request.data['longitude'])
-        location = Point(long, lat, srid=4326)
         serializer = photographsSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
+            lat = float(serializer.validated_data['latitude'])
+            long = float(serializer.validated_data['longitude'])
+            location = Point(long, lat, srid=4326)
             phototgraph = serializer.save(location=location)
             data = photographsViewSerializer(phototgraph).data
             return Response(data, status=200)
@@ -97,11 +97,12 @@ class occupationalHealthSafety (generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
     
     def post(self, request):
-        lat = float(request.data['latitude'])
-        long = float(request.data['longitude'])
-        location = Point(long, lat, srid=4326)
+        
         serializer = occupationalHealthSafetySerialziers(data = request.data )
-        if serializer.is_valid(raise_exception=True):
+        if serializer.is_valid():
+            lat = float(serializer.validated_data['latitude'])
+            long = float(serializer.validated_data['longitude'])
+            location = Point(long, lat, srid=4326)
             data = serializer.save(location=location , user = request.user)
             data = occupationalHealthSafetyViewSerializer(data).data
             return Response(data, status=200)
@@ -112,12 +113,11 @@ class ContactUsView(generics.GenericAPIView):
     serializer_class = ContactusSerializezr
 
     def post(self, request):
-        lat = float(request.data['latitude'])
-        long = float(request.data['longitude'])
-        location = Point(long, lat, srid=4326)
-
         serializer = ContactusSerializezr(data = request.data)
-        if serializer.is_valid(raise_exception=True):
+        if serializer.is_valid():
+            lat = float(serializer.validated_data['latitude'])
+            long = float(serializer.validated_data['longitude'])
+            location = Point(long, lat, srid=4326)
             contactus = serializer.save(location=location )
             data = ContactusViewSerialzier(contactus).data
             return Response(data, status=200)
@@ -142,7 +142,7 @@ class PreConstructionStageComplianceView(generics.GenericAPIView):
     def post(self , request):
         data = request.data
         serializer= PreConstructionStageComplianceSerialzier (data = data)
-        if serializer.is_valid(raise_exception= True):
+        if serializer.is_valid():
             serializer.save(user = self.request.user)
             return Response({'status': 'success' ,
                             'Message': 'Data saved successfully'} , status= 200)

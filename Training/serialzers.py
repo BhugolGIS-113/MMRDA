@@ -63,27 +63,24 @@ class ContactusSerializezr(serializers.ModelSerializer):
     # images =  ContactusImageSerializers(many=True, read_only=True)
     longitude = serializers.CharField(max_length= 255 , required = False) # longitude
     latitude = serializers.CharField(max_length= 255, required = False) # latitude
-    uploaded_images  = serializers.ListField(
-        child=serializers.ImageField(allow_empty_file=False, use_url=False),
-        write_only=True
-    )
+    uploaded_images1  = serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
+    uploaded_images2 = serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
     class Meta:
         model = Contactus
-        fields = ('name','email','messsage' , 'longitude' , 'latitude' , 'uploaded_images')
+        fields = ('name','email','messsage' , 'longitude' , 'latitude' , 'uploaded_images1' , 'uploaded_images2')
 
     def create(self,data):
         data.pop('longitude')
         data.pop('latitude')
-        uploaded_images = data.pop("uploaded_images")
+
+        uploaded_images1 = data.pop("uploaded_images1")
+        uploaded_images2 = data.pop("uploaded_images2")
         contactus = Contactus.objects.create(**data)
 
-        for image in uploaded_images:
-            ContactusImage.objects.create(contactus=contactus, images=image)
-
+        images = [ContactusImage.objects.create(contactus=contactus, images1=image1, images2=image2) 
+                                                for image1, image2 in zip(uploaded_images1, uploaded_images2)]
         return contactus
         
-
-
 class ContactusViewSerialzier(GeoFeatureModelSerializer):
     class Meta:
         model = Contactus

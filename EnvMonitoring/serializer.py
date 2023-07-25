@@ -2,15 +2,28 @@ from rest_framework import serializers
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 from .models import *
 
+
+        
+
 class AirSerializer(serializers.ModelSerializer):
     # user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    longitude=serializers.CharField(max_length=10,required=False)
-    latitude=serializers.CharField(max_length=10,required=False)
+    longitude=serializers.CharField(max_length=50,required=True )
+    latitude=serializers.CharField(max_length=50,required=True)
     class Meta:
         model = Air
         fields = ('quarter','packages','month','longitude','latitude','dateOfMonitoring','PM10','SO2',
                    'O3','NOx','AQI' , 'Remarks')
         # geo_field='location'
+    def validate(self,data):
+        if data['quarter']=="" or data['quarter']==None:
+            raise serializers.ValidationError("quarter cannot be empty!!")
+        long = data['longitude'].split('.')[-1]
+        if len(long) > 6:
+            raise serializers.ValidationError("longitude must have at most 6 digits after the decimal point.")
+        lat =  data['latitude'].split('.')[-1]
+        if len(lat) > 6:
+            raise serializers.ValidationError("latitude must have at most 6 digits after the decimal point.")
+        return data
     
     def create(self,data):
         data.pop('latitude')
@@ -27,33 +40,37 @@ class AirViewSerializer(GeoFeatureModelSerializer):
 
 class WaterSerializer(serializers.ModelSerializer):
     # user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    longitude=serializers.CharField(max_length=10,required=False)
-    latitude=serializers.CharField(max_length=10,required=False)
+    longitude=serializers.CharField(max_length=50,required=True)
+    latitude=serializers.CharField(max_length=50,required=True)
     class Meta:
         model = water
         fields = ('quarter','packages','month', 'dateOfMonitoringTwo','longitude','latitude',
                     'qualityOfWater' , 'sourceOfWater' ,'waterDisposal')
 
+
+    def validate(self,data):
+        long = data['longitude'].split('.')[-1]
+        if len(long) > 6:
+            raise serializers.ValidationError("longitude must have at most 6 digits after the decimal point.")
+        lat =  data['latitude'].split('.')[-1]
+        if len(lat) > 6:
+            raise serializers.ValidationError("latitude must have at most 6 digits after the decimal point.")
+        
+        # if data['quarter']=="" or data['quarter']==None:
+        #     raise serializers.ValidationError("quarter cannot be empty!!")
+        # if data['packages'] == "" or data['packages'] == None:
+        #     raise serializers.ValidationError('package cannot be empty!!')
+        # if data['qualityOfWater'] == "" or data['qualityOfWater'] == None:
+        #     raise serializers.ValidationError('quality_of_water cannot be empty!!')
+        # if data['sourceOfWater'] == "" or data['sourceOfWater'] == None:
+        #     raise serializers.ValidationError('source_of_water cannot be empty!!')
+        return data
+    
+
     def create(self,data):
         data.pop('latitude')
         data.pop('longitude')
         return water.objects.create(**data)
-
-    def validate(self,data):
-        if data['quarter']=="" or data['quarter']==None:
-            raise serializers.ValidationError("quarter cannot be empty!!")
-        if data['packages'] == "" or data['packages'] == None:
-            raise serializers.ValidationError('package cannot be empty!!')
-        if data['longitude'] == "" or data['longitude'] == None:
-            raise serializers.ValidationError('longitude cannot be empty!!')
-        if data['latitude'] == "" or data['latitude'] == None:
-            raise serializers.ValidationError('latitude cannot be empty!!')
-        if data['qualityOfWater'] == "" or data['qualityOfWater'] == None:
-            raise serializers.ValidationError('quality_of_water cannot be empty!!')
-        if data['sourceOfWater'] == "" or data['sourceOfWater'] == None:
-            raise serializers.ValidationError('source_of_water cannot be empty!!')
-        return data
-        
 
 class waterviewserializer(GeoFeatureModelSerializer):
     class Meta:
@@ -64,31 +81,27 @@ class waterviewserializer(GeoFeatureModelSerializer):
 
 class NoiseSerializer(serializers.ModelSerializer):
     # user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    longitude=serializers.CharField(max_length=10,required=False)
-    latitude=serializers.CharField(max_length=10,required=False)
+    longitude=serializers.CharField(max_length=50,required=False)
+    latitude=serializers.CharField(max_length=50,required=False)
     class Meta:
         model = Noise
         fields = ('quarter','month','packages','longitude','latitude' ,'dateOfMonitoringThree','noiseLevel' , 'monitoringPeriod', )
+
+    def validate(self,data):
+        long = data['longitude'].split('.')[-1]
+        if len(long) > 6:
+            raise serializers.ValidationError("longitude must have at most 6 digits after the decimal point.")
+        lat =  data['latitude'].split('.')[-1]
+        if len(lat) > 6:
+            raise serializers.ValidationError("latitude must have at most 6 digits after the decimal point.")
+        return data
 
     def create(self,data):
         data.pop('latitude')
         data.pop('longitude')
         return Noise.objects.create(**data)
 
-    def validate(self,data):
-        if data['quarter']=="" or data['quarter']==None:
-            raise serializers.ValidationError("quarter cannot be empty!!")
-        if data['packages'] == "" or data['packages'] == None:
-            raise serializers.ValidationError('package cannot be empty!!')
-        if data['longitude'] == "" or data['longitude'] == None:
-            raise serializers.ValidationError('longitude cannot be empty!!')
-        if data['latitude'] == "" or data['latitude'] == None:
-            raise serializers.ValidationError('latitude cannot be empty!!')
-        if data['noiseLevel'] == "" or data['noiseLevel'] == None:
-            raise serializers.ValidationError('noise_level cannot be empty!!')
-        if data['monitoringPeriod'] == "" or data['monitoringPeriod'] == None:
-            raise serializers.ValidationError('Monitoring_Period cannot be empty!!')
-        return data
+    
 
 class Noiseviewserializer(GeoFeatureModelSerializer):
     class Meta:
@@ -99,15 +112,25 @@ class Noiseviewserializer(GeoFeatureModelSerializer):
 
 
 class TreeManagementSerailizer(serializers.ModelSerializer):
-    longitude=serializers.CharField(max_length=10,required=False)
-    latitude=serializers.CharField(max_length=10,required=False)
+    longitude=serializers.CharField(max_length=50,required=True)
+    latitude=serializers.CharField(max_length=50,required=True)
 
 
     class Meta:
         model = ExistingTreeManagment
         fields = ('quarter','month','dateOfMonitoring','packages','longitude','latitude' ,'treeID','commanName' ,'botanicalName',
                     'condition', 'noOfTreeCut','actionTaken', 'photographs', 'documents','remarks',)
-                   
+
+    def validate(self,data):
+        long = data['longitude'].split('.')[-1]
+        if len(long) > 6:
+            raise serializers.ValidationError("longitude must have at most 6 digits after the decimal point.")
+        lat =  data['latitude'].split('.')[-1]
+        if len(lat) > 6:
+            raise serializers.ValidationError("latitude must have at most 6 digits after the decimal point.")
+        return data
+
+
     def create(self,data):
         data.pop('latitude')
         data.pop('longitude')
@@ -121,12 +144,21 @@ class TreeManagmentviewserializer(GeoFeatureModelSerializer):
 
 
 class NewTreeManagmentSerializer(serializers.ModelSerializer):
-    longitude = serializers.CharField(max_length=10,required=False)
-    latitude = serializers.CharField(max_length=10,required=False)
+    longitude = serializers.CharField(max_length=50,required=True)
+    latitude = serializers.CharField(max_length=50,required=True)
     class Meta:
         model = NewTreeManagement
         fields = ('tree','quarter','month','dateOfMonitoring','packages','longitude','latitude',
                    'commanName' ,'botanicalName', 'condition', 'photographs', 'documents','remarks' )
+        
+    def validate(self,data):
+        long = data['longitude'].split('.')[-1]
+        if len(long) > 6:
+            raise serializers.ValidationError("longitude must have at most 6 digits after the decimal point.")
+        lat =  data['latitude'].split('.')[-1]
+        if len(lat) > 6:
+            raise serializers.ValidationError("latitude must have at most 6 digits after the decimal point.")
+        return data
 
     def create(self,data):
         data.pop('latitude')
@@ -152,14 +184,33 @@ class NewTreeManagmentviewserializer(GeoFeatureModelSerializer):
 
 class WasteTreatmentsSerializer(serializers.ModelSerializer):
     # user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    longitude=serializers.CharField(max_length=10,required=False)
-    latitude=serializers.CharField(max_length=10,required=False)
-    waste_longitude = serializers.CharField(max_length=10,required=False)
-    waste_latitude = serializers.CharField(max_length=10,required=False)
+    longitude=serializers.CharField(max_length=50,required=True)
+    latitude=serializers.CharField(max_length=50,required=True)
+    waste_longitude = serializers.CharField(max_length=50,required=True)
+    waste_latitude = serializers.CharField(max_length=50,required=True)
     class Meta:
         model  = WasteTreatments
         fields = ('quarter','month','packages','longitude','latitude'  ,'dateOfMonitoring' , 'wastetype' ,'quantity',
          'wastehandling' , 'waste_longitude' ,'waste_latitude', 'photographs' , 'documents','remarks')
+
+    def validate(self,data):
+        long = data['longitude'].split('.')[-1]
+        if len(long) > 6:
+            raise serializers.ValidationError("longitude must have at most 6 digits after the decimal point.")
+        lat =  data['latitude'].split('.')[-1]
+        if len(lat) > 6:
+            raise serializers.ValidationError("latitude must have at most 6 digits after the decimal point.")
+        
+        waste_longitude = data["waste_longitude"].split('.')[-1]
+        if len(waste_longitude) > 6:
+            raise serializers.ValidationError("waste_longitude must have at most 6 digits after the decimal point.")
+        
+        waste_latitude = data["waste_latitude"].split('.')[-1]
+        if len(waste_latitude) > 6:
+            raise serializers.ValidationError("waste_latitude must have at most 6 digits after the decimal point.")
+
+        return data
+
 
     def create(self,data):
         data.pop('longitude')
@@ -178,10 +229,10 @@ class wastetreatmentsViewserializer(GeoFeatureModelSerializer):
 
 class MaterialManagmentSerializer(serializers.ModelSerializer):
     # user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    longitude=serializers.CharField(max_length=10,required=False)
-    latitude=serializers.CharField(max_length=10,required=False)
-    storageLongitude = serializers.CharField(max_length=10,required=False)
-    storageLatitude = serializers.CharField(max_length=10,required=False)
+    longitude=serializers.CharField(max_length=50,required=True)
+    latitude=serializers.CharField(max_length=50,required=True)
+    storageLongitude = serializers.CharField(max_length=50,required=True)
+    storageLatitude = serializers.CharField(max_length=50,required=True)
 
     class Meta:
         model = MaterialManegmanet

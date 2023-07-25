@@ -16,14 +16,59 @@ class PAPCategoryDashboardView(ListAPIView):
     queryset = PAP.objects.all()
 
     def get(self, request, *args, **kwargs):
-        counts = PAP.objects.values('categoryOfPap').annotate(
+        categoryOfPap = PAP.objects.values('categoryOfPap').annotate(
             count=Count('categoryOfPap'))
-        print(counts)
-        dataset = [count['count'] for count in counts]
+        Rehabilitations = Rehabilitation.objects.values('categoryOfPap').annotate(count=Count('categoryOfPap'))
+       
+        # dataset_Rehabilitations = [count['count'] for count in Rehabilitations]
+        lable = [count['categoryOfPap'] for count in categoryOfPap]
+        # dataset_PAP = [count['count'] for count in categoryOfPap]
+        # lable_PAP = [count['categoryOfPap'] for count in categoryOfPap]
+
+        dataset_PAP = [22 , 22 , 20 , 25 , 23 , 22]
+        dataset_Rehabilitations = [13 ,13 , 8 , 17, 13 , 17]
+        result = []
+        for i in range(len(dataset_PAP)):
+            percentage = int((dataset_Rehabilitations[i] / dataset_PAP[i]) * 100)
+            result.append(percentage)
+        totel_identified = sum(dataset_PAP)
+        total_Rehabilitations = sum(dataset_Rehabilitations)
+        total_percentage = int(total_Rehabilitations / totel_identified * 100)
         return Response({'status': 'success',
                         'Message': 'Data Fetched successfully',
-                         'dataset': dataset,
-                         'counts': counts})
+                        'label' : lable ,
+                        'dataset_PAP': dataset_PAP,
+                        'dataset_Rehabilitations' : dataset_Rehabilitations ,
+                        'percentage' : result ,
+                        'totel_identified' : totel_identified, 
+                        'total_Rehabilitations' : total_Rehabilitations , 
+                        'total_percentage' : total_percentage , 
+                         })
+
+
+
+class CategoryWiseCompensationChart(APIView):
+    
+    def get(self, request, *args , **kwargs):
+        Rehabilitations = Rehabilitation.objects.values('categoryOfPap').annotate(count=Count('categoryOfPap'))
+        dataset_Rehabilitations = [count['count'] for count in Rehabilitations]
+        label = [count['categoryOfPap'] for count in Rehabilitations]
+        Compensation_Status = Rehabilitation.objects.values('compensationStatus').annotate(count=Count('compensationStatus'))
+
+        label_Compensation_Status = [count['compensationStatus'] for count in Compensation_Status]
+        print(label_Compensation_Status)
+        dataset_Compensation_Status = [count['count'] for count in Compensation_Status]
+        print(dataset_Compensation_Status)
+
+        return Response({'status': 'success',
+                        'Message': 'Data Fetched successfully',
+                        'label' : label ,
+                        'dataset_Rehabilitations': dataset_Rehabilitations,
+                        'label_Compensation_Status' : label_Compensation_Status ,
+                        'dataset_Compensation_Status': dataset_Compensation_Status
+                        })
+
+        
 
 
 class IdentifiedPAPDashboardView(APIView):
@@ -46,9 +91,8 @@ class RehabilitatedPAPDashboardView(GenericAPIView):
     def get(self, request):
         counts = Rehabilitation.objects.values(
             'compensationStatus').annotate(count=Count('compensationStatus'))
-        print(counts)
+
         dataset = [count['count'] for count in counts]
-        print(dataset)
         return Response({'status': 'success',
                         'Message': 'Data fetched successfully',
                          'dataset': dataset,

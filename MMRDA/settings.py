@@ -110,10 +110,11 @@ DATABASES={
         'NAME':'MMRDA',
         'USER':'postgres',
         'PASSWORD':'admin',
-        'HOST':'localhost',
+        'HOST':'10.202.100.7',
         'PORT':'5432',
     }
 }
+
 
 # DATABASES = {
 #     'default': {
@@ -202,7 +203,7 @@ SWAGGER_SETTINGS = {
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=120),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),   # 2 Hours 
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,

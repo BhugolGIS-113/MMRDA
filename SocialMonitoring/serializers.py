@@ -6,16 +6,31 @@ from django.core.validators import MinLengthValidator, MaxLengthValidator
 
 
 
+def validate_coordinate(value):
+    if '.' in value:
+        integer_part, decimal_part = value.split('.')
+        if len(decimal_part) > 6:
+            raise serializers.ValidationError("Coordinate must have at most 6 digits after the decimal point.")
+
 
 
 #---------------Labour camp Serializer for GEO jason Format--------------------------------
 class labourCampDetailSerializer(serializers.ModelSerializer):
-    longitude = serializers.CharField(max_length=10, required=False)
-    latitude = serializers.CharField(max_length=10, required=False)
+    longitude = serializers.CharField(max_length=10, required=False )
+    latitude = serializers.CharField(max_length=8, required=False )
     class Meta:
         model = labourcampDetails
         fields = ('LabourCampName' , 'LabourCampId' , 'longitude' , 'latitude')
 
+    def validate(self,data):
+        long = data['longitude'].split('.')[-1]
+        if len(long) > 6:
+            raise serializers.ValidationError("longitude must have at most 6 digits after the decimal point.")
+        lat =  data['latitude'].split('.')[-1]
+        if len(lat) > 6:
+            raise serializers.ValidationError("latitude must have at most 6 digits after the decimal point.")
+        return data
+    
     def create(self, data):
         data.pop('longitude')
         data.pop('latitude')
@@ -41,8 +56,8 @@ class labourCampDetailGetviewSerializer(serializers.ModelSerializer):
 
 class PapSerailzer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    longitude = serializers.CharField(max_length=10, required=False)
-    latitude = serializers.CharField(max_length=10, required=False)
+    longitude = serializers.CharField(max_length=8, required=False)
+    latitude = serializers.CharField(max_length=8, required=False)
     class Meta:
         model = PAP
         fields = ('quarter', 'packages', 'longitude', 'latitude','dateOfMonitoring', 'user','dateOfIdentification','PAPID','nameOfPAP', 
@@ -50,6 +65,14 @@ class PapSerailzer(serializers.ModelSerializer):
                     'areaOfAsset','typeOfAsset','legalStatus','legalDocuments',
                    'actionTaken', 'notAgreedReason','presentPhotograp','remarks' )
 
+    def validate(self,data):
+        long = data['longitude'].split('.')[-1]
+        if len(long) > 6:
+            raise serializers.ValidationError("longitude must have at most 6 digits after the decimal point.")
+        lat =  data['latitude'].split('.')[-1]
+        if len(lat) > 6:
+            raise serializers.ValidationError("latitude must have at most 6 digits after the decimal point.")
+        return data
 
     def create(self, data):
         data.pop('longitude')
@@ -59,15 +82,22 @@ class PapSerailzer(serializers.ModelSerializer):
    
 
 class PapUpdateSerialzier(serializers.ModelSerializer):
-    longitude = serializers.CharField(max_length=10, required=False)
-    latitude = serializers.CharField(max_length=10, required=False)
+    longitude = serializers.CharField(max_length=8, required=False)
+    latitude = serializers.CharField(max_length=8, required=False)
     class Meta:
         model = PAP
         fields = ('quarter', 'packages', 'longitude', 'latitude', 'dateOfIdentification',
                   'addressLine1','streetName','pincode','eligibility', 'categoryOfPap',
                   'areaOfAsset','typeOfAsset','legalStatus','legalDocuments',
                    'actionTaken', 'notAgreedReason','presentPhotograp','remarks')
-
+    def validate(self,data):
+        long = data['longitude'].split('.')[-1]
+        if len(long) > 6:
+            raise serializers.ValidationError("longitude must have at most 6 digits after the decimal point.")
+        lat =  data['latitude'].split('.')[-1]
+        if len(lat) > 6:
+            raise serializers.ValidationError("latitude must have at most 6 digits after the decimal point.")
+        return data
 
 class papviewserialzer(GeoFeatureModelSerializer):
     class Meta:
@@ -83,11 +113,16 @@ class papviewserialzer(GeoFeatureModelSerializer):
 # ------------------------ Rehabiliation Serializer ----------------------------------------
 class RehabilitationSerializer(serializers.ModelSerializer):
 
-    longitude = serializers.CharField(max_length=10, required=False)
-    latitude = serializers.CharField(max_length=10, required=False)
+    longitude = serializers.CharField(max_length=8, required=False)
+    latitude = serializers.CharField(max_length=8, required=False)
+    # livelihoodSupportPhotograph = serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
+    # trainingPhotograph = serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
+    # tenamentsPhotograph = serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
+    # photographs = serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
+
     class Meta:
         model = Rehabilitation
-        fields = ('quarter','longitude', 'latitude','ID','dateOfRehabilitation' ,'PAPID', 'PAPName' ,'cashCompensation', 'compensationStatus',
+        fields = ('quarter','longitude', 'latitude','ID','dateOfRehabilitation' ,'PAPID', 'PAPName' ,'categoryOfPap','cashCompensation', 'compensationStatus',
                    'typeOfCompensation', 'otherCompensationType' ,'addressLine1','streetName','pincode',
                    'isShiftingAllowance','shiftingAllowanceAmount','isLivelihoodSupport', 'livelihoodSupportAmount','livelihoodSupportCondition',
                    'livelihoodSupportPhotograph','livelihoodSupportRemarks','isTraining','trainingCondition',
@@ -95,12 +130,33 @@ class RehabilitationSerializer(serializers.ModelSerializer):
                     'isRelocationAllowance' ,'RelocationAllowanceAmount' ,'isfinancialSupport',
                    'financialSupportAmount','isCommunityEngagement','isEngagementType', 'photographs' , 'documents','remarks')
 
+    def validate(self,data):
+        long = data['longitude'].split('.')[-1]
+        if len(long) > 6:
+            raise serializers.ValidationError("longitude must have at most 6 digits after the decimal point.")
+        lat =  data['latitude'].split('.')[-1]
+        if len(lat) > 6:
+            raise serializers.ValidationError("latitude must have at most 6 digits after the decimal point.")
+        return data
 
     def create(self, data):
         data.pop('longitude')
         data.pop('latitude')
+        # livelihoodSupportPhotograph = data.pop('livelihoodSupportPhotograph')
+        # trainingPhotograph = data.pop('trainingPhotograph')
+        # tenamentsPhotograph = data.pop('tenamentsPhotograph')
+        # photographs = data.pop('photographs')
+
+        Rehabilitation_data = Rehabilitation.objects.create(**data)
+
+        # images = [RehabilitationImages.objects.create(RehabilitationID = Rehabilitation_data ,
+        #                                      livelihoodSupportPhotograph = livelihoodSupportImages ,  trainingPhotograph =trainingImages ,
+        #                                     tenamentsPhotograph = tenamentsImages, photographs = image   ) 
+        #                                     for livelihoodSupportImages , trainingImages ,tenamentsImages , image in zip (livelihoodSupportPhotograph , 
+                                                                    # trainingPhotograph , tenamentsPhotograph ,photographs) ]
   
-        return Rehabilitation.objects.create(**data)
+        return Rehabilitation_data
+
 
 class RehabilitationViewSerializer(GeoFeatureModelSerializer):
     class Meta:
@@ -112,15 +168,15 @@ class RehabilitationViewSerializer(GeoFeatureModelSerializer):
 class RehabilatedPAPIDSerializer(serializers.ModelSerializer):
     class Meta:
         model = PAP
-        fields = ('id', 'PAPID' , 'nameOfPAP' )
+        fields = ('id', 'PAPID' , 'nameOfPAP' , 'categoryOfPap' )
 
 # -------------------------------- Labour camp details Serialzier --------------------------------      
 class LabourCampDetailSerializer(serializers.ModelSerializer):
     # user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     dateOfMonitoring = serializers.DateField(required=True)
     packages = serializers.CharField(validators=[MinLengthValidator(3)] , required=True)
-    longitude = serializers.CharField(max_length=10, required=True)
-    latitude = serializers.CharField(max_length=10, required=True)
+    longitude = serializers.CharField(max_length=8, required=True)
+    latitude = serializers.CharField(max_length=8, required=True)
     labourCampName = serializers.CharField(validators=[MinLengthValidator(3)] , required=True)
     labourCampId = serializers.CharField(validators=[MinLengthValidator(3)] , required=True)
     
@@ -141,6 +197,15 @@ class LabourCampDetailSerializer(serializers.ModelSerializer):
                     'transportationFacility' ,'transportationFacilityCondition', 'modeOfTransportation','distanceFromSite',
                     'photographs' ,'documents','remarks')
 
+
+    def validate(self,data):
+        long = data['longitude'].split('.')[-1]
+        if len(long) > 6:
+            raise serializers.ValidationError("longitude must have at most 6 digits after the decimal point.")
+        lat =  data['latitude'].split('.')[-1]
+        if len(lat) > 6:
+            raise serializers.ValidationError("latitude must have at most 6 digits after the decimal point.")
+        return data
     
     def create(self,data):
         data.pop('longitude')
@@ -167,7 +232,7 @@ class LabourCampUpdateSerialzier(serializers.ModelSerializer):
                     'photographs' ,'documents','remarks')
 
 
-
+    
 
 
 # ----------------------------- Construction site serializer -----------------------------------
@@ -176,8 +241,8 @@ class constructionSiteSerializer(serializers.ModelSerializer):
     quarter = serializers.CharField(validators=[MinLengthValidator(3)] , required=True)
     dateOfMonitoring = serializers.DateField(required=True)
     packages = serializers.CharField(validators=[MinLengthValidator(3)] , required=True)
-    longitude = serializers.CharField(max_length=10, required=True)
-    latitude = serializers.CharField(max_length=10, required=True)
+    longitude = serializers.CharField(max_length=8, required=True)
+    latitude = serializers.CharField(max_length=8, required=True)
     constructionSiteId = serializers.CharField(max_length = 255 , required = True)
     constructionSiteName = serializers.CharField(max_length = 255 , required = True)
 
@@ -193,6 +258,15 @@ class constructionSiteSerializer(serializers.ModelSerializer):
                     'isToilet', 'toiletCondition','toiletPhotograph','toiletRemarks',
                     'genralphotographs','documents','remarks')
     
+    def validate(self,data):
+        long = data['longitude'].split('.')[-1]
+        if len(long) > 6:
+            raise serializers.ValidationError("longitude must have at most 6 digits after the decimal point.")
+        lat =  data['latitude'].split('.')[-1]
+        if len(lat) > 6:
+            raise serializers.ValidationError("latitude must have at most 6 digits after the decimal point.")
+        return data
+
     def create(self,data):
         data.pop('longitude', None)
         data.pop('latitude', None)

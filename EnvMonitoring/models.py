@@ -2,16 +2,24 @@ from django.db import models
 from Auth.models import User
 from django.db.models.signals import post_save
 from django.contrib.gis.db import models
+from django.core.exceptions import ValidationError
 # Create your models here.
 
+def validate_location_precision(value):
+  
+    if isinstance(value, tuple) and len(value) == 2:
+        lat, lon = value
+        if isinstance(lat, float) and isinstance(lon, float):
+            if len(str(lat).split('.')[-1]) > 6 or len(str(lon).split('.')[-1]) > 6:
+                raise ValidationError("The location must have at most 6 digits after the decimal point.")
 
 # Abstarct Baseclass for EnvMonitoring for common field
 class Baseclass(models.Model):
     quarter = models.CharField(max_length=255,  null=True, blank=True)
     month = models.CharField(max_length=255, null=True, blank=True)
     packages = models.CharField(max_length=255, null=True, blank=True)
-    location = models.PointField(null=True, blank=True)
-    dateOfMonitoring = models.DateField(null=True, blank=True)
+    location = models.PointField(null=True, blank=True  , validators=[validate_location_precision])
+    dateOfMonitoring = models.DateField(null=True, blank=True )
     class Meta:
         abstract = True
 
@@ -108,3 +116,5 @@ class MaterialManegmanet(Baseclass):
     
     # def __str__(self) -> str:
     #     return self.materialsourcing_id.env_monitoring.email
+
+

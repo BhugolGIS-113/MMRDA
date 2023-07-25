@@ -19,20 +19,23 @@ class labourCampdetails(generics.GenericAPIView):
     queryset = labourcampDetails.objects.all()
 
     def post(self, request):
-        lat = float(request.data['latitude'])
-        long = float(request.data['longitude'])
-        location = Point(long, lat, srid=4326)
+        
         try:
             serializer = labourCampDetailSerializer(data=request.data)
-            if serializer.is_valid(raise_exception=True):
+            if serializer.is_valid():
+                lat = float(serializer.validated_data['latitude'])
+                long = float(serializer.validated_data['longitude'])
+                location = Point(long, lat, srid=4326)
                 pap = serializer.save(location=location)
                 data = labourCampDetailviewSerializer(pap).data
                 return Response({'status': 'success',
                                 'Message': 'Data saved successfully',
                                  'data': data}, status=status.HTTP_200_OK)
             else:
-                return Response({"Message": 'Something Went Wrong , Please Check all the details',
-                                'status': 'failed'}, status=400)
+                key, value =list(serializer.errors.items())[0]
+                error_message = key+" ,"+value[0]
+                return Response({'status': 'error',
+                                'Message' :error_message} , status = status.HTTP_400_BAD_REQUEST)
         except:
             return Response({'status': 'failed',
                             'Message': 'Something Went Wrong'}, status=400)
@@ -54,28 +57,28 @@ class PapView(generics.GenericAPIView):
     parser_classes = [MultiPartParser]
 
     def post(self, request):
-        
-        lat = float(request.data['latitude'])
-        long = float(request.data['longitude'])
-        location = Point(long, lat, srid=4326)
-        papid = request.data['PAPID']
         try:
             if "RNR" in request.user.groups.values_list("name", flat=True):
-                data = PAP.objects.filter(PAPID=papid).exists()
-                if data == True:
-                    return Response({'Message': 'already data filled for this PAP-ID',
-                                    'status' : 'success'}, status=400)
-                else:
-                    serializer = PapSerailzer(
-                        data=request.data, context={'request': request})
-                    if serializer.is_valid(raise_exception=True):
+                serializer = PapSerailzer(data=request.data, context={'request': request})
+                if serializer.is_valid():
+                    papid = serializer.validated_data["PAPID"]
+                    data = PAP.objects.filter(PAPID=papid).exists()
+                    if data == True:
+                        return Response({'Message': 'already data filled for this PAP-ID',
+                                        'status' : 'success'}, status=400)
+                    else:
+                        lat = float(serializer.validated_data['latitude'])
+                        long = float(serializer.validated_data['longitude'])
+                        location = Point(long, lat, srid=4326)
                         pap = serializer.save(location=location, user=request.user)
                         data = papviewserialzer(pap).data
                         return Response ({'Message': 'data saved successfully',
                                         'status' : 'success'}, status=200)
-                    else:
-                        return Response({"Message": 'data Invalid please Try Again',
-                                          'status' : 'failed'  }, status=400)
+                else:    
+                    key, value =list(serializer.errors.items())[0]
+                    error_message = key+" ,"+value[0]
+                    return Response({'status': 'error',
+                                    'Message' :value[0]} , status = status.HTTP_400_BAD_REQUEST)
         except:
             return Response({"Message": "You are not Authourize person to fill this Details" ,
                              'status' : 'failed' }, status=401)
@@ -131,33 +134,33 @@ class RehabilitationView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated, IsRNR]
 
     def post(self, request, *args, **kwargs):
-        lat = float(request.data['latitude'])
-        long = float(request.data['longitude'])
-        location = Point(long, lat, srid=4326)
-        papid = request.data['PAPID']
-        try:
-            if "RNR" in request.user.groups.values_list("name", flat=True):
+     
+        
+        if "RNR" in request.user.groups.values_list("name", flat=True):
+            serializer = RehabilitationSerializer(data=request.data )
+            if serializer.is_valid():
+                papid = serializer.validated_data['PAPID']
                 data = Rehabilitation.objects.filter(PAPID=papid).exists()
                 if data == True:
                     return Response({'Message': 'already data filled for this PAP' ,
-                                    'status' : 'success'}, status=400)
+                                    'status' : 'success'})
                 else:
-                    serializer = RehabilitationSerializer(
-                        data=request.data )
-                    print(serializer.context)
-                    if serializer.is_valid():
-                        rehabilitation = serializer.save(
-                            location=location, user=request.user)
-                        data = RehabilitationViewSerializer(
-                            rehabilitation).data
-                        return Response({'Message': 'data saved successfully',
-                                        'status' : 'success'}, status=200)
-                    else:
-                        return Response({"Message": serializer.errors ,
-                                        'status' : 'failed'}, status=400)
-        except Exception:
-            return Response({"Message": "You are not Authourize person to fill this Details" ,
-                            'status' : 'failed'}, status=401)
+                    lat = float(serializer.validated_data['latitude'])
+                    long = float(serializer.validated_data['longitude'])
+                    location = Point(long, lat, srid=4326)
+                    rehabilitation = serializer.save(location=location, user=request.user)
+                    data = RehabilitationViewSerializer(
+                        rehabilitation).data
+                    return Response({'Message': 'data saved successfully',
+                                    'status' : 'success'})
+            else:
+                key, value =list(serializer.errors.items())[0]
+                error_message = key+" ,"+value[0]
+                return Response({'status': 'error',
+                                'Message' :value[0]} , status = status.HTTP_400_BAD_REQUEST)
+            # except Exception:
+        #     return Response({"Message": "You are not Authourize person to fill this Details" ,
+        #                     'status' : 'failed'}, status=401)
 
 
 # ----------------------------- Labour Camp details View --------------------------------
@@ -168,40 +171,47 @@ class LabourCampDetailsView(generics.GenericAPIView):
     serializer_class = LabourCampDetailSerializer
 
     def post(self, request):
-        lat = float(request.data['latitude'])
-        long = float(request.data['longitude'])
-        location = Point(long, lat, srid=4326)
-        date = request.data['dateOfMonitoring'].split('-')
-        quarter = request.data['quarter']
         try:
             if "contractor" in request.user.groups.values_list("name", flat=True):
-                data = LabourCamp.objects.filter(
-                    quarter=quarter, dateOfMonitoring__year=int(date[0])).exists()
-                if data == True:
-                    return Response({'Message': 'already data filled for this Quarter'}, status=400)
-                else:
-                    serializer = LabourCampDetailSerializer(data=request.data )
-                    if serializer.is_valid(raise_exception=True):
+                serializer = LabourCampDetailSerializer(data=request.data )
+                if serializer.is_valid():
+                    date = str(serializer.validated_data['dateOfMonitoringTwo']).split('-')
+                    quarter = serializer.validated_data['quarter']
+                    data = LabourCamp.objects.filter(quarter=quarter, dateOfMonitoring__year=int(date[0])).exists()
+                    if data == True:
+                        return Response({'Message': 'already data filled for this Quarter'}, status=400)
+                    else:
+                        lat = float(serializer.validated_data['latitude'])
+                        long = float(serializer.validated_data['longitude'])
+                        location = Point(long, lat, srid=4326)
+                        
                         LabourCampDetails = serializer.save(location=location , user = request.user)
                         data = LabourCampDetailViewSerializer(LabourCampDetails).data
 
                         return Response({'Message': 'data saved successfully',
                                         'status' : 'success'}, status=200)
-                    else:
-                        return Response({'Message': "Please enter a valid data", 
-                                            'error': serializer.errors, 'Status': 'failed'}, status=400)
+                else:
+                    key, value =list(serializer.errors.items())[0]
+                    error_message = key+" ,"+value[0]
+                    return Response({'status': 'error',
+                                    'Message' :error_message} , status = status.HTTP_400_BAD_REQUEST)
             else:
                 serializer = LabourCampDetailSerializer(
                     data=request.data)
                 if serializer.is_valid(raise_exception=True):
+                    lat = float(serializer.validated_data['latitude'])
+                    long = float(serializer.validated_data['longitude'])
+                    location = Point(long, lat, srid=4326)
                     LabourCampDetails = serializer.save(location=location , user = request.user)
-                    data = LabourCampDetailViewSerializer(
-                        LabourCampDetails).data
+                    data = LabourCampDetailViewSerializer(LabourCampDetails).data
                     return Response({'Message': 'data saved successfully',
                                      'status' : 'success'}, status=200)
                 else:
-                    return Response({'Message': "Please enter a valid data",
-                                     'error': serializer.errors, 'Status': 'failed'} , status= 400)
+                    key, value =list(serializer.errors.items())[0]
+                    error_message = key+" ,"+value[0]
+                    return Response({'status': 'error',
+                                    'Message' :error_message} , status = status.HTTP_400_BAD_REQUEST)
+                
         except Exception:
             return Response({"msg": "Only consultant and contractor can fill this form"}, status=401)
 
@@ -239,42 +249,47 @@ class constructionSiteView(generics.GenericAPIView):
 
     def post(self, request):
 
-        lat = float(request.data['latitude'])
-        long = float(request.data['longitude'])
-        location = Point(long, lat, srid=4326)
-        constructionSiteId = request.data['constructionSiteId']
-        constructionSiteName = request.data['constructionSiteName']
+
         try:
             if "contractor" in request.user.groups.values_list("name", flat=True):
-                data = ConstructionSiteDetails.objects.filter(
-                    constructionSiteId=constructionSiteId, constructionSiteName=constructionSiteName).exists()
-                if data == True:
-                    return Response({'message': 'already data filled for this Construction Site',
-                                    'status': 'success'}, status=400)
-                else:
-                    serialzier = constructionSiteSerializer(
-                        data=request.data, context={'request': request})
-                    if serialzier.is_valid(raise_exception=True):
+                serialzier = constructionSiteSerializer( data=request.data, context={'request': request})
+                if serialzier.is_valid():
+                    constructionSiteId = serialzier.validated_data['constructionSiteId']
+                    constructionSiteName = serialzier.validated_data['constructionSiteName']
+                    data = ConstructionSiteDetails.objects.filter(constructionSiteId = constructionSiteId, constructionSiteName=constructionSiteName).exists()
+                    if data == True:
+                        return Response({'message': 'already data filled for this Construction Site',
+                                        'status': 'success'}, status=400)
+                    else:
+                        lat = float(serialzier.validated_data['latitude'])
+                        long = float(serialzier.validated_data['longitude'])
+                        location = Point(long, lat, srid=4326)
                         construction = serialzier.save(location=location , user = request.user)
                         data = ConstructionSiteDetailsViewSerializer(
                             construction).data
                         return  Response({'Message': 'data saved successfully',
-                                     'status' : 'success'}, status=200)
-                    else:
-                        return Response({'Message': "Please enter a valid data",
-                                         'Status': 'failed'} , status= 400)
+                                    'status' : 'success'}, status=200)
+                else:
+                    key, value =list(serialzier.errors.items())[0]
+                    error_message = key+" ,"+value[0]
+                    return Response({'status': 'error',
+                                    'Message' :error_message} , status = status.HTTP_400_BAD_REQUEST)
             else:
-                serialzier = constructionSiteSerializer(
-                    data=request.data, context={'request': request})
+                serialzier = constructionSiteSerializer( data=request.data, context={'request': request})
                 if serialzier.is_valid(raise_exception=True):
+                    lat = float(serialzier.validated_data['latitude'])
+                    long = float(serialzier.validated_data['longitude'])
+                    location = Point(long, lat, srid=4326)
                     construction = serialzier.save(location=location , user = request.user)
                     data = ConstructionSiteDetailsViewSerializer(
                         construction).data
                     return  Response({'Message': 'data saved successfully',
                                      'status' : 'success'}, status=200)
                 else:
-                    return Response({'Message': "Please enter a valid data",
-                                         'Status': 'failed'} , status= 400)
+                    key, value =list(serialzier.errors.items())[0]
+                    error_message = key+" ,"+value[0]
+                    return Response({'status': 'error',
+                                        'Message' :error_message} , status = status.HTTP_400_BAD_REQUEST)
         except Exception:
             return Response({"msg": "Only consultant and contractor can fill this form"}, status=401)
 

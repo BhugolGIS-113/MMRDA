@@ -41,12 +41,8 @@ class LoginSerializer(serializers.ModelSerializer):
         model = User
         fields = ("email", "password")
 
-        extra_kwargs ={'password':{'write_only':True}}
-
-
-    def validate(self,data):
-       return authenticate(**data)
-       
+        extra_kwargs ={'password':{'write_only':False}}
+      
 class ChangePasswordSerializer(serializers.Serializer):
    password = serializers.CharField(max_length=255 , style={'input_type':'password'}, write_only =True)
    class Meta:

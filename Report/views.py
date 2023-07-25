@@ -72,8 +72,7 @@ class ConstructionCampReportPackageView(ListAPIView):
                 packages=packages, constructionSiteName=constructionSiteName  ).order_by('-id')[1:]
             latest = ConstructionSiteDetails.objects.filter(
                 packages=packages, constructionSiteName=constructionSiteName).latest('id')
-            previousData = ConstructionCampReportSerializer(
-                previous, many=True)
+            previousData = ConstructionCampReportSerializer(previous, many=True)
             latestData = ConstructionCampReportSerializer(latest)
 
             return Response({'Message': 'data Fetched Successfully',

@@ -62,13 +62,14 @@ class PAPReportSerializer(GeoFeatureModelSerializer):
 class RehabilitationReportSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = Rehabilitation
-        fields =  ('id','ID','dateOfRehabilitation' ,'PAPID', 'PAPName' ,'cashCompensation', 'compensationStatus',
-                   'typeOfCompensation', 'otherCompensationType' ,'addressLine1','streetName','pincode',
-                   'isShiftingAllowance','shiftingAllowanceAmount','isLivelihoodSupport', 'livelihoodSupportAmount','livelihoodSupportCondition',
-                   'livelihoodSupportPhotograph','livelihoodSupportRemarks','isTraining','trainingCondition',
-                   'trainingPhotograph' ,'trainingRemarks' , 'typeOfTenaments'  ,'areaOfTenament' , 'tenamentsPhotograph',
-                    'isRelocationAllowance' ,'RelocationAllowanceAmount' ,'isfinancialSupport',
-                   'financialSupportAmount','isCommunityEngagement','isEngagementType', 'photographs' , 'documents','remarks')
+        fields = "__all__"
+        # fields =  ('id','ID','dateOfRehabilitation' ,'PAPID', 'PAPName' ,'cashCompensation', 'compensationStatus',
+        #            'typeOfCompensation', 'otherCompensationType' ,'addressLine1','streetName','pincode',
+        #            'isShiftingAllowance','shiftingAllowanceAmount','isLivelihoodSupport', 'livelihoodSupportAmount','livelihoodSupportCondition',
+        #            'livelihoodSupportPhotograph','livelihoodSupportRemarks','isTraining','trainingCondition',
+        #            'trainingPhotograph' ,'trainingRemarks' , 'typeOfTenaments'  ,'areaOfTenament' , 'tenamentsPhotograph',
+        #             'isRelocationAllowance' ,'RelocationAllowanceAmount' ,'isfinancialSupport',
+        #            'financialSupportAmount','isCommunityEngagement','isEngagementType', 'photographs' , 'documents','remarks')
         geo_field= ('location')
 
         
@@ -118,6 +119,7 @@ class treeManagementSerializer(GeoFeatureModelSerializer):
         model = ExistingTreeManagment
         fields = ('id','quarter','month','dateOfMonitoring','packages','treeID','commanName' ,'botanicalName',
                     'condition', 'noOfTreeCut','actionTaken', 'photographs', 'documents','remarks')
+        
         geo_field= ('location')
 
 class Package54AlignmentSerializer(GeoFeatureModelSerializer):

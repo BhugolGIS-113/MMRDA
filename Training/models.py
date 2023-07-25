@@ -27,7 +27,7 @@ class traning(Baseclass):
     incharge_person = models.CharField(max_length=253, null=True, blank=True)
     traninig_initiated_by = models.CharField(
         max_length=255, null=True, blank=True)
-    conduct_date = models.DateField(auto_now=True, null=True, blank=True)
+    conduct_date = models.DateField(   auto_now=True, null=True, blank=True)
     traning_date = models.DateField(auto_now=True, null=True, blank=True)
     description = models.CharField(max_length=255, null=True, blank=True)
     photographs = models.ImageField(
@@ -92,30 +92,61 @@ class Contactus(models.Model):
 
 
 class ContactusImage(models.Model):
-    # contactus = models.ForeignKey(
-    #     Contactus, on_delete=models.CASCADE, related_name='images')
-    images = models.ImageField(
-        upload_to='contactus/images', max_length=255, blank=True, null=True)
-
-    def save(self,force_insert=False, force_update=False, using=None,*args, **kwargs):
-        if self.images:
-            image = self.images
-            print(image.size)
-            if image.size > 0.02*1024*1024: #if size greater than 500kb then it will send to compress image function
-                self.images = compress_image(image)
-        super(ContactusImage, self).save(*args, **kwargs)
+    contactus = models.ForeignKey(
+        Contactus, on_delete=models.CASCADE, related_name='images' , blank = True    , null = True)
+    images1 = models.ImageField(upload_to='contactus/images', max_length=255, blank=True, null=True)
+    images2 = models.ImageField(upload_to='contactus/images' , max_length=255, blank=True, null = True )
 
 
-from django.core.files import File
-from io import BytesIO
-from PIL import Image
 
-def compress_image(image):
-    im = Image.open(image)
-    im_io = BytesIO()
-    im.save(im_io, 'jpeg', quality=1,optimize=True)
-    new_image = File(im_io, name=image.name)
-    return new_image
+
+#     def save(self,force_insert=False, force_update=False, using=None,*args, **kwargs):
+#         if self.images:
+#             image = self.images
+#             print(image.size)
+#             if image.size > 0.02*1024*1024: #if size greater than 500kb then it will send to compress image function
+#                 self.images = compress_image(image)
+#         super(ContactusImage, self).save(*args, **kwargs)
+
+
+# from django.core.files import File
+# from io import BytesIO
+# from PIL import Image
+
+# def compress_image(image):
+#     im = Image.open(image)
+#     im_io = BytesIO()
+#     im.save(im_io, 'jpeg', quality=1,optimize=True)
+#     new_image = File(im_io, name=image.name)
+#     return new_image
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 class PreConstructionStage(models.Model):

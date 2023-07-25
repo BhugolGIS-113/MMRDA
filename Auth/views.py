@@ -13,6 +13,7 @@ import json
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenBlacklistView
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken , BlacklistedToken
+from django.contrib.auth import authenticate
 
 
 
@@ -40,7 +41,6 @@ class UserRegister(generics.GenericAPIView):
                 consultant_group = Group.objects.get(name='consultant')
                 contractor_group = Group.objects.get(name='contractor')
                 RNR_group = Group.objects.get(name = 'RNR')
-                print(user)
                 if user.is_mmrda:
                     user.groups.add(mmrda_group)
 
@@ -63,36 +63,73 @@ class UserRegister(generics.GenericAPIView):
             return Response({'msg': 'Registration NotSuccessfull'}, status=400)
 
 
-class LoginView(generics.GenericAPIView):
-    serializer_class = LoginSerializer
-    renderer_classes = [ErrorRenderer]
-    parser_classes = [MultiPartParser]
+# class LoginView(generics.GenericAPIView):
+#     serializer_class = LoginSerializer
+#     renderer_classes = [ErrorRenderer]
+#     parser_classes = [MultiPartParser]
 
 
-    def post(self, request):
-        try:
-            serializer = LoginSerializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            user_data = serializer.validated_data
-            user = RegisterSerializer(user_data).data
-            if serializer is not None:
-                token = get_tokens_for_user(serializer.validated_data)
-                return Response({'Token': token, 'msg': 'Login sucessfull',
-                                'status': 200,
-                                'user_id': user_data.id , 'user': user_data.email,
-                                'username' :user_data.username,
-                                'user_group': user_data.groups.values_list("name", flat=True)[0]},
-                                 status=200)
-        except:
-            return Response({'msg': serializer.errors,
-                            'status': 400,
-                            'response': 'Bad Request'}, status=400)
+#     def post(self, request):
+     
+#             serializer = LoginSerializer(data=request.data)
+#             if serializer.is_valid(raise_exception=True):
+#                 user_data = serializer.validated_data
+#                 # user = RegisterSerializer(user_data).data
+#                 if serializer is not None:
+#                     token = get_tokens_for_user(serializer.validated_data)
+#                     return Response({'Token': token, 'msg': 'Login sucessfull',
+#                                     'status': 200,
+#                                     'user_id': user_data.id , 'user': user_data.email,
+#                                     'username' :user_data.username,
+#                                     'user_group': user_data.groups.values_list("name", flat=True)[0]},
+#                                     status=200)
+#             else:
+#                 return Response({'msg': serializer.errors,
+#                             'status': 400,
+#                             'response': 'Bad Request'}, status=400)
+
+        # except:
+        #     return Response({'msg': "Something Went Wromg Pelase Try Again in Sometime",
+        #                     'status': 400,
+        #                     'response': 'Bad Request'}, status=400)
 
 
 # # "user_group": user_data.groups.values_list("name", flat=True)'group
 # print(request.user.groups.all())
 # print(json.dumps(user_data.groups.values_list("name",flat=True)))
 # user["user_group"]=user_data.groups.values_list("name",flat=True)[0]
+
+
+
+
+class LoginView(generics.GenericAPIView):
+    serializer_class = LoginSerializer
+    parser_classes = [MultiPartParser]
+
+    def post(self , request):
+        serializer = LoginSerializer(data= request.data)
+        serializer.is_valid(raise_exception=True)
+        email = serializer.data.get('email')
+        password = serializer.data.get('password')
+        user = authenticate(email=email , password=password)
+        user1 = User.objects.filter(email=email)
+        serializer2 = RegisterSerializer(user1 ,many=True)
+        if user is not None:
+            token = get_tokens_for_user(user)
+            return Response({'Token':token,
+                            'status': 'success',
+                            'Message':'Login sucessfull', 
+                            "user": serializer2.data[0].get('email'),
+                            "username": serializer2.data[0].get('username'),
+                            'user_group' : user.groups.values_list("name",flat=True)[0]} , 
+                            status=status.HTTP_200_OK)
+        else:
+            return Response({'status': 'failed',
+                            'Message': "Email OR Password is not Valid , Please check Again."} , status=status.HTTP_404_NOT_FOUND)
+
+
+
+
 
 class ChangePasswordView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]

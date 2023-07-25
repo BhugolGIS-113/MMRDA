@@ -4,15 +4,22 @@ from django.db.models.signals import post_save
 from django.contrib.gis.db import models
 from django.utils import timezone
 from MMRDA import settings
+from django.core.exceptions import ValidationError
 # Create your models here.
 
 # ----------------------------------SOCIAL MONITORING MODLES----------------------------------------
-
+def validate_location_precision(value):
+    # Ensure that the value has at most 6 decimal places
+    if isinstance(value, tuple) and len(value) == 2:
+        lat, lon = value
+        if isinstance(lat, float) and isinstance(lon, float):
+            if len(str(lat).split('.')[-1]) > 6 or len(str(lon).split('.')[-1]) > 6:
+                raise ValidationError("The location must have at most 6 digits after the decimal point.")
 
 class Baseclass(models.Model):
     quarter = models.CharField(max_length=255, null=True, blank=True)
     packages = models.CharField(max_length=255,  null=True, blank=True)
-    location = models.PointField(null=True, blank=True)
+    location = models.PointField(null=True, blank=True  , validators=[validate_location_precision])
     dateOfMonitoring = models.DateField(null=True, blank=True)
 
     class Meta:
@@ -65,6 +72,8 @@ class Rehabilitation(Baseclass):
         PAP, related_name='rehabilitation', on_delete=models.CASCADE)
     dateOfRehabilitation = models.DateField(blank=True, null=True)
     PAPID = models.CharField(max_length=255, blank=True, null=True)
+    categoryOfPap = models.CharField(
+        max_length=255,  null=True, blank=True)
     PAPName = models.CharField(max_length=255, blank=True, null=True)
 
     cashCompensation = models.PositiveIntegerField(blank=True, null=True)
@@ -80,30 +89,27 @@ class Rehabilitation(Baseclass):
     streetName = models.CharField(max_length=255, blank=True, null=True)
     pincode = models.BigIntegerField(blank=True, null=True)
 
-    isShiftingAllowance = models.BooleanField(blank=True)
+    isShiftingAllowance = models.BooleanField(blank=True , null = True)
     shiftingAllowanceAmount = models.PositiveIntegerField(
         blank=True, null=True)
 
-    isLivelihoodSupport = models.BooleanField(blank=True)
+    isLivelihoodSupport = models.BooleanField(blank=True , null = True)
     livelihoodSupportAmount = models.BigIntegerField(blank=True, null=True)
     livelihoodSupportCondition = models.CharField(
         max_length=255, blank=True, null=True)
-    livelihoodSupportPhotograph = models.ImageField(
-        upload_to='rehabitation/livelihoodSupportPhotograph/', blank=True, null=True)
+    
     livelihoodSupportRemarks = models.TextField(
         max_length=255, blank=True, null=True)
 
-    isTraining = models.BooleanField(blank=True)
+    isTraining = models.BooleanField(blank=True , null = True)
     trainingCondition = models.CharField(
         max_length=255,  blank=True, null=True)
-    trainingPhotograph = models.ImageField(
-        upload_to='rehabitation/trainingPhotograph/', blank=True, null=True)
+    
     trainingRemarks = models.TextField(max_length=255, blank=True, null=True)
 
     typeOfTenaments = models.CharField(max_length=255, blank=True)
     areaOfTenament = models.BigIntegerField(blank=True, null=True)
-    tenamentsPhotograph = models.ImageField(
-        upload_to='rehabitation/tenamentsPhotograph/', blank=True, null=True)
+    
 
     isRelocationAllowance = models.CharField(
         max_length=255, blank=True, null=True)
@@ -116,11 +122,19 @@ class Rehabilitation(Baseclass):
     isCommunityEngagement = models.BooleanField(blank=True, null=True)
     isEngagementType = models.CharField(max_length=255, blank=True, null=True)
 
-    photographs = models.ImageField(
-        upload_to='rehabitation/Rehabitationphotographs/', blank=True, null=True)
-    documents = models.FileField(
-        upload_to='rehabitation/documents', blank=True, null=True)
+    
+    documents = models.FileField(upload_to='rehabitation/documents', blank=True, null=True)
     remarks = models.TextField(max_length=255, blank=True, null=True)
+    livelihoodSupportPhotograph = models.ImageField(upload_to='rehabitation/livelihoodSupportPhotograph/', blank=True, null=True)
+    trainingPhotograph = models.ImageField(upload_to='rehabitation/trainingPhotograph/', blank=True, null=True)
+    tenamentsPhotograph = models.ImageField(upload_to='rehabitation/tenamentsPhotograph/', blank=True, null=True)
+    photographs = models.ImageField(upload_to='rehabitation/Rehabitationphotographs/', blank=True, null=True)
+
+
+# class RehabilitationImages(models.Model):
+#     RehabilitationID = models.ForeignKey(Rehabilitation , related_name= "RehabilitationImages" , on_delete= models.CASCADE , blank = True , null = True )
+    
+    
 
 
 # Labour  Camp Model ----------------------------------------------

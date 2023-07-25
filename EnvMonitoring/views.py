@@ -3,7 +3,7 @@ from .serializer import *
 from rest_framework.response import Response
 from .models import *
 from rest_framework import generics
-from .renderers import ErrorRenderer
+# from .renderers import ErrorRenderer
 from rest_framework.parsers import MultiPartParser
 from rest_framework import status
 from django.contrib.gis.geos import Point,GEOSGeometry
@@ -17,53 +17,62 @@ from .permissions import IsConsultant , IsContractor
 
 
 class AirView(generics.GenericAPIView):
-    renderer_classes = [ErrorRenderer]
+    # renderer_classes = [ErrorRenderer]
     serializer_class = AirSerializer
     parser_classes = [MultiPartParser]
     permission_classes = [ IsAuthenticated & (IsConsultant | IsContractor)]
     queryset = Air.objects.all()
 
     def post(self , request):
-        lat=float(request.data['latitude'])
-        long=float(request.data['longitude'])
-        location=Point(long,lat,srid=4326)
-        date=request.data['dateOfMonitoring'].split('-')
-        month = request.data['month']
-        try:
+        # try:
             if "contractor" in request.user.groups.values_list("name",flat=True):
-                data = Air.objects.filter( dateOfMonitoring__year = int(date[0]) , month = month , user = request.user.id).exists()
-                if data == True:
-                    return Response({'status': 'success',
-                                    'message':'already data filled for this Month'} , status=400)
-                else:
-                    Serializer = AirSerializer(data = request.data )
-                    if Serializer.is_valid(raise_exception = True):
+                Serializer = self.get_serializer(data = request.data , context={'request': request})
+                if Serializer.is_valid():
+                    date = str(Serializer.validated_data['dateOfMonitoringTwo']).split('-')
+                    month  = Serializer.validated_data['month']
+                    data = Air.objects.filter( dateOfMonitoring__year = int(date[0]) , month = month , user = request.user.id).exists()
+                    if data == True:
+                        return Response({'status': 'success',
+                                        'message':'already data filled for this Month'} , status=400)
+                    else:
+                        lat=float(Serializer.validated_data['latitude'])
+                        long=float(Serializer.validated_data['longitude'])
+                        location=Point(long,lat,srid=4326)
                         air=Serializer.save(location=location ,  user = request.user)
                         data=AirViewSerializer(air).data
                         return Response({'status': 'success',
                                         'message' : 'data saved successfully',
                                         'data': data}, status= status.HTTP_200_OK)
-                    else:
-                         return Response({'status' : 'failed',
-                                        'message' : 'data is invalid please check again'}, status = 400)
+                else:
+                    key, value =list(Serializer.errors.items())[0]
+                    error_message = key+" ,"+value[0]
+                    print(value[0])
+                    return Response({'status' : 'error',
+                                    'message' : value[0]}, status = 400)
             else:
                 Serializer = AirSerializer(data = request.data , context={'request': request})
-                if Serializer.is_valid(raise_exception = True):
+                if Serializer.is_valid():
+                    lat=float(Serializer.validated_data['latitude'])
+                    long=float(Serializer.validated_data['longitude'])
+                    location=Point(long,lat,srid=4326)
                     air=Serializer.save(location=location , user = request.user)
                     data=AirViewSerializer(air).data
                     return Response({'status': 'success',
                                         'message' : 'data saved successfully',
                                         'data': data}, status= status.HTTP_200_OK)
                 else:
+                    key, value =list(Serializer.errors.items())[0]
+                    error_message = key+" ,"+value[0]
+                    print(value[0])
                     return Response({'status' : 'failed',
-                                    'message' : 'data is invalid please check again'}, status = 400)
-        except Exception:
-            return  Response({'status' : 'failed',
-                            'message' : "Only consultant and Contractor can fill this form"}, status=400)
+                                    'message' : value[0]}, status = 400)
+        # except Exception:
+        #     return  Response({'status' : 'failed',
+        #                     'message' : "Only consultant and Contractor can fill this form"}, status=400)
 
 class AirUpdateView(generics.UpdateAPIView):
     serializer_class = AirSerializer
-    renderer_classes = [ErrorRenderer]
+    # renderer_classes = [ErrorRenderer]
     permission_classes = [IsAuthenticated , IsConsultant]
     parser_classes = [MultiPartParser]
 
@@ -92,53 +101,61 @@ class AirListView(generics.ListAPIView):
 
 
 class WaterView(generics.GenericAPIView):
-    renderer_classes = [ErrorRenderer]
+    # renderer_classes = [ErrorRenderer]
     serializer_class = WaterSerializer
     parser_classes = [MultiPartParser]
     permission_classes = [ IsAuthenticated & (IsConsultant | IsContractor)]
 
     
     def post(self , request):
-        lat=float(request.data['latitude'])
-        long=float(request.data['longitude'])
-        location=Point(long,lat,srid=4326)
-        date=request.data['dateOfMonitoring'].split('-')
-        quarter = request.data['quarter']
-        try:
-            if "contractor" in request.user.groups.values_list("name",flat=True):
-                data = water.objects.filter( dateOfMonitoring__year = int(date[0]) , quarter = quarter).exists()
+        # try:
+        if "contractor" in request.user.groups.values_list("name",flat=True):
+            serializer = WaterSerializer(data = request.data , context={'request': request})
+            if serializer.is_valid():
+                date = str(serializer.validated_data['dateOfMonitoringTwo']).split('-')
+                quarter = serializer.validated_data['quarter']
+                data = water.objects.filter( dateOfMonitoringTwo__year = int(date[0]) , quarter = quarter).exists()
                 if data == True:
                     return Response({'status':'success' , 
-                                    'Message': 'already data filled for this Month'} , status=status.HTTP_400_BAD_REQUEST)
+                                    'Message': 'already data filled for this Quarter'} , status=status.HTTP_400_BAD_REQUEST)
                 else:
-                    serializer = WaterSerializer(data = request.data , context={'request': request})
-                    if serializer.is_valid(raise_exception = True):
-                        water_data =serializer.save(location=location , user = request.user)
-                        data = waterviewserializer(water_data).data
-                        return Response({'status': 'success' , 
-                                        'Message' : 'data saved successfully',
-                                        'data' : data }, status = 200)
-                    else:
-                        return Response({'status': 'failed',
-                                        'Message' : 'Enter a valid data'} , status = status.HTTP_400_BAD_REQUEST)
-            else:
-                serializer = WaterSerializer(data = request.data , context={'request': request})
-                if serializer.is_valid(raise_exception = True):
+                    lat=float(serializer.validated_data['latitude'])
+                    long=float(serializer.validated_data['longitude'])
+                    location=Point(long,lat,srid=4326)
                     water_data =serializer.save(location=location , user = request.user)
                     data = waterviewserializer(water_data).data
                     return Response({'status': 'success' , 
-                                        'Message' : 'data saved successfully',
-                                        'datat' : data }, status = 200)
-                else:
-                    return Response({'status': 'failed',
-                                    'Message' : 'Enter a valid data'} , status = status.HTTP_400_BAD_REQUEST)
-        except Exception:
-            return  Response({'status': 'failed',
-                            'Message' : "Only consultant and Contractor can fill this form"}, status= status.HTTP_401_UNAUTHORIZED)
+                                    'Message' : 'data saved successfully',
+                                    'data' : data }, status = 200)
+            else:
+                key, value =list(serializer.errors.items())[0]
+                error_message = key+" ,"+value[0]
+                return Response({'status': 'error',
+                                'Message' :value[0]} , status = status.HTTP_400_BAD_REQUEST)
+        else:
+        
+            serializer = WaterSerializer(data = request.data , context={'request': request})
+            if serializer.is_valid():
+                lat=float(serializer.validated_data['latitude'])
+                long=float(serializer.validated_data['longitude'])
+                location=Point(long,lat,srid=4326)
+                water_data =serializer.save(location=location , user = request.user)
+                data = waterviewserializer(water_data).data
+                return Response({'status': 'success' , 
+                                    'Message' : 'data saved successfully',
+                                    'datat' : data }, status = 200)
+            else:
+                key, value =list(serializer.errors.items())[0]
+                error_message = key+" ,"+value[0]
+                return Response({'status': 'failed',
+                                'Message' : value[0]} , status = status.HTTP_400_BAD_REQUEST)
+        # except Exception:
+        #     return  Response({'status': 'failed',
+        #                     'Message' : "Only consultant and Contractor can fill this form"}, status= status.HTTP_401_UNAUTHORIZED)
 
 
 class waterupdateView(generics.UpdateAPIView):
-    renderer_classes = [ErrorRenderer]
+    # renderer_classes = [ErrorRenderer]
     serializer_class = waterviewserializer
     permission_classes = [IsAuthenticated , IsConsultant]
     parser_classes = [MultiPartParser]
@@ -162,52 +179,59 @@ class waterListView(generics.ListAPIView):
     serializer_class = waterviewserializer
     parser_classes = [MultiPartParser]
     pagination_class = LimitsetPagination
-    renderer_classes = [ErrorRenderer]
+    # renderer_classes = [ErrorRenderer]
     queryset = water.objects.all()
 
 
 
 
 class NoiseView(generics.GenericAPIView):
-    renderer_classes = [ErrorRenderer]
+    # renderer_classes = [ErrorRenderer]
     serializer_class = NoiseSerializer
     parser_classes = [MultiPartParser]
     permission_classes = [ IsAuthenticated & (IsConsultant | IsContractor)]
     
     def post(self , request):
-        lat=float(request.data['latitude'])
-        long=float(request.data['longitude'])
-        location=Point(long,lat,srid=4326)
-        date=request.data['dateOfMonitoring'].split('-')
-        month = request.data['month']
         try:
             if "contractor" in request.user.groups.values_list("name",flat=True):
-                data = Noise.objects.filter( dateOfMonitoring__year = int(date[0]) , month = month).exists()
-                if data == True:
-                    return Response({'status':'success' , 
-                                    'Message': 'already data filled for this Month'} , status=status.HTTP_400_BAD_REQUEST)
-                else:
-                    serializer = NoiseSerializer(data = request.data , context={'request': request})
-                    if serializer.is_valid(raise_exception = True):
+                serializer = NoiseSerializer(data = request.data , context={'request': request})
+                if serializer.is_valid():
+                    date = str(serializer.validated_data['dateOfMonitoringThree']).split('-')
+                    month  = serializer.validated_data['month']
+                    data = Noise.objects.filter( dateOfMonitoringThree__year = int(date[0]) , month = month).exists()
+                    if data == True:
+                        return Response({'status':'success' , 
+                                        'Message': 'already data filled for this Month'} , status=status.HTTP_400_BAD_REQUEST)
+                    else:
+                        lat=float(serializer.validated_data['latitude'])
+                        long=float(serializer.validated_data['longitude'])
+                        location=Point(long,lat,srid=4326)
                         water_data =serializer.save(location=location , user = request.user)
                         data = Noiseviewserializer(water_data).data
                         return Response({'status': 'success' , 
                                         'Message' : 'data saved successfully',
                                         'data' : data }, status = 200)
-                    else:
-                        return Response({'status': 'failed',
-                                        'Message' : 'Enter a valid data'} , status = status.HTTP_400_BAD_REQUEST)
+                else:
+                    key, value =list(serializer.errors.items())[0]
+                    error_message = key+" ,"+value[0]
+                    return Response({'status': 'failed',
+                                    'Message' : value[0]} , status = status.HTTP_400_BAD_REQUEST)
             else:
                 serializer = NoiseSerializer(data = request.data , context={'request': request})
-                if serializer.is_valid(raise_exception = True):
+                if serializer.is_valid():
+                    lat=float(serializer.validated_data['latitude'])
+                    long=float(serializer.validated_data['longitude'])
+                    location=Point(long,lat,srid=4326)
                     water_data =serializer.save(location=location , user = request.user)
                     data = Noiseviewserializer(water_data).data
                     return Response({'status': 'success' , 
                                     'Message' : 'data saved successfully',
                                     'data' : data }, status = 200)
                 else:
+                    key, value =list(serializer.errors.items())[0]
+                    error_message = key+" ,"+value[0]
                     return Response({'status': 'failed',
-                                    'Message' : 'Enter a valid data'} , status = status.HTTP_400_BAD_REQUEST)
+                                    'Message' : value[0]} , status = status.HTTP_400_BAD_REQUEST)
         except Exception:
             return  Response({'status': 'failed',
                             'Message' : "Only consultant and Contractor can fill this form"} , status= status.HTTP_401_UNAUTHORIZED)
@@ -233,55 +257,61 @@ class NoiseupdateView(generics.UpdateAPIView):
 class NoiseListView(generics.ListAPIView):
     pagination_class = LimitsetPagination
     serializer_class = Noiseviewserializer
-    renderer_classes = [ErrorRenderer]
+    # renderer_classes = [ErrorRenderer]
     queryset = Noise.objects.all()
 
 
 
 class ExistingTreeManagementView(generics.GenericAPIView):
     serializer_class = TreeManagementSerailizer
-    renderer_classes = [ErrorRenderer]
+    # renderer_classes = [ErrorRenderer]
     parser_classes = [MultiPartParser]
     # permission_classes = [IsAuthenticated]
   
     
     def post(self , request):
-        
-        lat=float(request.data['latitude'])
-        long=float(request.data['longitude'])
-        Plocation=Point(long,lat,srid=4326)
-        date=request.data['dateOfMonitoring'].split('-')
-        month = request.data['month']
-        try:
+        # try:
             if "contractor" in request.user.groups.values_list("name",flat=True):
-                data = ExistingTreeManagment.objects.filter( dateOfMonitoring__year = int(date[0]) , month = month ).exists()
-                if data == True:
-                    return Response({'message':'already data filled for this Month'} , status=status.HTTP_400_BAD_REQUEST)
-                else:
-                    serializer = TreeManagementSerailizer(data = request.data )
-                    if serializer.is_valid(raise_exception = True):
+                serializer = TreeManagementSerailizer(data = request.data )
+                if serializer.is_valid():
+                    date = str(serializer.validated_data['dateOfMonitoring']).split('-')
+                    month  = serializer.validated_data['month']
+                    data = ExistingTreeManagment.objects.filter( dateOfMonitoring__year = int(date[0]) , month = month ).exists()
+                    if data == True:
+                        return Response({'message':'already data filled for this Month'} , status=status.HTTP_400_BAD_REQUEST)
+                    else:
+                        lat=float(serializer.validated_data['latitude'])
+                        long=float(serializer.validated_data['longitude'])
+                        Plocation=Point(long,lat,srid=4326)
                         water_data =serializer.save(location=Plocation , user = request.user)
                         data = TreeManagmentviewserializer(water_data).data
                         return Response({'status': 'success' , 
                                         'Message' : 'data saved successfully',
                                         'data' : data }, status = 200)
-                    else:
-                        return Response({'status': 'failed',
-                                    'Message' : 'Enter a valid data'} , status = status.HTTP_400_BAD_REQUEST)
+                else:
+                    key, value =list(serializer.errors.items())[0]
+                    error_message = key+" ," + value[0]
+                    return Response({'status': 'error',
+                                    'Message' :value[0]} , status = status.HTTP_400_BAD_REQUEST)
             else:
                 serializer = TreeManagementSerailizer(data = request.data )
-                if serializer.is_valid(raise_exception = True):
+                if serializer.is_valid():
+                    lat=float(serializer.validated_data['latitude'])
+                    long=float(serializer.validated_data['longitude'])
+                    Plocation=Point(long,lat,srid=4326)
                     water_data =serializer.save(location=Plocation , user = request.user)
                     data = TreeManagmentviewserializer(water_data).data
                     return Response({'status': 'success' , 
                                         'Message' : 'data saved successfully',
                                         'data' : data }, status = 200)
                 else:
-                    return Response({'status': 'failed',
-                                    'Message' : 'Enter a valid data'} , status = status.HTTP_400_BAD_REQUEST)
-        except Exception:
-            return  Response({'status': 'failed',
-                            'Message' : "Only consultant and Contractor can fill this form"} , status= status.HTTP_401_UNAUTHORIZED)
+                    key, value =list(serializer.errors.items())[0]
+                    error_message = key+" ," + value[0]
+                    return Response({'status': 'error',
+                                    'Message' :value[0]} , status = status.HTTP_400_BAD_REQUEST)
+        # except Exception:
+        #     return  Response({'status': 'failed',
+        #                     'Message' : "Only consultant and Contractor can fill this form"} , status= status.HTTP_401_UNAUTHORIZED)
 
             
 
@@ -320,70 +350,109 @@ class NewTereeManagementView(generics.GenericAPIView):
         lat=float(request.data['latitude'])
         long=float(request.data['longitude'])
         location=Point(long,lat,srid=4326)
-        date=request.data['dateOfMonitoring'].split('-')
-        month = request.data['month']
+        
         try:
             if "contractor" in request.user.groups.values_list("name",flat=True):
-                data = NewTreeManagement.objects.filter( dateOfMonitoring__year = int(date[0]) , month = month ).exists()
-                if data == True:
-                    return Response({'message':'already data filled for this Month'} , status=status.HTTP_400_BAD_REQUEST)
-                else:
-                    serializer = NewTreeManagmentSerializer(data = request.data )
-                    if serializer.is_valid(raise_exception = True):
+                serializer = NewTreeManagmentSerializer(data = request.data )
+                if serializer.is_valid():
+                    date = str(serializer.validated_data['dateOfMonitoring']).split('-')
+                    month  = serializer.validated_data['month']
+                    data = NewTreeManagement.objects.filter( dateOfMonitoring__year = int(date[0]) , month = month ).exists()
+                    if data == True:
+                        return Response({'message':'already data filled for this Month'} , status=status.HTTP_400_BAD_REQUEST)
+                    else:
+                        lat=float(serializer.validated_data['latitude'])
+                        long=float(serializer.validated_data['longitude'])
+                        location=Point(long,lat,srid=4326)
                         water_data =serializer.save(location=location , user = request.user)
                         data = NewTreeManagmentviewserializer(water_data).data
-                        return Response(data , status = 200)
-                    else:
-                        return Response({'msg' : 'Enter a valid data'} , status = status.HTTP_400_BAD_REQUEST)
+                        return Response({'status': 'success' , 
+                                        'Message' : 'data saved successfully',
+                                        'data' : data }, status = 200)
+                else:
+                    key, value =list(serializer.errors.items())[0]
+                    error_message = key+" ," + value[0]
+                    return Response({'status': 'error',
+                                    'Message' :value[0]} , status = status.HTTP_400_BAD_REQUEST)
             else:
                 serializer = NewTreeManagmentSerializer(data = request.data )
-                if serializer.is_valid(raise_exception = True):
+                if serializer.is_valid():
+                    lat=float(serializer.validated_data['latitude'])
+                    long=float(serializer.validated_data['longitude'])
+                    location=Point(long,lat,srid=4326)
                     water_data =serializer.save(location=location , user = request.user)
                     data = NewTreeManagmentviewserializer(water_data).data
-                    return Response(data , status = 200)
+                    return Response({'status': 'success' , 
+                                        'Message' : 'data saved successfully',
+                                        'data' : data }, status = 200)
                 else:
-                    return Response({'msg' : 'Enter a valid data'} , status = status.HTTP_400_BAD_REQUEST)
+                    key, value =list(serializer.errors.items())[0]
+                    error_message = key+" ," + value[0]
+                    return Response({'status': 'error',
+                                    'Message' :value[0]} , status = status.HTTP_400_BAD_REQUEST)
         except Exception:
             return  Response({'Message' : "Only consultant and Contractor can fill this form"}, status= status.HTTP_401_UNAUTHORIZED)
 
 
 class WasteTreatmentsView(generics.GenericAPIView):
     serializer_class = WasteTreatmentsSerializer
-    renderer_classes = [ErrorRenderer]
+    # renderer_classes = [ErrorRenderer]
     parser_classes = [MultiPartParser]
     # permission_classes = [ mmrdaPermissions , ]
     
     def post(self , request):
-        longitude = float(request.data['waste_longitude'])
-        latitude = float(request.data['waste_latitude'])
-        waste_location=Point(longitude,latitude,srid=4326)
-        
-        lat=float(request.data['latitude'])
-        long=float(request.data['longitude'])
-        location=Point(long,lat,srid=4326)
-        date = request.data['dateOfMonitoring'].split('-')
-        month = request.data['month']
+       
+       
         try:
             if "contractor" in request.user.groups.values_list("name",flat=True):
-                data = WasteTreatments.objects.filter(dateOfMonitoring__year = int(date[0]) , month = month ).exists()
-                if data == True:
-                    return Response({'message':'already data filled for this Month'} , status=status.HTTP_400_BAD_REQUEST)
-                else:
-                    serializer = WasteTreatmentsSerializer(data = request.data , context={'request': request})
-                    if serializer.is_valid(raise_exception = True):
+                serializer = WasteTreatmentsSerializer(data = request.data , context={'request': request})
+                if serializer.is_valid():
+                    date = str(serializer.validated_data['dateOfMonitoring']).split('-')
+                    month  = serializer.validated_data['month']
+                    data = WasteTreatments.objects.filter(dateOfMonitoring__year = int(date[0]) , month = month ).exists()
+                    if data == True:
+                        return Response({'message':'already data filled for this Month'} , status=status.HTTP_400_BAD_REQUEST)
+                    
+                    else:
+                        longitude = float(serializer.validated_data['waste_longitude'])
+                        latitude = float(serializer.validated_data['waste_latitude'])
+                        waste_location=Point(longitude,latitude,srid=4326)
+                        
+                        lat=float(serializer.validated_data['latitude'])
+                        long=float(serializer.validated_data['longitude'])
+                        location=Point(long,lat,srid=4326)
+                        
                         waste_data =serializer.save(location=location , wasteHandlingLocation = waste_location , user = request.user)
                         data = wastetreatmentsViewserializer(waste_data).data
-                        return Response(data , status = 200)
-                    else:
-                        return Response({'msg' : 'Enter a valid data'} , status = status.HTTP_400_BAD_REQUEST)
+                        return Response({'status': 'success' , 
+                                        'Message' : 'data saved successfully',
+                                        'data' : data }, status = 200)
+                else:
+                    key, value =list(serializer.errors.items())[0]
+                    error_message = key+" ," + value[0]
+                    return Response({'status': 'error',
+                                    'Message' :error_message} , status = status.HTTP_400_BAD_REQUEST)
             else:
                 serializer = WasteTreatmentsSerializer(data = request.data , context={'request': request})
-                if serializer.is_valid(raise_exception = True):
+                if serializer.is_valid():
+                    longitude = float(serializer.validated_data['waste_longitude'])
+                    latitude = float(serializer.validated_data['waste_latitude'])
+                    waste_location=Point(longitude,latitude,srid=4326)
+                    
+                    lat=float(serializer.validated_data['latitude'])
+                    long=float(serializer.validated_data['longitude'])
+                    location=Point(long,lat,srid=4326)
+
                     waste_data =serializer.save( location=location , wasteHandlingLocation = waste_location , user = request.user)
                     data = wastetreatmentsViewserializer(waste_data).data
-                    return Response(data , status = 200)
+                    return Response({'status': 'success' , 
+                                        'Message' : 'data saved successfully',
+                                        'data' : data }, status = 200)
                 else:
-                    return Response({'msg' : 'Enter a valid data'} , status = status.HTTP_400_BAD_REQUEST)
+                    key, value =list(serializer.errors.items())[0]
+                    error_message = key+" ," + value[0]
+                    return Response({'status': 'error',
+                                    'Message' :error_message} , status = status.HTTP_400_BAD_REQUEST)
         except Exception:
             return  Response({'Message' : "Only consultant and Contractor can fill this form"}, status= status.HTTP_401_UNAUTHORIZED)
 
@@ -407,50 +476,61 @@ class wastemanagementUpdateView(generics.UpdateAPIView):
 
 class MaterialSourcingView(generics.GenericAPIView):
     serializer_class = MaterialManagmentSerializer
-    renderer_classes = [ErrorRenderer]
+    # renderer_classes = [ErrorRenderer]
     parser_classes = [MultiPartParser]
     permission_classes = [IsAuthenticated]
 
     def post(self , request):
        
-        lat=float(request.data['latitude'])
-        long=float(request.data['longitude'])
-        location=Point(long,lat,srid=4326)
-
-        storagelong = float(request.data['storageLongitude'])
-        storagelat = float(request.data['storageLatitude'])
-        storageLocation = Point(storagelong , storagelat , srid = 4326 )
-       
-        date = request.data['dateOfMonitoring'].split('-')
-        month = request.data['month']
+        
         try:
             if "contractor" in request.user.groups.values_list("name",flat=True):
-                data = MaterialManegmanet.objects.filter( dateOfMonitoring__year = int(date[0]) , month = month ).exists()
-                if data == True:
-                    return Response({'message':'already data filled for this Month'} , status=status.HTTP_400_BAD_REQUEST)
-                else:
-                    serializer = MaterialManagmentSerializer(data = request.data , context={'request': request})
-                    if serializer.is_valid(raise_exception = True):
+                serializer = MaterialManagmentSerializer(data = request.data , context={'request': request})
+                if serializer.is_valid():
+                    date = str(serializer.validated_data['dateOfMonitoring']).split('-')
+                    month  = serializer.validated_data['month']
+                    data = MaterialManegmanet.objects.filter( dateOfMonitoring__year = int(date[0]) , month = month ).exists()
+                    if data == True:
+                        return Response({'message':'already data filled for this Month'} , status=status.HTTP_400_BAD_REQUEST)
+                    else:
+                        lat=float(serializer.validated_data['latitude'])
+                        long=float(serializer.validated_data['longitude'])
+                        location=Point(long,lat,srid=4326)
+
+                        storagelong = float(serializer.validated_data['storageLongitude'])
+                        storagelat = float(serializer.validated_data['storageLatitude'])
+                        storageLocation = Point(storagelong , storagelat , srid = 4326 )
+
                         material_data =serializer.save(location=location , storageLocation = storageLocation , user = request.user)
                         data = MaterialSourcingViewserializer(material_data).data
-                        return Response(data , status = 200)
-                    else:
-                        return Response({'msg' : 'Enter a valid data'} , status = status.HTTP_400_BAD_REQUEST)
+                        return Response({'status': 'success' , 
+                                        'Message' : 'data saved successfully',
+                                        'data' : data }, status = 200)
+                else:
+                    key, value =list(serializer.errors.items())[0]
+                    error_message = key+" ," + value[0]
+                    return Response({'status': 'error',
+                                    'Message' :value[0]} , status = status.HTTP_400_BAD_REQUEST)
             else:
                 serializer = MaterialManagmentSerializer(data = request.data , context={'request': request})
                 if serializer.is_valid(raise_exception = True):
                     material_data =serializer.save( location=location , storageLocation = storageLocation , user = request.user)
                     data = MaterialSourcingViewserializer(material_data).data
-                    return Response(data , status = 200)
+                    return Response({'status': 'success' , 
+                                        'Message' : 'data saved successfully',
+                                        'data' : data }, status = 200)
                 else:
-                    return Response({'msg' : 'Enter a valid data'} , status = status.HTTP_400_BAD_REQUEST)
-        except Exception:
+                    key, value =list(serializer.errors.items())[0]
+                    error_message = key+" ," + value[0]
+                    return Response({'status': 'error',
+                                    'Message' :value[0]} , status = status.HTTP_400_BAD_REQUEST)
+        except:
             return  Response({'Message' : "Only consultant and Contractor can fill this form"}, status= status.HTTP_401_UNAUTHORIZED)
 
 
 class materialmanagemantUpdate(generics.UpdateAPIView):
     serializer_class = MaterialManagmentSerializer
-    renderer_classes = [ErrorRenderer]
+    # renderer_classes = [ErrorRenderer]
     parser_classes = [MultiPartParser]
     permission_classes = [IsAuthenticated]
     

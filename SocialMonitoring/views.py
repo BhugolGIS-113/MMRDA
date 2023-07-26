@@ -48,6 +48,14 @@ class labourCampdetailsView(generics.ListAPIView):
     # search_fields = ['LabourCampName' ,'LabourCampID']
 
 
+class labourCampdetailsViewSearch(generics.ListAPIView):
+    queryset = labourcampDetails.objects.all()
+    serializer_class = labourCampDetailGetviewSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['LabourCampName']
+
+
+
 
 # ---------------------------- PAP View--------------------------------------------------
 class PapView(generics.GenericAPIView):
@@ -171,7 +179,7 @@ class LabourCampDetailsView(generics.GenericAPIView):
     serializer_class = LabourCampDetailSerializer
 
     def post(self, request):
-        try:
+        # try:
             if "contractor" in request.user.groups.values_list("name", flat=True):
                 serializer = LabourCampDetailSerializer(data=request.data )
                 if serializer.is_valid():
@@ -205,15 +213,15 @@ class LabourCampDetailsView(generics.GenericAPIView):
                     LabourCampDetails = serializer.save(location=location , user = request.user)
                     data = LabourCampDetailViewSerializer(LabourCampDetails).data
                     return Response({'Message': 'data saved successfully',
-                                     'status' : 'success'}, status=200)
+                                        'status' : 'success'}, status=200)
                 else:
                     key, value =list(serializer.errors.items())[0]
                     error_message = key+" ,"+value[0]
                     return Response({'status': 'error',
                                     'Message' :error_message} , status = status.HTTP_400_BAD_REQUEST)
                 
-        except Exception:
-            return Response({"msg": "Only consultant and contractor can fill this form"}, status=401)
+        # except Exception:
+        #     return Response({"msg": "Only consultant and contractor can fill this form"}, status=401)
 
 
 class labourCampUpdateView(generics.UpdateAPIView):

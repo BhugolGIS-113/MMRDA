@@ -33,7 +33,7 @@ class UserRegister(generics.GenericAPIView):
 
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
+        if serializer.is_valid():
             try:
                 user = serializer.save()
                 mmrda_group = Group.objects.get(name='mmrda')

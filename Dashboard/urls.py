@@ -5,10 +5,11 @@ urlpatterns = [
     # for social Monitoring
      path('PAPDashboardcategory', PAPCategoryDashboardView.as_view() , name='PAP Dashboard View'),
      path('CategoryWiseCompensationChart', CategoryWiseCompensationChart.as_view() , name='PAP Dashboard View'),
-     path('IdentifiedPAPView', IdentifiedPAPDashboardView.as_view(),
-          name='PAP Dashboard View'),
+     path('IdentifiedPAPView', IdentifiedPAPDashboardView.as_view(), name='PAP Dashboard View'),
      path('LabourcampFaciliteis<str:labourCampName>',LabourCampFacilitiesDashboardView.as_view(), name='labour Dashboard View'),
+     path('campFaciliteisOverAll',LabourCampFacilitiesOverallDashboardView.as_view(), name='labour Dashboard View'),
      path('ConstructionSiteFaciliteis<str:constructionSiteName>',ConstructionChartView.as_view(), name='labour Dashboard View'),
+     path('SiteFaciliteisOverall',ConstructionSiteFacilitiesOverallDashboardView.as_view(), name='labour Dashboard View'),
      path('RehabilitatedPAP', RehabilitatedPAPDashboardView.as_view(),
           name='Rehabilated Dashboard View'),
           

@@ -56,8 +56,8 @@ class labourCampDetailGetviewSerializer(serializers.ModelSerializer):
 
 class PapSerailzer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    longitude = serializers.CharField(max_length=8, required=False)
-    latitude = serializers.CharField(max_length=8, required=False)
+    longitude = serializers.CharField(max_length=10, required=False)
+    latitude = serializers.CharField(max_length=10, required=False)
     class Meta:
         model = PAP
         fields = ('quarter', 'packages', 'longitude', 'latitude','dateOfMonitoring', 'user','dateOfIdentification','PAPID','nameOfPAP', 
@@ -82,8 +82,8 @@ class PapSerailzer(serializers.ModelSerializer):
    
 
 class PapUpdateSerialzier(serializers.ModelSerializer):
-    longitude = serializers.CharField(max_length=8, required=False)
-    latitude = serializers.CharField(max_length=8, required=False)
+    longitude = serializers.CharField(max_length=10, required=False)
+    latitude = serializers.CharField(max_length=10, required=False)
     class Meta:
         model = PAP
         fields = ('quarter', 'packages', 'longitude', 'latitude', 'dateOfIdentification',
@@ -113,8 +113,8 @@ class papviewserialzer(GeoFeatureModelSerializer):
 # ------------------------ Rehabiliation Serializer ----------------------------------------
 class RehabilitationSerializer(serializers.ModelSerializer):
 
-    longitude = serializers.CharField(max_length=8, required=False)
-    latitude = serializers.CharField(max_length=8, required=False)
+    longitude = serializers.CharField(max_length=10, required=False)
+    latitude = serializers.CharField(max_length=10, required=False)
     # livelihoodSupportPhotograph = serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
     # trainingPhotograph = serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
     # tenamentsPhotograph = serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
@@ -175,8 +175,8 @@ class LabourCampDetailSerializer(serializers.ModelSerializer):
     # user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     dateOfMonitoring = serializers.DateField(required=True)
     packages = serializers.CharField(validators=[MinLengthValidator(3)] , required=True)
-    longitude = serializers.CharField(max_length=8, required=True)
-    latitude = serializers.CharField(max_length=8, required=True)
+    longitude = serializers.CharField(max_length=10, required=True)
+    latitude = serializers.CharField(max_length=10, required=True)
     labourCampName = serializers.CharField(validators=[MinLengthValidator(3)] , required=True)
     labourCampId = serializers.CharField(validators=[MinLengthValidator(3)] , required=True)
     
@@ -241,8 +241,8 @@ class constructionSiteSerializer(serializers.ModelSerializer):
     quarter = serializers.CharField(validators=[MinLengthValidator(3)] , required=True)
     dateOfMonitoring = serializers.DateField(required=True)
     packages = serializers.CharField(validators=[MinLengthValidator(3)] , required=True)
-    longitude = serializers.CharField(max_length=8, required=True)
-    latitude = serializers.CharField(max_length=8, required=True)
+    longitude = serializers.CharField(max_length=10, required=True)
+    latitude = serializers.CharField(max_length=10, required=True)
     constructionSiteId = serializers.CharField(max_length = 255 , required = True)
     constructionSiteName = serializers.CharField(max_length = 255 , required = True)
 

@@ -68,8 +68,6 @@ class CategoryWiseCompensationChart(APIView):
                         'dataset_Compensation_Status': dataset_Compensation_Status
                         })
 
-        
-
 
 class IdentifiedPAPDashboardView(APIView):
     serializer_class = PAPDashboardSerializer
@@ -89,14 +87,15 @@ class RehabilitatedPAPDashboardView(GenericAPIView):
     serializer_class = RehabilationDashboardSerializer
 
     def get(self, request):
-        counts = Rehabilitation.objects.values(
-            'compensationStatus').annotate(count=Count('compensationStatus'))
-
+        counts = Rehabilitation.objects.values('compensationStatus').annotate(count=Count('compensationStatus'))
+        totalcount = Rehabilitation.objects.all().count()
         dataset = [count['count'] for count in counts]
         return Response({'status': 'success',
                         'Message': 'Data fetched successfully',
                          'dataset': dataset,
-                         'Counts': counts})
+                         'totalcount' : totalcount ,
+                         'Counts': counts,
+                          } , status= 200)
 
 
 class LabourCampFacilitiesDashboardView(GenericAPIView):
@@ -105,32 +104,134 @@ class LabourCampFacilitiesDashboardView(GenericAPIView):
     def get(self, request, labourCampName, *args, **kwargs):
 
         labour = LabourCamp.objects.filter(
-            labourCampName=labourCampName).latest('id')
-        data = LabourcampDashboardSerializer(labour).data
-        values = list(data.values())
-        dataset = []
-        dataset.append(values.count('Good')), dataset.append(
-            values.count('Average'))
-        dataset.append(values.count('Bad'))
+            labourCampName=labourCampName)
+        if labour:
+            data = LabourcampDashboardSerializer(labour.latest('id')).data
+            values = list(data.values())
+            dataset = []
+            dataset.append(values.count('Good')), dataset.append(
+                values.count('Average'))
+            dataset.append(values.count('Bad'))
 
-        return Response({'status': 'success',
-                        'Message': 'data Fetched successfully',
-                        'dataset': dataset,
-                        'data': data}, status=200)
+            return Response({'status': 'success',
+                            'Message': 'data Fetched successfully',
+                            'dataset': dataset,
+                            'data': data}, status=200)
+        else:
+            return Response({"status" : "error",
+                    "message" : "Labour Camp Data Not Present"} , status=200)
         
+
+
+
+class LabourCampFacilitiesOverallDashboardView(APIView):
+    serializer_class = LabourcampDashboardSerializer
+
+    def get(self, request, *args, **kwargs):
+
+        labour = LabourCamp.objects.all()
+        datas = LabourcampDashboardSerializer(labour, many=True).data
+
+        fields_to_process = ('toiletCondition', 'drinkingWaterCondition', 'demarkationOfPathwaysCondition',
+                            'signagesLabelingCondition', 'kitchenAreaCondition', 'fireExtinguishCondition',
+                            'roomsOrDomsCondition', 'segregationOfWasteCondition')
+
+      
+        field_counts = {}
+
+        for field in fields_to_process:
+            field_counts[field] = {
+                'Good': 0,
+                'Average': 0,
+                'Bad': 0
+            }
+
+        for data in datas:
+            for field in fields_to_process:
+                if data[field] == 'Good':
+                    field_counts[field]['Good'] += 1
+                elif data[field] == 'Average':
+                    field_counts[field]['Average'] += 1
+                elif data[field] == 'Bad':
+                    field_counts[field]['Bad'] += 1
+        dataset = [
+            sum(field_counts[field]['Good'] for field in fields_to_process),
+            sum(field_counts[field]['Average'] for field in fields_to_process),
+            sum(field_counts[field]['Bad'] for field in fields_to_process),
+        ]
+
+        return Response({
+            'status': 'success',
+            'Message': 'data Fetched successfully',
+            'dataset': dataset,
+            # 'data': datas
+        }, status=200)
+
+
+
+
+class ConstructionSiteFacilitiesOverallDashboardView(generics.GenericAPIView):
+    serializer_class = ConstructionSiteDashboardSerializer
+
+    def get(self, request, *args, **kwargs):
+
+        labour = ConstructionSiteDetails.objects.all()
+        datas = self.get_serializer(labour, many=True).data
+
+        fields_to_process =('toiletCondition' ,'drinkingWaterCondition' ,'demarkationOfPathwaysCondition',
+                            'signagesLabelingCondition',)
+      
+        field_counts = {}
+
+        for field in fields_to_process:
+            field_counts[field] = {
+                'Good': 0,
+                'Average': 0,
+                'Bad': 0
+            }
+
+        for data in datas:
+            for field in fields_to_process:
+                if data[field] == 'Good':
+                    field_counts[field]['Good'] += 1
+                elif data[field] == 'Average':
+                    field_counts[field]['Average'] += 1
+                elif data[field] == 'Bad':
+                    field_counts[field]['Bad'] += 1
+        dataset = [
+            sum(field_counts[field]['Good'] for field in fields_to_process),
+            sum(field_counts[field]['Average'] for field in fields_to_process),
+            sum(field_counts[field]['Bad'] for field in fields_to_process),
+        ]
+
+        return Response({
+            'status': 'success',
+            'Message': 'data Fetched successfully',
+            'dataset': dataset,
+            # 'data': datas
+        }, status=200)
+
+
+
 class ConstructionChartView(GenericAPIView):
     serializer_class = ConstructionSiteDashboardSerializer
 
     def get(self, request,constructionSiteName, *args, **kwargs):
-        ConstructionCamp = ConstructionSiteDetails.objects.filter(constructionSiteName = constructionSiteName).latest('id')
-        data = ConstructionSiteDashboardSerializer(ConstructionCamp).data
-        values = list(data.values())
-        dataset = []
-        dataset.append(values.count('Good')) , dataset.append(values.count('Average')) , dataset.append(values.count('Bad'))
-        return Response({'status': 'success',
-                        'Message': 'data Fetched successfully',
-                        'dataset': dataset,
-                        'data': data}, status=200)
+        ConstructionCamp = ConstructionSiteDetails.objects.filter(constructionSiteName = constructionSiteName)
+        if ConstructionCamp:
+            data = ConstructionSiteDashboardSerializer(ConstructionCamp.latest('id')).data
+            values = list(data.values())
+            dataset = []
+            dataset.append(values.count('Good')) , dataset.append(values.count('Average')) , dataset.append(values.count('Bad'))
+            return Response({'status': 'success',
+                            'Message': 'data Fetched successfully',
+                            'dataset': dataset,
+                            'data': data}, status=200)
+        else:
+            return Response({"status" : "error" ,
+                             "message" : "Construction Site Data Not Present"} , status= 200)
+
+
 class CashCompensationTypeCharView(GenericAPIView):
     serializer_class = RehabilationDashboardSerializer
 

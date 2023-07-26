@@ -7,6 +7,7 @@ urlpatterns = [
     # path ('test' , testAPiView.as_view() , name = "testAPiView "),
     path ('labourcampdetails' , labourCampdetails.as_view() , name = "labourCampdetails "),
     path('labourCampdetailsView' , labourCampdetailsView.as_view() , name = "labourCampdetailsView"),
+    path('labourCampdetailsViewSearch' , labourCampdetailsViewSearch.as_view() , name = "labourCampdetailsView"),
  
     path ('pap' , PapView.as_view() , name = "project affected Person "),
     path ('pap/<int:id>' , papupdateView.as_view() , name = "project affected Person "),

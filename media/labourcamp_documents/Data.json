@@ -1,0 +1,77 @@
+  [{
+    "end_device_ids": {
+      "device_id": "eui-a840414ce18495c1",
+      "application_ids": {
+        "application_id": "rs485bl"
+      },
+      "dev_eui": "A840414CE18495C1",
+      "join_eui": "A840410000000101",
+      "dev_addr": "260BBA9D"
+    },
+    "correlation_ids": [
+      "as:up:01H4EZKSXR90Y5WSPNYAG2V63Z",
+      "gs:conn:01H4EWYY6E29P2MXCRG359778V",
+      "gs:up:host:01H4EWYY6NAGW3BR1J94G8SZE5",
+      "gs:uplink:01H4EZKSQ8F4R1QRNW75G97Q3B",
+      "ns:uplink:01H4EZKSQ98YVMDM5FPGT1VFZW",
+      "rpc:/ttn.lorawan.v3.GsNs/HandleUplink:01H4EZKSQ96F8M0AX5W23JCE2N",
+      "rpc:/ttn.lorawan.v3.NsAs/HandleUplink:01H4EZKSXRTQFC2FQ677HMQ2W6"
+    ],
+    "received_at": "2023-07-03T22:57:44.376275917Z",
+    "uplink_message": {
+      "session_key_id": "AYe9ANm19NAhYfntpN/0Zg==",
+      "f_port": 2,
+      "f_cnt": 1645,
+      "frm_payload": "DTABCNkKrQDuCj8KJgD/",
+      "decoded_payload": {
+        "Battery": 3.376,
+        "EC_S1": 238,
+        "EC_S2": 255,
+        "Moisture_S1": 22.65,
+        "Moisture_S2": 26.23,
+        "Payload_Version": 1,
+        "Temperature_S1": 27.33,
+        "Temperature_S2": 25.98,
+        "Raw_S1": 285.20 ,
+        "Raw_S2": 285.20
+      },
+      "rx_metadata": [
+        {
+          "gateway_ids": {
+            "gateway_id": "lora-test2",
+            "eui": "A84041FFFF238E2C"
+          },
+          "time": "2023-07-26T23:43:59.777309Z",
+          "timestamp": 2781777310,
+          "rssi": -46,
+          "channel_rssi": -46,
+          "snr": 11.5,
+          "frequency_offset": "10139",
+          "uplink_token": "ChgKFgoKbG9yYS10ZXN0MhIIqEBB//8jjiwQnpu6rgoaCwjopI2lBhCn/qpQILDi5Pb6UA==",
+          "channel_index": 5,
+          "received_at": "2023-07-26T22:57:44.168476455Z"
+        }
+      ],
+      "settings": {
+        "data_rate": {
+          "lora": {
+            "bandwidth": 125000,
+            "spreading_factor": 7,
+            "coding_rate": "4/5"
+          }
+        },
+        "frequency": "866385000",
+        "timestamp": 2781777310,
+        "time": "2023-07-03T23:43:59.777309Z"
+      },
+      "received_at": "2023-07-03T22:57:44.169511789Z",
+      "consumed_airtime": "0.066816s",
+      "network_ids": {
+        "net_id": "000013",
+        "tenant_id": "ttn",
+        "cluster_id": "eu1",
+        "cluster_address": "eu1.cloud.thethings.network"
+      }
+    }
+  }
+]

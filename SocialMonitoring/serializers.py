@@ -175,8 +175,8 @@ class LabourCampDetailSerializer(serializers.ModelSerializer):
     # user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     dateOfMonitoring = serializers.DateField(required=True)
     packages = serializers.CharField(validators=[MinLengthValidator(3)] , required=True)
-    longitude = serializers.CharField(max_length=10, required=True)
-    latitude = serializers.CharField(max_length=10, required=True)
+    longitude = serializers.CharField(max_length=50, required=True)
+    latitude = serializers.CharField(max_length=50, required=True)
     labourCampName = serializers.CharField(validators=[MinLengthValidator(3)] , required=True)
     labourCampId = serializers.CharField(validators=[MinLengthValidator(3)] , required=True)
     
@@ -205,6 +205,8 @@ class LabourCampDetailSerializer(serializers.ModelSerializer):
         lat =  data['latitude'].split('.')[-1]
         if len(lat) > 6:
             raise serializers.ValidationError("latitude must have at most 6 digits after the decimal point.")
+        
+
         return data
     
     def create(self,data):

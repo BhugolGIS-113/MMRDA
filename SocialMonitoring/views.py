@@ -157,8 +157,7 @@ class RehabilitationView(generics.GenericAPIView):
                     long = float(serializer.validated_data['longitude'])
                     location = Point(long, lat, srid=4326)
                     rehabilitation = serializer.save(location=location, user=request.user)
-                    data = RehabilitationViewSerializer(
-                        rehabilitation).data
+                    data = RehabilitationViewSerializer(rehabilitation).data
                     return Response({'Message': 'data saved successfully',
                                     'status' : 'success'})
             else:
@@ -166,9 +165,25 @@ class RehabilitationView(generics.GenericAPIView):
                 error_message = key+" ,"+value[0]
                 return Response({'status': 'error',
                                 'Message' :value[0]} , status = status.HTTP_400_BAD_REQUEST)
-            # except Exception:
-        #     return Response({"Message": "You are not Authourize person to fill this Details" ,
-        #                     'status' : 'failed'}, status=401)
+            
+        elif "consultant" in request.user.groups.values_list("name" , flat = True):
+            serializer = self.get_serializer(data=request.data)
+            if serializer.is_valid():
+                lat = float(serializer.validated_data['latitude'])
+                long = float(serializer.validated_data['longitude'])
+                location = Point(long, lat, srid=4326)
+                LabourCampDetails = serializer.save(location=location , user = request.user)
+                data = RehabilitationViewSerializer(rehabilitation).data
+                return Response({'Message': 'data saved successfully',
+                                    'status' : 'success'})
+            else:
+                key, value =list(serializer.errors.items())[0]
+                error_message = key+" ,"+value[0]
+                return Response({'status': 'error',
+                                'Message' :value[0]} , status = status.HTTP_400_BAD_REQUEST)
+        else:
+        # except Exception:
+            return Response({"msg": "Only consultant and contractor can fill this form"}, status=401)
 
 
 # ----------------------------- Labour Camp details View --------------------------------

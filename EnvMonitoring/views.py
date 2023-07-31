@@ -354,6 +354,7 @@ class ExistingTereeManagementView(generics.ListAPIView):
 class NewTereeManagementView(generics.GenericAPIView):
     serializer_class = NewTreeManagmentSerializer
     parser_classes = [MultiPartParser]
+    permission_classes = [IsAuthenticated]
 
     def post(self , request):
         # try:
@@ -408,7 +409,7 @@ class WasteTreatmentsView(generics.GenericAPIView):
     serializer_class = WasteTreatmentsSerializer
     # renderer_classes = [ErrorRenderer]
     parser_classes = [MultiPartParser]
-    # permission_classes = [ mmrdaPermissions , ]
+    permission_classes = [ IsAuthenticated , ]
     
     def post(self , request):
         # try:
@@ -442,7 +443,7 @@ class WasteTreatmentsView(generics.GenericAPIView):
                     return Response({'status': 'error',
                                     'Message' :error_message} , status = status.HTTP_400_BAD_REQUEST)
             elif "consultant" in request.user.groups.values_list("name",flat=True):
-                # return  Response({'Message' : "Only consultant and Contractor can fill this form"}, status= status.HTTP_401_UNAUTHORIZED)
+
                 serializer = WasteTreatmentsSerializer(data = request.data , context={'request': request})
                 if serializer.is_valid():
                     longitude = float(serializer.validated_data['waste_longitude'])
@@ -524,6 +525,13 @@ class MaterialSourcingView(generics.GenericAPIView):
             #   return  Response({'Message' : "Only consultant and Contractor can fill this form"}, status= status.HTTP_401_UNAUTHORIZED)
                 serializer = self.get_serializer(data = request.data , context={'request': request})
                 if serializer.is_valid():
+                    lat=float(serializer.validated_data['latitude'])
+                    long=float(serializer.validated_data['longitude'])
+                    location=Point(long,lat,srid=4326)
+
+                    storagelong = float(serializer.validated_data['storageLongitude'])
+                    storagelat = float(serializer.validated_data['storageLatitude'])
+                    storageLocation = Point(storagelong , storagelat , srid = 4326 )
                     material_data =serializer.save( location=location , storageLocation = storageLocation , user = request.user)
                     data = MaterialSourcingViewserializer(material_data).data
                     return Response({'status': 'success' , 

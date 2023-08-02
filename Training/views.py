@@ -7,6 +7,7 @@ from django.contrib.gis.geos import Point
 from .models import traning, photographs
 from .permission import IsConsultant
 from rest_framework import filters
+from rest_framework import status
 
 
 # Create your views here.
@@ -17,13 +18,23 @@ class TraningView(generics.GenericAPIView):
     parser_classes = [MultiPartParser]
 
     def post(self, request):
-        try:
-            serializer = TraningSerializer(data=request.data)
-            if serializer.is_valid(raise_exception=True):
-                serializer.save()
-                return Response(serializer.data, status=200)
-        except:
-            return Response({'Please Enetr a valid data'}, status=400)
+        # try:
+        serializer = TraningSerializer(data=request.data)
+        if serializer.is_valid():
+            lat = float(serializer.validated_data['latitude'])
+            long = float(serializer.validated_data['longitude'])
+            location = Point(long, lat, srid=4326)
+            serializer.save(location = location , user = request.user)
+            return Response({'status': 'success',
+                                        'message' : 'data saved successfully',
+                                        }, status= status.HTTP_200_OK)
+        else:
+            key, value =list(serializer.errors.items())[0]
+            error_message = key+" ,"+ value[0]
+            return Response({'status': 'error',
+                            'Message' : error_message} , status = status.HTTP_400_BAD_REQUEST)
+        # except:
+        #     return Response({'Please Enetr a valid data'}, status=400)
 
 
 class TrainingListView(generics.ListAPIView):
@@ -64,8 +75,10 @@ class PhotographsView(generics.GenericAPIView):
             data = photographsViewSerializer(phototgraph).data
             return Response(data, status=200)
         else:
-            return Response(serializer.errors, status=400)
-
+            key, value =list(serializer.errors.items())[0]
+            error_message = key+" ,"+ value[0]
+            return Response({'status': 'error',
+                            'Message' : error_message} , status = status.HTTP_400_BAD_REQUEST)
 
 class photographsListView(generics.ListAPIView):
     serializer_class = photographsSerializer
@@ -107,8 +120,10 @@ class occupationalHealthSafety (generics.GenericAPIView):
             data = occupationalHealthSafetyViewSerializer(data).data
             return Response(data, status=200)
         else:
-            return Response({"message": serializer.errors}, status=400)
-
+            key, value =list(serializer.errors.items())[0]
+            error_message = key+" ,"+ value[0]
+            return Response({'status': 'error',
+                            'Message' : error_message} , status = status.HTTP_400_BAD_REQUEST)
 class ContactUsView(generics.GenericAPIView):
     serializer_class = ContactusSerializezr
 
@@ -122,7 +137,10 @@ class ContactUsView(generics.GenericAPIView):
             data = ContactusViewSerialzier(contactus).data
             return Response(data, status=200)
         else:
-            return Response({"message": serializer.errors}, status=400)
+            key, value =list(serializer.errors.items())[0]
+            error_message = key+" ,"+ value[0]
+            return Response({'status': 'error',
+                            'Message' : error_message} , status = status.HTTP_400_BAD_REQUEST)
         # except:
         #     return Response ({'Message' : 'No data found'} , status= 400)
 
@@ -147,8 +165,10 @@ class PreConstructionStageComplianceView(generics.GenericAPIView):
             return Response({'status': 'success' ,
                             'Message': 'Data saved successfully'} , status= 200)
         else:
-            return Response({'status': 'failed' ,
-                            'Message': 'something went Wrong please check again'} , status= 400)
+            key, value =list(serializer.errors.items())[0]
+            error_message = key+" ,"+ value[0]
+            return Response({'status': 'error',
+                            'Message' : error_message } , status = status.HTTP_400_BAD_REQUEST)
                     
 
 
@@ -165,8 +185,10 @@ class ConstructionStageComplainceView(generics.CreateAPIView):
             return Response({'status': 'success' ,
                             'Message': 'Data saved successfully'} , status= 200)
         else:
-            return Response({'status': 'failed' ,
-                            'Message': 'something went Wrong please check again'} , status= 400)
+            key, value =list(serializer.errors.items())[0]
+            error_message = key+" ,"+ value[0]
+            return Response({'status': 'error',
+                            'Message' : error_message} , status = status.HTTP_400_BAD_REQUEST)
 
 
 class ContactUsimagesCompress(generics.CreateAPIView):

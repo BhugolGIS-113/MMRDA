@@ -92,69 +92,16 @@ class Contactus(models.Model):
 
 
 class ContactusImage(models.Model):
-    contactus = models.ForeignKey(
-        Contactus, on_delete=models.CASCADE, related_name='images' , blank = True    , null = True)
+    contactus = models.ForeignKey(Contactus, on_delete=models.CASCADE, related_name='images' , blank = True    , null = True)
     images1 = models.ImageField(upload_to='contactus/images', max_length=255, blank=True, null=True)
     images2 = models.ImageField(upload_to='contactus/images' , max_length=255, blank=True, null = True )
-
-
-
-
-#     def save(self,force_insert=False, force_update=False, using=None,*args, **kwargs):
-#         if self.images:
-#             image = self.images
-#             print(image.size)
-#             if image.size > 0.02*1024*1024: #if size greater than 500kb then it will send to compress image function
-#                 self.images = compress_image(image)
-#         super(ContactusImage, self).save(*args, **kwargs)
-
-
-# from django.core.files import File
-# from io import BytesIO
-# from PIL import Image
-
-# def compress_image(image):
-#     im = Image.open(image)
-#     im_io = BytesIO()
-#     im.save(im_io, 'jpeg', quality=1,optimize=True)
-#     new_image = File(im_io, name=image.name)
-#     return new_image
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 class PreConstructionStage(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='user')
     ShiftingofUtilities = models.BooleanField(default=False)
-    RulesOfShiftingofUtilities = models.CharField(max_length=255, default='''High tension power line, water supply pipeline, sewer
-                                                                            line, gas pipeline etc. as per MCGM guide lines''')
+    RulesOfShiftingofUtilities = models.CharField(max_length=255, default='''High tension power line, water supply pipeline, sewer line, gas pipeline etc. as per MCGM guide lines''')
     ResponsibilityOfShiftingofUtilities = models.CharField(
         max_length=255, blank=True)
     CurrentStatusOfShiftingofUtilities = models.CharField(
@@ -162,7 +109,7 @@ class PreConstructionStage(models.Model):
 
     PermissionForFellingOfTrees = models.BooleanField(default=False)
     RulesOfPermissionForFellingOfTrees = models.CharField(
-        max_length=255, blank=True, null=True)
+        max_length=255, default= 'Forest Conservation Act 1980, Guideline as per the department of Environment, Govt. of Maharashtra. Maharashtra (Urban Area) Protection of trees Act 1975' , blank=True, null=True)
     ResponsibilityOfPermissionForFellingOfTrees = models.CharField(
         max_length=255, blank=True, null=True)
     CurrentStatusPermissionForFellingOfTrees = models.CharField(

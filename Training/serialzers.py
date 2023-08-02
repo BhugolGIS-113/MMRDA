@@ -3,9 +3,18 @@ from rest_framework import serializers
 from .models import *
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 class TraningSerializer(serializers.ModelSerializer):
+    longitude=serializers.CharField(max_length=10,required=True)
+    latitude=serializers.CharField(max_length=10,required=True)
     class Meta:
         model = traning
-        fields = '__all__'
+        fields =( 'quarter' , 'packages' , 'dateOfMonitoring' ,'category' , 'traning_title' , 'no_of_attends' , 'male' , 'female' ,
+                 'longitude' , 'latitude' ,'incharge_person' , 'traninig_initiated_by' , 
+                 'conduct_date' , 'traning_date' , 'description' , 'photographs')
+
+    def create(self,data):  
+        data.pop('longitude')
+        data.pop('latitude')
+        return traning.objects.create(**data)
 
 
 class photographsSerializer(serializers.ModelSerializer):

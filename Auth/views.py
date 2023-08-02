@@ -108,21 +108,21 @@ class LoginView(generics.GenericAPIView):
 
     def post(self , request):
         serializer = LoginSerializer(data= request.data)
-        serializer.is_valid(raise_exception=True)
-        email = serializer.data.get('email')
-        password = serializer.data.get('password')
-        user = authenticate(email=email , password=password)
-        user1 = User.objects.filter(email=email)
-        serializer2 = RegisterSerializer(user1 ,many=True)
-        if user is not None:
-            token = get_tokens_for_user(user)
-            return Response({'Token':token,
-                            'status': 'success',
-                            'Message':'Login sucessfull', 
-                            "user": serializer2.data[0].get('email'),
-                            "username": serializer2.data[0].get('username'),
-                            'user_group' : user.groups.values_list("name",flat=True)[0]} , 
-                            status=status.HTTP_200_OK)
+        if serializer.is_valid():
+            email = serializer.data.get('email')
+            password = serializer.data.get('password')
+            user = authenticate(email=email , password=password)
+            user1 = User.objects.filter(email=email)
+            serializer2 = RegisterSerializer(user1 ,many=True)
+            if user is not None:
+                token = get_tokens_for_user(user)
+                return Response({'Token':token,
+                                'status': 'success',
+                                'Message':'Login sucessfull', 
+                                "user": serializer2.data[0].get('email'),
+                                "username": serializer2.data[0].get('username'),
+                                'user_group' : user.groups.values_list("name",flat=True)[0]} , 
+                                status=status.HTTP_200_OK)
         else:
             return Response({'status': 'failed',
                             'Message': "Email OR Password is not Valid , Please check Again."} , status=status.HTTP_404_NOT_FOUND)
@@ -160,7 +160,7 @@ class restpasswordView(generics.GenericAPIView):
     def post(self , request ,uid, token ):
         serializer = PasswordRestSerializer(data = request.data , context = {'uid' :uid ,'token' :token })
         serializer.is_valid(raise_exception=True)
-        return Response({"msg" : "Password reset Successfully"} , status=status.HTTP_200_OK)
+        return Response({"message" : "Password reset Successfully"} , status=status.HTTP_200_OK)
 
 
 class LogoutAPIView(generics.GenericAPIView):
@@ -177,4 +177,4 @@ class LogoutAPIView(generics.GenericAPIView):
         # print('Outstanding token deleted successfully')
   
 
-        return Response({'Message' : 'Logut Successfull'},status=status.HTTP_204_NO_CONTENT)
+        return Response({'message' : 'Logut Successfull'}, status=status.HTTP_204_NO_CONTENT)

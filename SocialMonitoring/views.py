@@ -65,33 +65,48 @@ class PapView(generics.GenericAPIView):
     parser_classes = [MultiPartParser]
 
     def post(self, request):
-        try:
-            if "RNR" in request.user.groups.values_list("name", flat=True):
-                serializer = PapSerailzer(data=request.data, context={'request': request})
-                if serializer.is_valid():
-                    papid = serializer.validated_data["PAPID"]
-                    data = PAP.objects.filter(PAPID=papid).exists()
-                    if data == True:
-                        return Response({'Message': 'already data filled for this PAP-ID',
-                                        'status' : 'success'}, status=400)
-                    else:
-                        lat = float(serializer.validated_data['latitude'])
-                        long = float(serializer.validated_data['longitude'])
-                        location = Point(long, lat, srid=4326)
-                        pap = serializer.save(location=location, user=request.user)
-                        data = papviewserialzer(pap).data
-                        return Response ({'Message': 'data saved successfully',
-                                        'status' : 'success'}, status=200)
-                else:    
-                    key, value =list(serializer.errors.items())[0]
-                    error_message = key+" ,"+value[0]
-                    return Response({'status': 'error',
-                                    'Message' :value[0]} , status = status.HTTP_400_BAD_REQUEST)
-        except:
-            return Response({"Message": "You are not Authourize person to fill this Details" ,
-                             'status' : 'failed' }, status=401)
+        if "RNR" in request.user.groups.values_list("name", flat=True):
+            serializer = PapSerailzer(data=request.data, context={'request': request})
+            if serializer.is_valid():
+                papid = serializer.validated_data["PAPID"]
+                data = PAP.objects.filter(PAPID=papid).exists()
+                if data == True:
+                    return Response({'Message': 'already data filled for this PAP-ID',
+                                    'status' : 'success'}, status=400)
+                else:
+                    lat = float(serializer.validated_data['latitude'])
+                    long = float(serializer.validated_data['longitude'])
+                    location = Point(long, lat, srid=4326)
+                    pap = serializer.save(location=location, user=request.user)
+                    data = papviewserialzer(pap).data
+                    return Response ({'Message': 'data saved successfully',
+                                    'status' : 'success'}, status=200)
+            else:    
+                key, value =list(serializer.errors.items())[0]
+                error_message = key+" ,"+value[0]
+                return Response({'status': 'error',
+                                'Message' :value[0]} , status = status.HTTP_400_BAD_REQUEST)
+            
+        elif "consultant" in request.user.groups.values_list("name" , flat = True):
+            serializer = self.get_serializer(data=request.data)
+            if serializer.is_valid():
+                lat = float(serializer.validated_data['latitude'])
+                long = float(serializer.validated_data['longitude'])
+                location = Point(long, lat, srid=4326)
+                pap = serializer.save(location=location , user = request.user)
+                data = papviewserialzer(pap).data 
+                return Response ({'Message': 'data saved successfully',
+                                    'status' : 'success'}, status=200)
+            else:
+                key, value =list(serializer.errors.items())[0]
+                error_message = key+" ,"+value[0]
+                return Response({'status': 'error',
+                                'Message' :value[0]} , status = status.HTTP_400_BAD_REQUEST)
+        else:
+        # except Exception:
+            return Response({"msg": "Only consultant and contractor can fill this form"}, status=401)
 
-
+        
 class papupdateView(generics.UpdateAPIView):
     serializer_class = PapUpdateSerialzier
     renderer_classes = [ErrorRenderer]
@@ -165,14 +180,14 @@ class RehabilitationView(generics.GenericAPIView):
                 error_message = key+" ,"+value[0]
                 return Response({'status': 'error',
                                 'Message' :value[0]} , status = status.HTTP_400_BAD_REQUEST)
-            
+
         elif "consultant" in request.user.groups.values_list("name" , flat = True):
             serializer = self.get_serializer(data=request.data)
             if serializer.is_valid():
                 lat = float(serializer.validated_data['latitude'])
                 long = float(serializer.validated_data['longitude'])
                 location = Point(long, lat, srid=4326)
-                LabourCampDetails = serializer.save(location=location , user = request.user)
+                rehabilitation = serializer.save(location=location , user = request.user)
                 data = RehabilitationViewSerializer(rehabilitation).data
                 return Response({'Message': 'data saved successfully',
                                     'status' : 'success'})
@@ -182,7 +197,6 @@ class RehabilitationView(generics.GenericAPIView):
                 return Response({'status': 'error',
                                 'Message' :value[0]} , status = status.HTTP_400_BAD_REQUEST)
         else:
-        # except Exception:
             return Response({"msg": "Only consultant and contractor can fill this form"}, status=401)
 
 

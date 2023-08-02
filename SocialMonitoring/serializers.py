@@ -133,10 +133,10 @@ class RehabilitationSerializer(serializers.ModelSerializer):
     def validate(self,data):
         long = data['longitude'].split('.')[-1]
         if len(long) > 6:
-            raise serializers.ValidationError("longitude must have at most 6 digits after the decimal point.")
+            raise ValidationError("longitude must have at most 6 digits after the decimal point.")
         lat =  data['latitude'].split('.')[-1]
         if len(lat) > 6:
-            raise serializers.ValidationError("latitude must have at most 6 digits after the decimal point.")
+            raise ValidationError("latitude must have at most 6 digits after the decimal point.")
         return data
 
     def create(self, data):

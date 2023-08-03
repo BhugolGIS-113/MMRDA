@@ -56,8 +56,8 @@ class labourCampDetailGetviewSerializer(serializers.ModelSerializer):
 
 class PapSerailzer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    longitude = serializers.CharField(max_length=10, required=False)
-    latitude = serializers.CharField(max_length=10, required=False)
+    longitude = serializers.CharField(max_length=50, required=True)
+    latitude = serializers.CharField(max_length=50, required=True)
     class Meta:
         model = PAP
         fields = ('quarter', 'packages', 'longitude', 'latitude','dateOfMonitoring', 'user','dateOfIdentification','PAPID','nameOfPAP', 

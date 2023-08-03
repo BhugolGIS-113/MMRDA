@@ -61,7 +61,7 @@ class labourCampdetailsViewSearch(generics.ListAPIView):
 class PapView(generics.GenericAPIView):
     renderer_classes = [ErrorRenderer]
     serializer_class = PapSerailzer
-    permission_classes = [IsAuthenticated, IsRNR]
+    permission_classes = [IsAuthenticated]
     parser_classes = [MultiPartParser]
 
     def post(self, request):
@@ -111,7 +111,7 @@ class papupdateView(generics.UpdateAPIView):
     serializer_class = PapUpdateSerialzier
     renderer_classes = [ErrorRenderer]
     parser_classes = [MultiPartParser]
-    permission_classes = [IsAuthenticated, IsRNR]
+    permission_classes = [IsAuthenticated]
 
     def update(self, request, id,  **kwargs):
         try:
@@ -154,7 +154,7 @@ class RehabilatedPAPIDView(generics.GenericAPIView):
 class RehabilitationView(generics.GenericAPIView):
     serializer_class = RehabilitationSerializer
     parser_classes = [MultiPartParser]
-    permission_classes = [IsAuthenticated, IsRNR]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
      

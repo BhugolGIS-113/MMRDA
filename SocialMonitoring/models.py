@@ -58,7 +58,7 @@ class PAP(Baseclass):
     actionTaken = models.CharField(
         max_length=100, null=True, blank=True)
     notAgreedReason = models.TextField(max_length=255, blank=True, null=True)
-    presentPhotograp = models.ImageField(
+    presentPhotograph = models.ImageField(
         upload_to='PAP/presentphotograph', blank=True, null=True)
     remarks = models.TextField(max_length=255, blank=True, null=True)
 
@@ -309,13 +309,13 @@ class ConstructionSiteDetails(Baseclass):
         upload_to='constructionSite/toilet_photographs/', blank=True, null=True)
     toiletRemarks = models.TextField(max_length=255, null=True, blank=True)
 
-    isbarricading = models.BooleanField(blank=True, null=True)
-    barricadingCondition = models.CharField(
-        max_length=255, blank=True, null=True)
-    barricadingPhotograph = models.ImageField(
-        upload_to='constructionSite/barricading_photograph/', blank=True, null=True)
-    barricadingRemarks = models.TextField(
-        max_length=255, blank=True, null=True)
+    # isbarricading = models.BooleanField(blank=True, null=True)
+    # barricadingCondition = models.CharField(
+    #     max_length=255, blank=True, null=True)
+    # barricadingPhotograph = models.ImageField(
+    #     upload_to='constructionSite/barricading_photograph/', blank=True, null=True)
+    # barricadingRemarks = models.TextField(
+    #     max_length=255, blank=True, null=True)
 
     genralphotographs = models.ImageField(
         upload_to='constructionSite/genral_photograph/', blank=True, null=True)

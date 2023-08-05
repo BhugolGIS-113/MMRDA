@@ -19,19 +19,21 @@ class traning(Baseclass):
     user = models.ForeignKey(
         User, related_name='training_User', on_delete=models.CASCADE)
     category = models.CharField(max_length=255, null=True, blank=True)
-    traning_title = models.CharField(max_length=255, null=True, blank=True)
+    traningTitle = models.CharField(max_length=255, null=True, blank=True)
     # location = models.CharField(max_length=255, blank=True, null=True)
-    no_of_attends = models.IntegerField(null=True, blank=True)
+    noOfAttends = models.IntegerField(null=True, blank=True)
+    noOfTimesTrainingConducted = models.IntegerField(default= 0)
     male = models.CharField(max_length=255, null=True, blank=True)
     female = models.CharField(max_length=255, null=True, blank=True)
-    incharge_person = models.CharField(max_length=253, null=True, blank=True)
-    traninig_initiated_by = models.CharField(
+    inchargePerson = models.CharField(max_length=253, null=True, blank=True)
+    traninigInitiatedBy = models.CharField(
         max_length=255, null=True, blank=True)
-    conduct_date = models.DateField(   auto_now=True, null=True, blank=True)
-    traning_date = models.DateField(auto_now=True, null=True, blank=True)
-    description = models.CharField(max_length=255, null=True, blank=True)
+    conductDate = models.DateField(   auto_now=True, null=True, blank=True)
+    traningDate = models.DateField(auto_now=True, null=True, blank=True)
+    # description = models.CharField(max_length=255, null=True, blank=True)
     photographs = models.ImageField(
         upload_to='traning_photographs/', null=True, blank=True)
+    documents =  models.FileField(upload_to='traning_photographs/' , null= True , blank= True )
 
 
 # #----------------------------- PHOTOGRAPHS MODEL-----------------------------------------
@@ -80,7 +82,7 @@ class occupationalHealthSafety(Baseclass):
     compensationPaid = models.PositiveIntegerField(blank=True, null=True)
     photographs = models.ImageField(
         upload_to='OccupationalHealth&Safety/', null=True, blank=True)
-    document = models.FileField(blank=True, null=True)
+    documents = models.FileField( upload_to='OccupationalHealth&Safety/' , blank=True, null=True)
     remarks = models.TextField(max_length=255, blank=True, null=True)
 
 

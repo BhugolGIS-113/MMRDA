@@ -304,7 +304,7 @@ class MaterialSourceTypeCountChart(APIView):
 class MaterialConditionChart(APIView):
     def get(self, request):
 
-        counts = MaterialManegmanet.objects.values('materialstorageCondition').annotate(count = Count('materialstorageCondition'))
+        counts = MaterialManegmanet.objects.values('materialStorageCondition').annotate(count = Count('materialStorageCondition'))
         dataset = [count['count'] for count in counts]
         return Response({'status': 'success',
                             'Message': 'Data was successfully fetched',

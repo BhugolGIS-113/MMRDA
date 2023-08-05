@@ -109,7 +109,7 @@ class materialManagementSerializer(GeoFeatureModelSerializer):
         model = MaterialManegmanet
         fields = ('id','quarter','month','packages','dateOfMonitoring',
          'typeOfMaterial','source','sourceOfQuarry','materialStorageType','storageLocation',
-         'materialstorageCondition','materialstoragePhotograph','approvals' ,'photographs',
+         'materialStorageCondition','materialStoragePhotograph','approvals' ,'photographs',
           'documents','remarks')
         geo_field= ('location')
 

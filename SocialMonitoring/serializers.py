@@ -63,7 +63,7 @@ class PapSerailzer(serializers.ModelSerializer):
         fields = ('quarter', 'packages', 'longitude', 'latitude','dateOfMonitoring', 'user','dateOfIdentification','PAPID','nameOfPAP', 
                   'addressLine1','streetName','pincode','eligibility', 'categoryOfPap', 
                     'areaOfAsset','typeOfAsset','legalStatus','legalDocuments',
-                   'actionTaken', 'notAgreedReason','presentPhotograp','remarks' )
+                   'actionTaken', 'notAgreedReason','presentPhotograph','remarks' )
 
     def validate(self,data):
         long = data['longitude'].split('.')[-1]
@@ -89,7 +89,7 @@ class PapUpdateSerialzier(serializers.ModelSerializer):
         fields = ('quarter', 'packages', 'longitude', 'latitude', 'dateOfIdentification',
                   'addressLine1','streetName','pincode','eligibility', 'categoryOfPap',
                   'areaOfAsset','typeOfAsset','legalStatus','legalDocuments',
-                   'actionTaken', 'notAgreedReason','presentPhotograp','remarks')
+                   'actionTaken', 'notAgreedReason','presentPhotograph','remarks')
     def validate(self,data):
         long = data['longitude'].split('.')[-1]
         if len(long) > 6:
@@ -312,4 +312,4 @@ class ConstructionSiteDetailsserializer(serializers.ModelSerializer):
 class LabourCampserializer(serializers.ModelSerializer):
     class Meta:
         model = LabourCamp
-        fields = '__all__'
+        fields = '__all__' 

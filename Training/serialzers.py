@@ -7,9 +7,9 @@ class TraningSerializer(serializers.ModelSerializer):
     latitude=serializers.CharField(max_length=10,required=True)
     class Meta:
         model = traning
-        fields =( 'quarter' , 'packages' , 'dateOfMonitoring' ,'category' , 'traning_title' , 'no_of_attends' , 'male' , 'female' ,
-                 'longitude' , 'latitude' ,'incharge_person' , 'traninig_initiated_by' , 
-                 'conduct_date' , 'traning_date' , 'description' , 'photographs')
+        fields =( 'quarter' , 'packages' , 'dateOfMonitoring' ,'category' , 'traningTitle' , 'noOfAttends' ,'noOfTimesTrainingConducted' ,  'male' , 'female' ,
+                 'longitude' , 'latitude' ,'inchargePerson' , 'traninigInitiatedBy' , 
+                 'conductDate' , 'traningDate' ,  'photographs' , 'documents')
 
     def create(self,data):  
         data.pop('longitude')
@@ -49,7 +49,7 @@ class occupationalHealthSafetySerialziers(serializers.ModelSerializer):
         'powerSupplySystem' ,'assemblyArea' ,'ambulanceArrangement' ,'toiletFacility',
         'safeMomentPassage' ,'materialKeepingPractice','accidentalCheck','safetyGearStatus',
         'barricading','natureOfAccident' ,'typeOfIncident' ,'incidentDetails' ,
-        'identifiedCauseOfIncident' ,'outcome' ,'compensationPaid' ,'photographs' ,'remarks']
+        'identifiedCauseOfIncident' ,'outcome' ,'compensationPaid' ,'photographs' , 'documents' , 'remarks']
 
     
     def create(self,data):

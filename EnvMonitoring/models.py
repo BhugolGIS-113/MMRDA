@@ -105,8 +105,8 @@ class MaterialManegmanet(Baseclass):
     storageLocation = models.PointField(blank = True , null = True)
 
     materialStorageType = models.CharField(max_length=255 , blank = True , null = True)
-    materialstorageCondition = models.CharField(max_length = 255 , blank = True , null = True)
-    materialstoragePhotograph = models.ImageField(upload_to = 'MaterialManegment/materailStorage_Photograph' , blank = True , null = True)
+    materialStorageCondition = models.CharField(max_length = 255 , blank = True , null = True)
+    materialStoragePhotograph = models.ImageField(upload_to = 'MaterialManegment/materailStorage_Photograph' , blank = True , null = True)
 
     approvals = models.FileField(null=True, blank=True)
     

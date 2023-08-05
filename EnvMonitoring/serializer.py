@@ -238,7 +238,7 @@ class MaterialManagmentSerializer(serializers.ModelSerializer):
         model = MaterialManegmanet
         fields = ('quarter','month','packages','longitude','dateOfMonitoring','latitude' ,
                 'typeOfMaterial','source','sourceOfQuarry','materialStorageType','storageLongitude' ,'storageLatitude',
-                'materialstorageCondition','materialstoragePhotograph','approvals' ,'photographs',
+                'materialStorageCondition','materialStoragePhotograph','approvals' ,'photographs',
                 'documents','remarks')
 
 

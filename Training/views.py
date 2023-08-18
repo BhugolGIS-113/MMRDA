@@ -9,6 +9,7 @@ from .permission import IsConsultant
 from rest_framework import filters
 from rest_framework import status
 from MMRDA.utils import error_simplifier
+from .utils import save_multiple_files
 
 
 # Create your views here.
@@ -131,21 +132,7 @@ class occupationalHealthSafety (generics.GenericAPIView):
             error_message = key+" ,"+ value[0]
             return Response({'status': 'error',
                             'Message' : error_message} , status = status.HTTP_400_BAD_REQUEST)
-import os
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
-from django.conf import settings
 
-
-def save_files(files, file_mapping, file_path , field):
-
-    file_list = []
-    for file in files:
-        tmp = os.path.join(settings.MEDIA_ROOT, file_path, file.name)
-        path = default_storage.save(tmp, ContentFile(file.read()))
-        tmp_file = os.path.join(settings.MEDIA_ROOT, path)
-        file_list.append('/media/' + file_path + '/' + file.name)
-    file_mapping[field] = file_list
    
       
 
@@ -169,32 +156,10 @@ class ContactUsView(generics.GenericAPIView):
                 # print(file_path , 'file_apth')
                 files = request.FILES.getlist(field)
                 file_mapping[field] = []
-                save_files(files, file_mapping, file_path , field)
+                save_multiple_files(files, file_mapping, file_path , field)
           
-            print(file_mapping) 
+          
             contactus = serializer.save(location=location , **file_mapping )
-
-            
-            # file_mapping = {
-            #     'documents': [],
-            #     'image': [],
-            # }
-            # for field in ['documents', 'image']:
-            #     files = request.FILES.getlist(field)
-            #     for file in files:
-            #         tmp = os.path.join(settings.MEDIA_ROOT, 'contactus/images/', file.name)
-            #         path = default_storage.save(tmp, ContentFile(file.read()))
-            #         tmp_file = os.path.join(settings.MEDIA_ROOT, path)
-                    
-            #         file_list = file_mapping.get(field)
-            #         if file_list is not None:
-            #             file_list.append('/media/contactus/images/' + file.name)
-
-            
-            # contactus = serializer.save(location=location , 
-            #                             documents = file_mapping.get('documents')  ,
-            #                             image = file_mapping.get('image') )
-
             data = ContactusViewSerialzier(contactus ).data
             return Response(data, status=200)
         else:

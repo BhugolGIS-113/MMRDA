@@ -26,6 +26,9 @@ def get_tokens_for_user(user):
     }
 
 
+
+# The `UserRegister` class is a view that handles user registration and assigns the user to a specific
+# group based on their selected options.
 class UserRegister(generics.GenericAPIView):
     serializer_class = RegisterSerializer
     ErrorRenderer = [ErrorRenderer]
@@ -102,6 +105,8 @@ class UserRegister(generics.GenericAPIView):
 
 
 
+# The above class is a login view in Python that handles user authentication and returns a response
+# with a token and user information if the login is successful.
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
     parser_classes = [MultiPartParser]
@@ -131,6 +136,8 @@ class LoginView(generics.GenericAPIView):
 
 
 
+# The `ChangePasswordView` class is a view in a Python Django application that handles the logic for
+# changing a user's password.
 class ChangePasswordView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ChangePasswordSerializer
@@ -142,7 +149,7 @@ class ChangePasswordView(generics.GenericAPIView):
       return Response({'msg':'password change successfully',
                         'status' : 201}, status=status.HTTP_201_CREATED)
 
-
+# The above class is a view for handling password reset email requests in a Django REST framework API.
 class PasswordRestEmail(generics.GenericAPIView):
     serializer_class = PasswordResetEmailSerializer
     parser_classes = [MultiPartParser]
@@ -154,6 +161,8 @@ class PasswordRestEmail(generics.GenericAPIView):
         return Response({'message':'Password Rest Email sent Successfully' } , status= status.HTTP_200_OK)
 
 
+# The `restpasswordView` class is a generic API view in Python that handles password reset requests
+# and returns a response indicating whether the password reset was successful or not.
 class restpasswordView(generics.GenericAPIView):
     serializer_class = PasswordRestSerializer
     parser_classes = [MultiPartParser]
@@ -162,6 +171,8 @@ class restpasswordView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         return Response({"message" : "Password reset Successfully"} , status=status.HTTP_200_OK)
 
+# The `LogoutAPIView` class is a view that handles user logout by validating the request data, saving
+# the serializer, and returning a response indicating successful logout.
 
 class LogoutAPIView(generics.GenericAPIView):
     serializer_class = LogoutSerializer 

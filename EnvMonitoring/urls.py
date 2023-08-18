@@ -4,6 +4,9 @@ from .views import *
 
 urlpatterns = [
 # path('envmonitoring' , EnvMonitoringView.as_view() , name = 'envmonitoring'),
+
+    path('PostSensorLocationDetails' , PostSensorLocationDetails.as_view() , name = 'PostSensorLocationDetails'),
+    path('GetsensorLocationDetails' , GetSensorLocationDetails.as_view() , name = 'PostSensorLocationDetails'),
     path('air' , AirView.as_view() , name = 'Air Details'),
     path('air<int:id>' , AirUpdateView.as_view() , name = 'Air Details'),
     path('airList', AirListView.as_view() , name = 'ListAirView'),
@@ -20,11 +23,9 @@ urlpatterns = [
     path('IdentifiedTree' , ExistingTreeManagementView.as_view() , name = "Tree Management"),
     path('treeupdate<int:id>' , ExistingTreeManagmentUpdateView.as_view() , name =" Tree Management"),
     path('treeView' , ExistingTereeManagementView.as_view() , name = "Tree Management list"),
+    path('GetExistingTreeIDView/<str:treeID>' , GetExistingTreeIDView.as_view() , name = "Tree Management list"),
 
     path('NewTree' , NewTereeManagementView.as_view() , name = "Tree Management"),
-
-
-
 
     path('waste' , WasteTreatmentsView.as_view() , name = "Waste Management"),
     path('materialmanagement' , MaterialSourcingView.as_view() , name = "Material Sourcing") ,

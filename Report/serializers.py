@@ -4,6 +4,7 @@ from EnvMonitoring.models import *
 from rest_framework.validators import ValidationError
 from Report.models import *
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
+from Training.models import *
 
 class LabourcampReportSerializer(GeoFeatureModelSerializer):
     class Meta:
@@ -32,18 +33,21 @@ class LabourcampReportSerializer(GeoFeatureModelSerializer):
         if data['labourCampName'] == '' or data['labourCampName'] ==None:
             raise ValidationError('labourCampName can not be empty')
         return data
-
+class LabourCampDeatilViewSerialzier(ModelSerializer):
+    class Meta:
+        model = LabourCamp
+        fields = "__all__"
 
 class ConstructionCampReportSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = ConstructionSiteDetails
         fields = ('id','quarter', 'packages','dateOfMonitoring' ,'constructionSiteName' , 'constructionSiteId',
                     'isDemarkationOfPathways','demarkationOfPathwaysCondition','demarkationOfPathwaysPhotographs','demarkationOfPathwaysRemark' ,
-                    'isSignagesLabeling','signagesLabelingCondition' ,'signagesLabelingPhotographs','signagesLabelingRemarks',
+                    'isSignagesLabelingCheck','signagesLabelingCondition' ,'signagesLabelingPhotographs','signagesLabelingRemarks',
                     'isRegularHealthCheckup','regularHealthCheckupCondition','regularHealthCheckupPhotographs','regularHealthCheckupRemarks',
                     'isAvailabilityOfDoctor', 'availabilityOfDoctorCondition','availabilityOfDoctorPhotographs','availabilityOfDoctorRemarks',
                         'isFirstAidKit','firstAidKitCondition' ,'firstAidKitPhotographs','firstAidKitRemarks',
-                    'isDrinkingWater','drinkingWaterCondition' ,'drinkingWaterPhotographs','drinkingWaterRemarks',
+                    'isDrinkingWaterCheck','drinkingWaterCondition' ,'drinkingWaterPhotographs','drinkingWaterRemarks',
                         'isToilet', 'toiletCondition','toiletPhotograph','toiletRemarks',
                         'genralphotographs','documents','remarks')
         geo_field= ('location')
@@ -55,7 +59,7 @@ class PAPReportSerializer(GeoFeatureModelSerializer):
         model = PAP
         fields = ('id','quarter', 'packages','dateOfMonitoring','dateOfIdentification','PAPID','nameOfPAP', 
                   'addressLine1','streetName','pincode','eligibility', 'categoryOfPap', 
-                  'areaOfAsset','typeOfAsset','legalStatus','legalDocuments',
+                  'areaOfAsset','typeOfStructure','legalStatus','legalDocuments',
                    'actionTaken', 'notAgreedReason','remarks' )
         geo_field= ('location')
 
@@ -175,6 +179,47 @@ class ProjectAffectedTreesSerializer(GeoFeatureModelSerializer):
         model = ProjectAffectedTrees
         fields = ('gid','tree_no_field' , 'common_nam' , 'botanical' ,'proposed_a','condition','survey_dat')
         geo_field= ('geom')
+
+
+
+
+class TrainnigReportSerializer(GeoFeatureModelSerializer):
+    class Meta:
+        model= traning
+        fields = ('quarter' , 'packages' , 'dateOfMonitoring',
+                  'category' , 'traningTitle' , 'noOfAttends' , 'noOfTimesTrainingConducted',
+                  'male','female' , 'inchargePerson', 'traninigInitiatedBy' , 'conductDate' ,
+                  'traningDate' , 'photographs' , 'documents')
+        geo_field = ('location')
+
+
+class OccupationalHealthQuarterSeialzier(GeoFeatureModelSerializer):
+    class Meta:
+        model = occupationalHealthSafety
+        # fields = '__all__'
+        exclude = ['user' ]
+        geo_field = ('location')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # import io

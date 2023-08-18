@@ -3,7 +3,27 @@ from rest_framework_gis.serializers import GeoFeatureModelSerializer
 from .models import *
 
 
-        
+
+class PostSensorLocationDetailsSerializer(serializers.ModelSerializer):
+    longitude=serializers.CharField(max_length=50,required=True )
+    latitude=serializers.CharField(max_length=50,required=True)
+    class Meta:
+        model = sensors 
+        fields = ('Name' , 'ID' , 'longitude' , 'latitude')
+
+    
+    def create(self,data):
+        data.pop('latitude')
+        data.pop('longitude')
+        return sensors.objects.create(**data)
+    
+
+
+class PostSensorLocationDetailsViewSerializer(GeoFeatureModelSerializer):
+    class Meta:
+        model = sensors
+        fields = '__all__'
+        geo_field = 'location'
 
 class AirSerializer(serializers.ModelSerializer):
     # user = serializers.HiddenField(default=serializers.CurrentUserDefault())

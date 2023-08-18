@@ -91,6 +91,10 @@ class Contactus(models.Model):
     email = models.EmailField(max_length=255, verbose_name='Email')
     messsage = models.TextField(max_length=255, blank=True, null=True)
     location = PointField(blank=True, null=True)
+    documents = models.CharField(max_length=255 , blank = True , null = True )
+    image = models.CharField(max_length=255 , blank = True , null = True )
+
+    
 
 
 class ContactusImage(models.Model):

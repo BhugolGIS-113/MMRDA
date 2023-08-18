@@ -17,7 +17,8 @@ urlpatterns = [
     
     path('PreConstructionStageCompliance' , PreConstructionStageComplianceView.as_view() , name = ' PreConstructionStageCompliance'),
     path('ConstructionStageComplaince' , ConstructionStageComplainceView.as_view() , name = ' PreConstructionStageCompliance'),
-
+   
+    
     # path(' ContactUsimagesCompress' , ContactUsimagesCompress.as_view() , name = ' PreConstructionStageCompliance'),
 
 ]

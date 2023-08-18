@@ -62,7 +62,7 @@ class PapSerailzer(serializers.ModelSerializer):
         model = PAP
         fields = ('quarter', 'packages', 'longitude', 'latitude','dateOfMonitoring', 'user','dateOfIdentification','PAPID','nameOfPAP', 
                   'addressLine1','streetName','pincode','eligibility', 'categoryOfPap', 
-                    'areaOfAsset','typeOfAsset','legalStatus','legalDocuments',
+                    'areaOfAsset','typeOfStructure','legalStatus','legalDocuments',
                    'actionTaken', 'notAgreedReason','presentPhotograph','remarks' )
 
     def validate(self,data):
@@ -88,7 +88,7 @@ class PapUpdateSerialzier(serializers.ModelSerializer):
         model = PAP
         fields = ('quarter', 'packages', 'longitude', 'latitude', 'dateOfIdentification',
                   'addressLine1','streetName','pincode','eligibility', 'categoryOfPap',
-                  'areaOfAsset','typeOfAsset','legalStatus','legalDocuments',
+                  'areaOfAsset','typeOfStructure','legalStatus','legalDocuments',
                    'actionTaken', 'notAgreedReason','presentPhotograph','remarks')
     def validate(self,data):
         long = data['longitude'].split('.')[-1]
@@ -113,12 +113,9 @@ class papviewserialzer(GeoFeatureModelSerializer):
 # ------------------------ Rehabiliation Serializer ----------------------------------------
 class RehabilitationSerializer(serializers.ModelSerializer):
 
-    longitude = serializers.CharField(max_length=10, required=False)
-    latitude = serializers.CharField(max_length=10, required=False)
-    # livelihoodSupportPhotograph = serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
-    # trainingPhotograph = serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
-    # tenamentsPhotograph = serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
-    # photographs = serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
+    longitude = serializers.CharField(max_length=50, required=True  )
+    latitude = serializers.CharField(max_length=50, required=True)
+   
 
     class Meta:
         model = Rehabilitation
@@ -126,7 +123,7 @@ class RehabilitationSerializer(serializers.ModelSerializer):
                    'typeOfCompensation', 'otherCompensationType' ,'addressLine1','streetName','pincode',
                    'isShiftingAllowance','shiftingAllowanceAmount','isLivelihoodSupport', 'livelihoodSupportAmount','livelihoodSupportCondition',
                    'livelihoodSupportPhotograph','livelihoodSupportRemarks','isTraining','trainingCondition',
-                   'trainingPhotograph' ,'trainingRemarks' , 'typeOfTenaments'  ,'areaOfTenament' , 'tenamentsPhotograph',
+                   'trainingPhotograph' ,'trainingRemarks' , 'typeOfStructure'  ,'areaOfTenament' , 'tenamentsPhotograph',
                     'isRelocationAllowance' ,'RelocationAllowanceAmount' ,'isfinancialSupport',
                    'financialSupportAmount','isCommunityEngagement','isEngagementType', 'photographs' , 'documents','remarks')
 
@@ -142,18 +139,7 @@ class RehabilitationSerializer(serializers.ModelSerializer):
     def create(self, data):
         data.pop('longitude')
         data.pop('latitude')
-        # livelihoodSupportPhotograph = data.pop('livelihoodSupportPhotograph')
-        # trainingPhotograph = data.pop('trainingPhotograph')
-        # tenamentsPhotograph = data.pop('tenamentsPhotograph')
-        # photographs = data.pop('photographs')
-
         Rehabilitation_data = Rehabilitation.objects.create(**data)
-
-        # images = [RehabilitationImages.objects.create(RehabilitationID = Rehabilitation_data ,
-        #                                      livelihoodSupportPhotograph = livelihoodSupportImages ,  trainingPhotograph =trainingImages ,
-        #                                     tenamentsPhotograph = tenamentsImages, photographs = image   ) 
-        #                                     for livelihoodSupportImages , trainingImages ,tenamentsImages , image in zip (livelihoodSupportPhotograph , 
-                                                                    # trainingPhotograph , tenamentsPhotograph ,photographs) ]
   
         return Rehabilitation_data
 
@@ -168,7 +154,7 @@ class RehabilitationViewSerializer(GeoFeatureModelSerializer):
 class RehabilatedPAPIDSerializer(serializers.ModelSerializer):
     class Meta:
         model = PAP
-        fields = ('id', 'PAPID' , 'nameOfPAP' , 'categoryOfPap' )
+        fields = ('id', 'PAPID' , 'nameOfPAP' , 'categoryOfPap'  , "actionTaken")
 
 # -------------------------------- Labour camp details Serialzier --------------------------------      
 class LabourCampDetailSerializer(serializers.ModelSerializer):
@@ -180,6 +166,19 @@ class LabourCampDetailSerializer(serializers.ModelSerializer):
     labourCampName = serializers.CharField(validators=[MinLengthValidator(3)] , required=True)
     labourCampId = serializers.CharField(validators=[MinLengthValidator(3)] , required=True)
     
+    # toiletPhotograph = serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
+    # drinkingWaterPhotographs= serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
+    # demarkationOfPathwaysPhotographs = serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
+    # signagesLabelingPhotographs= serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
+    # kitchenAreaPhotographs= serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
+    # fireExtinguishPhotographs= serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
+    # roomsOrDomsPhotographs= serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
+    # segregationOfWastePhotographs= serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
+    # regularHealthCheckupPhotographs= serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
+    # availabilityOfDoctorPhotographs= serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
+    # firstAidKitPhotographs= serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
+    # photographs= serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
+    # documents  = serializers.ListField(child=serializers.FileField(allow_empty_file=True, use_url=False),write_only=True)
     class Meta:
         model = LabourCamp
         fields = ('quarter', 'packages','dateOfMonitoring','longitude', 'latitude', 'labourCampName', 'labourCampId',
@@ -252,11 +251,11 @@ class constructionSiteSerializer(serializers.ModelSerializer):
         model = ConstructionSiteDetails
         fields = ('quarter', 'packages','dateOfMonitoring' ,'longitude', 'latitude', 'constructionSiteName' , 'constructionSiteId',
                  'isDemarkationOfPathways','demarkationOfPathwaysCondition','demarkationOfPathwaysPhotographs','demarkationOfPathwaysRemark' ,
-                'isSignagesLabeling','signagesLabelingCondition' ,'signagesLabelingPhotographs','signagesLabelingRemarks',
+                'isSignagesLabelingCheck','signagesLabelingCondition' ,'signagesLabelingPhotographs','signagesLabelingRemarks',
                 'isRegularHealthCheckup','regularHealthCheckupCondition','regularHealthCheckupPhotographs','regularHealthCheckupRemarks',
                   'isAvailabilityOfDoctor', 'availabilityOfDoctorCondition','availabilityOfDoctorPhotographs','availabilityOfDoctorRemarks',
                       'isFirstAidKit','firstAidKitCondition' ,'firstAidKitPhotographs','firstAidKitRemarks',
-                   'isDrinkingWater','drinkingWaterCondition' ,'drinkingWaterPhotographs','drinkingWaterRemarks',
+                   'isDrinkingWaterCheck','drinkingWaterCondition' ,'drinkingWaterPhotographs','drinkingWaterRemarks',
                     'isToilet', 'toiletCondition','toiletPhotograph','toiletRemarks',
                     'genralphotographs','documents','remarks')
     

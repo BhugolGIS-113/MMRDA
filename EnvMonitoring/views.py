@@ -13,8 +13,34 @@ from Auth.permissions import IsConsultant , IsMMRDA
 from .serializer import *
 from .permissions import IsConsultant , IsContractor
 
+class PostSensorLocationDetails(generics.GenericAPIView):
+    serializer_class = PostSensorLocationDetailsSerializer
+    parser_classes = (MultiPartParser, )
+    # queryset = labourcampDetails.objects.all()
+
+    def post(self, request):
+        
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            lat = float(serializer.validated_data['latitude'])
+            long = float(serializer.validated_data['longitude'])
+            location = Point(long, lat, srid=4326)
+            instance = serializer.save(location=location)
+            data = PostSensorLocationDetailsViewSerializer(instance).data
+            return Response({'status': 'success',
+                            'Message': 'Data saved successfully',
+                                'data': data}, status=status.HTTP_200_OK)
+        else:
+            key, value =list(serializer.errors.items())[0]
+            error_message = key+" ,"+value[0]
+            return Response({'status': 'error',
+                            'Message' :value[0]} , status = status.HTTP_400_BAD_REQUEST)
+   
 
 
+class GetSensorLocationDetails(generics.ListAPIView):
+    queryset = sensors.objects.all() 
+    serializer_class = PostSensorLocationDetailsViewSerializer
 
 class AirView(generics.GenericAPIView):
     # renderer_classes = [ErrorRenderer]
@@ -350,6 +376,22 @@ class ExistingTereeManagementView(generics.ListAPIView):
     queryset = ExistingTreeManagment.objects.all()
 
 
+class GetExistingTreeIDView(generics.GenericAPIView):
+    serializer_class = TreeManagementSerailizer
+    parser_classes = [MultiPartParser]
+
+    def get(self, request, treeID):
+        try:
+            treedata = ExistingTreeManagment.objects.get(treeID=treeID)
+        except:
+            return Response({'Message': 'No data Avaialable for this Tree-ID',
+                            'status' : 'success'}, status=200)
+        if treedata.actionTaken == "To be Retained":
+            return Response({'Message': 'For the enterd ID , Tree is Retained',
+                            'status' : 'success'}, status=200)
+        serializers = TreeManagmentviewserializer(treedata).data
+        return Response(serializers, status=200)
+        
 
 class NewTereeManagementView(generics.GenericAPIView):
     serializer_class = NewTreeManagmentSerializer

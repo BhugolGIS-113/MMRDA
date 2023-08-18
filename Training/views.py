@@ -1,13 +1,14 @@
 from rest_framework import generics
 from .serialzers import *
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.parsers import MultiPartParser 
+from rest_framework.parsers import MultiPartParser , FormParser
 from rest_framework.response import Response
 from django.contrib.gis.geos import Point 
 from .models import traning, photographs
 from .permission import IsConsultant
 from rest_framework import filters
 from rest_framework import status
+from MMRDA.utils import error_simplifier
 
 
 # Create your views here.
@@ -62,7 +63,7 @@ class TrainingupdateView(generics.UpdateAPIView):
 
 class PhotographsView(generics.GenericAPIView):
     serializer_class = photographsSerializer
-    permission_classes = [IsAuthenticated, IsConsultant]
+    # permission_classes = [IsAuthenticated, IsConsultant]
     parser_classes = [MultiPartParser]
 
     def post(self, request):
@@ -71,7 +72,8 @@ class PhotographsView(generics.GenericAPIView):
             lat = float(serializer.validated_data['latitude'])
             long = float(serializer.validated_data['longitude'])
             location = Point(long, lat, srid=4326)
-            phototgraph = serializer.save(location=location)
+            phototgraph = serializer.save(location=location , user = request.user)
+            
             data = photographsViewSerializer(phototgraph).data
             return Response(data, status=200)
         else:
@@ -80,11 +82,16 @@ class PhotographsView(generics.GenericAPIView):
             return Response({'status': 'error',
                             'Message' : error_message} , status = status.HTTP_400_BAD_REQUEST)
 
-class photographsListView(generics.ListAPIView):
-    serializer_class = photographsSerializer
-    permission_classes = [IsAuthenticated, IsConsultant]
+
+class photographsListView(generics.GenericAPIView):
+    serializer_class = photographsViewSerializer
+    # permission_classes = [IsAuthenticated, IsConsultant]
     parser_classes = [MultiPartParser]
     queryset = photographs.objects.all()
+
+    def get(self , request):
+        serializer = self.get_serializer(self.get_queryset() , many = True)
+        return Response({'message':serializer.data})
 
 
 class updatephotographview(generics.UpdateAPIView):
@@ -124,25 +131,81 @@ class occupationalHealthSafety (generics.GenericAPIView):
             error_message = key+" ,"+ value[0]
             return Response({'status': 'error',
                             'Message' : error_message} , status = status.HTTP_400_BAD_REQUEST)
+import os
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.conf import settings
+
+
+def save_files(files, file_mapping, file_path , field):
+
+    file_list = []
+    for file in files:
+        tmp = os.path.join(settings.MEDIA_ROOT, file_path, file.name)
+        path = default_storage.save(tmp, ContentFile(file.read()))
+        tmp_file = os.path.join(settings.MEDIA_ROOT, path)
+        file_list.append('/media/' + file_path + '/' + file.name)
+    file_mapping[field] = file_list
+   
+      
+
 class ContactUsView(generics.GenericAPIView):
     serializer_class = ContactusSerializezr
-
+    # parser_classes = (FormParser,) 
     def post(self, request):
-        serializer = ContactusSerializezr(data = request.data)
+
+        serializer = self.get_serializer(data = request.data)
         if serializer.is_valid():
             lat = float(serializer.validated_data['latitude'])
             long = float(serializer.validated_data['longitude'])
             location = Point(long, lat, srid=4326)
-            contactus = serializer.save(location=location )
-            data = ContactusViewSerialzier(contactus).data
+ 
+            file_fields = {
+                    'documents': 'contactus/images',
+                    'image': 'contactus/images' ,}
+            file_mapping = {}
+            for field, file_path in file_fields.items():
+               
+                # print(file_path , 'file_apth')
+                files = request.FILES.getlist(field)
+                file_mapping[field] = []
+                save_files(files, file_mapping, file_path , field)
+          
+            print(file_mapping) 
+            contactus = serializer.save(location=location , **file_mapping )
+
+            
+            # file_mapping = {
+            #     'documents': [],
+            #     'image': [],
+            # }
+            # for field in ['documents', 'image']:
+            #     files = request.FILES.getlist(field)
+            #     for file in files:
+            #         tmp = os.path.join(settings.MEDIA_ROOT, 'contactus/images/', file.name)
+            #         path = default_storage.save(tmp, ContentFile(file.read()))
+            #         tmp_file = os.path.join(settings.MEDIA_ROOT, path)
+                    
+            #         file_list = file_mapping.get(field)
+            #         if file_list is not None:
+            #             file_list.append('/media/contactus/images/' + file.name)
+
+            
+            # contactus = serializer.save(location=location , 
+            #                             documents = file_mapping.get('documents')  ,
+            #                             image = file_mapping.get('image') )
+
+            data = ContactusViewSerialzier(contactus ).data
             return Response(data, status=200)
         else:
-            key, value =list(serializer.errors.items())[0]
-            error_message = key+" ,"+ value[0]
+            # error = error_simplifier(serializer.errors)
+            # print(error)
+            # key, value =list(serializer.errors.items())[0]
+            # print(key , value)
+            # error_message = key+" ,"+ value[0]
             return Response({'status': 'error',
-                            'Message' : error_message} , status = status.HTTP_400_BAD_REQUEST)
-        # except:
-        #     return Response ({'Message' : 'No data found'} , status= 400)
+                            'Message' : serializer.errors} , status = status.HTTP_400_BAD_REQUEST)
+        
 
 
 class ContactusListView(generics.ListAPIView):
@@ -170,7 +233,6 @@ class PreConstructionStageComplianceView(generics.GenericAPIView):
             return Response({'status': 'error',
                             'Message' : error_message } , status = status.HTTP_400_BAD_REQUEST)
                     
-
 
 class ConstructionStageComplainceView(generics.CreateAPIView):
     serializer_class = ConstructionStageComplainceSerializer

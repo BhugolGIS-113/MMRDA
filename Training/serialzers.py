@@ -2,6 +2,7 @@
 from rest_framework import serializers
 from .models import *
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
+from itertools import zip_longest
 class TraningSerializer(serializers.ModelSerializer):
     longitude=serializers.CharField(max_length=10,required=True)
     latitude=serializers.CharField(max_length=10,required=True)
@@ -72,22 +73,23 @@ class ContactusSerializezr(serializers.ModelSerializer):
     # images =  ContactusImageSerializers(many=True, read_only=True)
     longitude = serializers.CharField(max_length= 255 , required = False) # longitude
     latitude = serializers.CharField(max_length= 255, required = False) # latitude
-    uploaded_images1  = serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
-    uploaded_images2 = serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True)
+    documents = serializers.ListField(child=serializers.FileField(allow_empty_file=True, use_url=False),write_only=True , required = False)
+    image = serializers.ListField(child=serializers.ImageField(allow_empty_file=True, use_url=False),write_only=True , required = False)
     class Meta:
         model = Contactus
-        fields = ('name','email','messsage' , 'longitude' , 'latitude' , 'uploaded_images1' , 'uploaded_images2')
+        fields = ('name','email','messsage' , 'longitude' , 'latitude' ,'documents'  , 'image')
 
     def create(self,data):
         data.pop('longitude')
         data.pop('latitude')
 
-        uploaded_images1 = data.pop("uploaded_images1")
-        uploaded_images2 = data.pop("uploaded_images2")
+        # uploaded_images1 = data.pop("uploaded_images1")
+        # uploaded_images2 = data.pop("uploaded_images2")
         contactus = Contactus.objects.create(**data)
-
-        images = [ContactusImage.objects.create(contactus=contactus, images1=image1, images2=image2) 
-                                                for image1, image2 in zip(uploaded_images1, uploaded_images2)]
+        
+        # for image1  , image2 in zip_longest(uploaded_images1 ,uploaded_images2):
+        #      images = ContactusImage.objects.create(contactus=contactus, images1=image1 , images2=image2)
+                                               
         return contactus
         
 class ContactusViewSerialzier(GeoFeatureModelSerializer):

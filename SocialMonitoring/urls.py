@@ -5,7 +5,7 @@ urlpatterns = [
 
     
     # path ('test' , testAPiView.as_view() , name = "testAPiView "),
-    path ('labourcampdetails' , labourCampdetails.as_view() , name = "labourCampdetails "),
+    path ('Postlabourcampdetails' , PostlabourCampdetails.as_view() , name = "labourCampdetails "),
     path('labourCampdetailsView' , labourCampdetailsView.as_view() , name = "labourCampdetailsView"),
     path('labourCampdetailsViewSearch' , labourCampdetailsViewSearch.as_view() , name = "labourCampdetailsView"),
  
@@ -25,8 +25,5 @@ urlpatterns = [
     path ('labourcamp' , LabourCampDetailsView.as_view() , name = "LabourCampDetailsView"),
     path('labourcamp/<int:id>', labourCampUpdateView.as_view() , name =  "LabourCampDetailsView"),
 
-    path('papmanagment/<str:packages>', PAPmanagmentAPI.as_view(), name="PAPmanagmentAPI"),
-    path('constructionsitemanagement/<str:packages>', ConstructionSitemanagment.as_view(), name="ConstructionSitemanagment"),
-    path('LabourCamp/<str:packages>', LabourCampManagmentAPI.as_view(), name="LabourCampManagmentAPI"),
 
 ]

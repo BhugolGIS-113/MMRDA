@@ -56,6 +56,8 @@ class ChangePasswordSerializer(serializers.Serializer):
     return data
 
 
+# The `PasswordResetEmailSerializer` class is used to serialize and validate the email field for
+# sending a password reset email to a registered user.
 class PasswordResetEmailSerializer(serializers.Serializer):
     email = serializers.CharField(max_length = 255)
     class Meta:

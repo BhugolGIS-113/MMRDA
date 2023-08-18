@@ -48,7 +48,7 @@ class PAP(Baseclass):
     categoryOfPap = models.CharField(
         max_length=255,  null=True, blank=True)
     # individualLandAsset = models.PositiveIntegerField(blank=True, null=True)
-    typeOfAsset = models.CharField(
+    typeOfStructure = models.CharField(
         max_length=255,  null=True, blank=True)
     areaOfAsset = models.BigIntegerField(blank=True, null=True)
     legalStatus = models.CharField(
@@ -107,7 +107,7 @@ class Rehabilitation(Baseclass):
     
     trainingRemarks = models.TextField(max_length=255, blank=True, null=True)
 
-    typeOfTenaments = models.CharField(max_length=255, blank=True)
+    typeOfStructure = models.CharField(max_length=255, blank=True)
     areaOfTenament = models.BigIntegerField(blank=True, null=True)
     
 
@@ -133,7 +133,7 @@ class Rehabilitation(Baseclass):
 
 # class RehabilitationImages(models.Model):
 #     RehabilitationID = models.ForeignKey(Rehabilitation , related_name= "RehabilitationImages" , on_delete= models.CASCADE , blank = True , null = True )
-    
+        
     
 
 
@@ -263,7 +263,7 @@ class ConstructionSiteDetails(Baseclass):
     demarkationOfPathwaysRemark = models.TextField(
         max_length=255, blank=True, null=True)
 
-    isSignagesLabeling = models.BooleanField(blank=True)
+    isSignagesLabelingCheck = models.BooleanField(blank=True)
     signagesLabelingCondition = models.CharField(
         max_length=255, blank=True, null=True)
     signagesLabelingPhotographs = models.ImageField(
@@ -295,7 +295,7 @@ class ConstructionSiteDetails(Baseclass):
     firstAidKitRemarks = models.TextField(
         max_length=255,  blank=True, null=True)
 
-    isDrinkingWater = models.BooleanField(blank=True)
+    isDrinkingWaterCheck = models.BooleanField(blank=True)
     drinkingWaterCondition = models.CharField(
         max_length=255, blank=True,  null=True)
     drinkingWaterPhotographs = models.ImageField(

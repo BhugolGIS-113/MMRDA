@@ -23,18 +23,29 @@ class Baseclass(models.Model):
     class Meta:
         abstract = True
 
-class Air(Baseclass):
+
+class sensors(models.Model):
+    Name = models.CharField(max_length=100 , blank = True , null = True )
+    ID = models.CharField(max_length=100 , blank= True , null = True )
+    location = models.PointField(blank = True , null = True )
+
+    def __str__(self) -> str:
+        return self.Name
+
+
+class  Air(Baseclass):
+    # sensor = models.ForeignKey(sensors , related_name="sensor_name" , on_delete=models.CASCADE , null = True , blank = True)
     user = models.ForeignKey( User, related_name='airs_user', on_delete=models.CASCADE , null= True   , blank=True)
-    PM10 = models.FloatField(blank= True , default= 0, null= True)
+    PM10 = models.CharField(max_length= 50 , blank= True , default= 0, null= True)
     standardPM10 = models.FloatField(blank= True , default=100.00 , null= True)
-    SO2 = models.FloatField(blank= True , default= 0, null= True)
+    SO2 = models.CharField(max_length= 50 , blank= True , default= 0, null= True)
     standardSO2 = models.FloatField(blank= True , default = 80.00 , null= True)
-    O3 = models.FloatField(blank= True , default= 0, null= True)
+    O3 = models.CharField(max_length= 50 , blank= True , default= 0, null= True)
     standardO3 = models.FloatField(blank= True , default = 100.00 , null= True)
-    NOx = models.FloatField(blank= True , default= 0, null = True)
+    NOx = models.CharField( max_length= 50 , blank= True , default= 0, null = True)
     standardNOx = models.FloatField(blank= True , default = 80.00 , null= True)
-    AQI = models.FloatField(blank= True , default= 0, null = True) 
-    Remarks = models.TextField ( blank = True, max_length  = 100, null = True )
+    AQI = models.CharField(max_length= 50 , blank= True , default= 0, null = True) 
+    Remarks = models.TextField ( blank = True, max_length  = 255, null = True )
 
 class water(Baseclass):
     dateOfMonitoring = None
@@ -49,12 +60,11 @@ class Noise(Baseclass):
     dateOfMonitoring = None
     dateOfMonitoringThree = models.DateField(null=True, blank=True)
     user = models.ForeignKey(User, related_name="noises", on_delete=models.CASCADE , blank=True )
-    noiseLevel = models.CharField(max_length=255, null=True, blank=True)
+    noiseLevel = models.IntegerField( null=True, blank=True)
     monitoringPeriod = models.CharField(
         max_length=255, null=True, blank=True)
 
-    # def __str__(self) -> str:
-    #     return "filled By :- " + self.noise_id.eqm_id.env_monitoring.email
+   
 
 
 class ExistingTreeManagment(Baseclass):
@@ -72,7 +82,7 @@ class ExistingTreeManagment(Baseclass):
 
 class NewTreeManagement(Baseclass):
     user = models.ForeignKey(User , related_name="newTree_users" , on_delete=models.CASCADE , blank = True )
-    tree = models.ForeignKey( ExistingTreeManagment , related_name= 'ExistingTreeManagment' , on_delete=models.CASCADE )
+    tree = models.OneToOneField( ExistingTreeManagment , related_name= 'ExistingTreeManagment' , on_delete=models.CASCADE , blank = True , null = True )
     location = models.PointField(null = True , blank=True)
     commanName = models.CharField(max_length=255, blank=True, null=True)
     botanicalName = models.CharField(max_length=255, null=True, blank=True)
@@ -113,8 +123,6 @@ class MaterialManegmanet(Baseclass):
     photographs = models.ImageField(upload_to='MaterialManegment/materialsourcing_photographs/',null=True, blank=True)
     documents = models.FileField(upload_to='MaterialManegment/materialsourcing_documents', null=True, blank=True)
     remarks = models.CharField(max_length=255, null=True, blank=True)
-    
-    # def __str__(self) -> str:
-    #     return self.materialsourcing_id.env_monitoring.email
+
 
 

@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
+from Training.models import *
 # from Report.models import Package54Alignment , Package12Alignment
 
 
@@ -18,10 +19,11 @@ class LabourcampReportPackageView(ListAPIView):
 
     def get(self, request, packages, labourCampName ,*args, **kwargs):
         try:
-            previous = LabourCamp.objects.filter(
-                packages=packages, labourCampName=labourCampName ).order_by('-id')[1:]
-            latest = LabourCamp.objects.filter(
-                packages=packages, labourCampName=labourCampName).latest('id')
+            previous = LabourCamp.objects.filter(packages=packages, labourCampName=labourCampName ).order_by('-id')[1:]
+           
+            latest = LabourCamp.objects.filter(packages=packages, labourCampName=labourCampName).latest('id')
+            # latest_serializer = LabourcampReportSerializer(latest).data
+           
             previousData = self.serializer_class(previous, many=True)
             latestData = self.serializer_class(latest)
 
@@ -33,7 +35,6 @@ class LabourcampReportPackageView(ListAPIView):
         except Exception as e:
             return Response({'Message': 'There is no data available for this Package or Quarter',
                             'status' : 'Failed'}, status=status.HTTP_400_BAD_REQUEST)
-
 
 class LabourCampReportQuarterView(ListAPIView):
 
@@ -277,10 +278,10 @@ class NoiseReportQuarterView(ListAPIView):
     serializer_class = NoiseReportSerializer
     parser_classes = [MultiPartParser]
 
-    def get(self, request, quarter, year, *args, **kwargs):
+    def get(self, request, month, year, *args, **kwargs):
         try:
             data = Noise.objects.filter(
-                quarter=quarter, dateOfMonitoring__year=year).order_by('-id')
+                month=month, dateOfMonitoringThree__year=year).order_by('-id')
             if not data.exists():
                 return Response({'Message': 'No data found',
                                  'status' : 'success'},  status=status.HTTP_200_OK)
@@ -321,10 +322,9 @@ class waterReportQuarterView(ListAPIView):
     serializer_class = waterReportSerializer
     parser_classes = [MultiPartParser]
 
-    def get(self, request, quarter, year, *args, **kwargs):
-        try:
-            data = water.objects.filter(
-                quarter=quarter, dateOfMonitoring__year=year).order_by('-id')
+    def get(self, request, month, year, *args, **kwargs):
+        # try:
+            data = water.objects.filter(month=month, dateOfMonitoringTwo__year=year).order_by('-id')
             if not data.exists():
                 return Response({'Message': 'No data found',
                                  'status' : 'success'},  status=status.HTTP_200_OK)
@@ -334,10 +334,10 @@ class waterReportQuarterView(ListAPIView):
                             'status' : 'success' , 
                             "water_data": water_data},
                             status=status.HTTP_200_OK)
-        except:
-            return Response({'Message': 'There is no data available for the Quarter',
-                            'status' : 'Failed'},
-                            status=status.HTTP_400_BAD_REQUEST)
+        # except:
+        #     return Response({'Message': 'There is no data available for the Quarter',
+        #                     'status' : 'Failed'},
+        #                     status=status.HTTP_400_BAD_REQUEST)
 
 
 class WasteTreatmentsPackageView(ListAPIView):
@@ -602,6 +602,67 @@ class ProjectAffectedTreesView(generics.GenericAPIView):
             return Response({'status' : 'failed',
                             'message' : 'Something went wrong !! Please try again'}, status = 400)
 
+
+class TrainnigReportQuarterView(generics.GenericAPIView):
+    def get(self , request , quarter , year):
+   
+        data = traning.objects.filter(
+            quarter=quarter, dateOfMonitoring__year=year).order_by('-id')
+        if not data.exists():
+            return Response({'Message': 'No data found',
+                                'status' : 'success'},  status=status.HTTP_200_OK)
+        
+        training_data = TrainnigReportSerializer(data, many=True).data
+        return Response({'Message': 'data Fetched Successfully',
+                            'status' : 'success' , 
+                             "training_data": training_data},
+                            status=200)
+
+
+class TrainnigReportPackageView(generics.GenericAPIView):
+    def get(self , request , packages):
+   
+        data = traning.objects.filter(
+            packages=packages ).order_by('-id')
+        if not data.exists():
+            return Response({'Message': 'No data found',
+                                'status' : 'success'},  status=status.HTTP_200_OK)
+        
+        training_data = TrainnigReportSerializer(data, many=True).data
+        return Response({'Message': 'data Fetched Successfully',
+                            'status' : 'success' , 
+                             "training_data": training_data},
+                            status=200)
+    
+
+class OccupationalHealthQuarterView(generics.GenericAPIView):
+    def get(self , request , quarter , year):
+        data = occupationalHealthSafety.objects.filter(
+            quarter=quarter, dateOfMonitoring__year=year).order_by('-id')
+        if not data.exists():
+            return Response({'Message': 'No data found',
+                                'status' : 'success'},  status=status.HTTP_200_OK)
+        
+        training_data = OccupationalHealthQuarterSeialzier(data, many=True).data
+        return Response({'Message': 'data Fetched Successfully',
+                            'status' : 'success' , 
+                             "training_data": training_data},
+                            status=200)
+
+
+class OccupationalHealthPackageView(generics.GenericAPIView):
+    def get(self , request , packages):
+        data = occupationalHealthSafety.objects.filter(
+            packages=packages ).order_by('-id')
+        if not data.exists():
+            return Response({'Message': 'No data found',
+                                'status' : 'success'},  status=status.HTTP_200_OK)
+        
+        training_data = OccupationalHealthQuarterSeialzier(data, many=True).data
+        return Response({'Message': 'data Fetched Successfully',
+                            'status' : 'success' , 
+                             "training_data": training_data},
+                            status=200)
 
 # from Training.models import ContactusImage
 # class compresserImage(generics.CreateAPIView):

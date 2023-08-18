@@ -1,0 +1,202 @@
+{
+  "part_a": [
+    {
+      "qkey": "What_is_your_age_completeyears",
+      "options": [
+        {"50-79 year": 0},
+        {"80 and above 80": 1}
+      ]
+    },
+    {
+      "qkey": "Do_you_smoke_or_consume_smokeless_products_such_as_gutka_or_khaini",
+      "options": [
+        {"Never": 0},
+        {"Used_to_consume_in_the_past_Sometimes_now": 1},
+        {"Daily": 2}
+      ]
+    },
+    {
+      "qkey": "Do_you_consume_alcohol_daily",
+      "options": [
+        {"No": 0},
+        {"Yes": 1}
+      ]
+    },
+    {
+      "qkey": "Measurement_of_waist_in_cm",
+      "options": [
+        {"cm_80_cm_or_less": 0},
+        {"cm_81_90_cm": 1},
+        {"More_than_100_cm": 2}
+      ]
+    },
+    {
+      "qkey": "Do_you_undertake_any_physical_activities_for_minimum_of__minutes_in_a_week",
+      "options": [
+        {"At_least_150_minutes_in_a_week": 0},
+        {"Less_than_150_minutes_in_a_week": 1}
+      ]
+    },
+    {
+      "qkey": "Do_you_have_a_family_history_any_one_of_your_parents_or_siblings_of_high_blood_pressure_diabetes_and_heart_disease",
+      "options": [
+        {"No": 0},
+        {"Yes": 2}
+      ]
+    }
+  ],
+  "part_b": [
+    {
+      "qkey": "B_Women_and_Men",
+      "options": [
+        "Shortness_of_breath_difficulty_breathing",
+        "Coughing_more_than__weeks",
+        "Blood_in_sputum",
+        "Fever_for_more_than__weeks",
+        "Weight_loss",
+        "Night_sweats",
+        "Are_you_currently_taking_medicines_to_treat_TB",
+        "Is_any_family_member_currently_suffering_from_TB_disease",
+        "A_history_of_TB_disease",
+        "Frequent_bruising_of_hands_and_soles_of_feet",
+        "Frequent_tingling_in_palms_of_hands_and_feet",
+        "Blurred_and_blurred_vision",
+        "Difficulty_in_reading",
+        "Relapse_of_eye_pain_for_more_than_a_week",
+        "Eye_redness_for_more_than_a_week",
+        "You_have_trouble_hearing",
+        "History_of_Feetka",
+        "Difficulty_opening_the_mouth",
+        "Nonhealing_of_mouth_sores_for_more_than_two_weeks",
+        "Nonhealing_growth_in_mouth_for_more_than_two_weeks",
+        "Nonhealing_white_or_red_sores_in_the_mouth_for_more_than_two_weeks",
+        "Pain_while_chewing",
+        "Change_in_voice",
+        "Lightcolored_patches_or_spots_in_the_mouth_with_no_sensation",
+        "Thickening_of_the_skin_in_any_part_of_the_body",
+        "Lumps_on_any_part_of_the_body",
+        "Frequent_numbness_of_the_palms_of_the_hands_and_feet",
+        "Crooked_fingers_and_toes",
+        "Tingling_and_numbness_in_hands_and_feet",
+        "Incomplete_closure_of_the_eyelids",
+        "Difficulty_grasping_objects_properly_in_the_hands",
+        "Difficulty_walking_due_to_weakness_in_legs"
+      ]
+    },
+    {
+      "qkey": "B_Women_only",
+      "options": [
+        "Lump_in_the_breast",
+        "Blood_stained_discharge_from_the_nipple",
+        "Change_in_shape_and_size_of_breast",
+        "Bleeding_between_periods",
+        "Bleeding_after_menopause",
+        "Bleeding_after_intercourse",
+        "Foul_smelling_vaginal_discharge"
+      ]
+    }
+  ],
+  "part_c": [
+    {
+      "qkey": "Type_of_Fuel_used_for_cooking",
+      "options": [
+        "Firewood",
+        "Crop_Residue",
+        "Cow_dung_cake",
+        "Coal",
+        "Kerosene"
+      ]
+    },
+    {
+      "qkey": "Occupational_exposure",
+      "options": [
+        "Crop_residue_burning",
+        "burning_of_garbage_leaves",
+        "working_in_industries_with_smoke_gas_and_dust_exposure_such_as_brick_kilns_and_glass_factories_etc"
+      ]
+    }
+  ],
+  "part_d": [
+    {
+      "qkey": "Little_interest_of_pleasure_in_doing_things",
+      "options": [
+        {"Not_at_all": 0},
+        {"Several_days": 1},
+        {"More_than_half_days": 2},
+        {"Nearly_every_days": 3}
+      ]
+    },
+    {
+      "qkey": "Feeling_down_depressed_or_hopeless",
+      "options": [
+        {"Not_at_all": 0},
+        {"Several_days": 1},
+        {"More_than_half_days": 2},
+        {"Nearly_every_days": 3}
+      ]
+    }
+  ],
+  "part_e": [
+    {
+      "qkey": "Fever",
+      "options": [
+        ">= 7 days",
+        "< 7 days",
+        "with chills",
+        "with Rash",
+        "with Bleeding",
+        "with Altered Sensorium"
+      ]
+    },
+    {
+      "qkey": "Conjuctivitis",
+      "options": [
+        "watery / redness / itching eyes"
+      ]
+    },
+    {
+      "qkey": "Lepto",
+      "options": [
+        "Waddling in water",
+        "Exposure to domestic animal like cattle / Dog / Cat / Pig / Rodent"
+      ]
+    },
+    {
+      "qkey": "Loose Motion",
+      "options": [
+        "With Blood",
+        "Without Blood",
+        "Vomitting "
+      ]
+    },
+    {
+      "qkey": "Hepatitis / Jaundice",
+      "options": [
+       "Eating outside / uncovered food / drinking contaminated water"
+      ]
+    },
+    {
+      "qkey": "",
+      "options": [
+        "Animal Bite"
+      ]
+    },
+    {
+      "qkey": "",
+      "options": [
+        "Snake Bite"
+      ]
+    },
+    {
+      "qkey": "Leprosy",
+      "options": [
+        "Numbness / Tingling in hands/feet",
+        "Loss of sensation in any parts of body",
+        "Swelling / Nodule on Face/Hands/Feet ",
+        "Loss of eyelash or eyebrow",
+        "Thickened earlobes"
+      ]
+    }
+
+  ]
+}

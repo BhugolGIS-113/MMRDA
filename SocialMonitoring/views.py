@@ -10,10 +10,16 @@ from .paginations import LimitsetPagination
 from .permissions import *
 from rest_framework import status
 from rest_framework import filters
+import os
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.conf import settings
 
 # ---------------Labour camp Serializer for GEO jason Format--------------------------------
 
-class labourCampdetails(generics.GenericAPIView):
+# The above class is a view for creating and saving post-labour camp details with latitude and
+# longitude coordinates.
+class PostlabourCampdetails(generics.GenericAPIView):
     serializer_class = labourCampDetailSerializer
     parser_classes = (MultiPartParser, )
     queryset = labourcampDetails.objects.all()
@@ -58,6 +64,9 @@ class labourCampdetailsViewSearch(generics.ListAPIView):
 
 
 # ---------------------------- PAP View--------------------------------------------------
+# The `PapView` class is a view in a Django REST framework API that handles the creation of a PAP
+# (Personal Assistance Program) object, with different validation and permission checks based on the
+# user's group.
 class PapView(generics.GenericAPIView):
     renderer_classes = [ErrorRenderer]
     serializer_class = PapSerailzer
@@ -80,12 +89,14 @@ class PapView(generics.GenericAPIView):
                     pap = serializer.save(location=location, user=request.user)
                     data = papviewserialzer(pap).data
                     return Response ({'Message': 'data saved successfully',
-                                    'status' : 'success'}, status=200)
+                                    'status' : 'success' , 
+                                    }, status=200)
             else:    
                 key, value =list(serializer.errors.items())[0]
                 error_message = key+" ,"+value[0]
+                print(error_message)
                 return Response({'status': 'error',
-                                'Message' :value[0]} , status = status.HTTP_400_BAD_REQUEST)
+                                'Message' :error_message} , status = status.HTTP_400_BAD_REQUEST)
             
         elif "consultant" in request.user.groups.values_list("name" , flat = True):
             serializer = self.get_serializer(data=request.data)
@@ -100,13 +111,16 @@ class PapView(generics.GenericAPIView):
             else:
                 key, value =list(serializer.errors.items())[0]
                 error_message = key+" ,"+value[0]
+                print(error_message)
                 return Response({'status': 'error',
-                                'Message' :value[0]} , status = status.HTTP_400_BAD_REQUEST)
+                                'Message' :error_message} , status = status.HTTP_400_BAD_REQUEST)
         else:
         # except Exception:
             return Response({"msg": "Only consultant and contractor can fill this form"}, status=401)
 
         
+# The `papupdateView` class is a view in a Django REST framework API that handles updating a PAP
+# object with partial data.
 class papupdateView(generics.UpdateAPIView):
     serializer_class = PapUpdateSerialzier
     renderer_classes = [ErrorRenderer]
@@ -144,13 +158,19 @@ class RehabilatedPAPIDView(generics.GenericAPIView):
         except:
             return Response({'Message': 'No data Avaialable for this PAPID',
                             'status' : 'success'}, status=200)
+        
         serializers = RehabilatedPAPIDSerializer(papdata).data
-        return Response(serializers, status=200)
-        # except:
-        #     return Response({'Message' : 'No data Avaialable for this   PAPID Exception'} , status =400)
-
+        for i in serializers.values():
+            if i == "Not agreed":
+                return Response ({"status": "error" , 
+                              "message" : "Person with this PAP-ID is not agreed for rehabilitaion"} , status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializers, status=200)
+        
 
 # ------------------------------ Rehabilitation View ------------------------------
+# The `RehabilitationView` class is a view in a Django REST framework API that handles the creation of
+# rehabilitation data, with different validation and permission checks based on the user's group.
 class RehabilitationView(generics.GenericAPIView):
     serializer_class = RehabilitationSerializer
     parser_classes = [MultiPartParser]
@@ -179,7 +199,7 @@ class RehabilitationView(generics.GenericAPIView):
                 key, value =list(serializer.errors.items())[0]
                 error_message = key+" ,"+value[0]
                 return Response({'status': 'error',
-                                'Message' :value[0]} , status = status.HTTP_400_BAD_REQUEST)
+                                'Message' :error_message} , status = status.HTTP_400_BAD_REQUEST)
 
         elif "consultant" in request.user.groups.values_list("name" , flat = True):
             serializer = self.get_serializer(data=request.data)
@@ -195,16 +215,19 @@ class RehabilitationView(generics.GenericAPIView):
                 key, value =list(serializer.errors.items())[0]
                 error_message = key+" ,"+value[0]
                 return Response({'status': 'error',
-                                'Message' :value[0]} , status = status.HTTP_400_BAD_REQUEST)
+                                'Message' :error_message} , status = status.HTTP_400_BAD_REQUEST)
         else:
             return Response({"msg": "Only consultant and contractor can fill this form"}, status=401)
 
 
 # ----------------------------- Labour Camp details View --------------------------------
 
+# The `LabourCampDetailsView` class is a view in a Django REST framework API that allows authenticated
+# users who are either consultants or contractors to submit data for a labour camp, with different
+# validation and response logic based on the user's role.
 class LabourCampDetailsView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated & (IsConsultant | IsContractor)]
-    parser_classes = [MultiPartParser]
+    parser_classes = [FormParser]
     serializer_class = LabourCampDetailSerializer
 
     def post(self, request):
@@ -222,7 +245,33 @@ class LabourCampDetailsView(generics.GenericAPIView):
                     lat = float(serializer.validated_data['latitude'])
                     long = float(serializer.validated_data['longitude'])
                     location = Point(long, lat, srid=4326)
-                    
+
+                    # toiletPhotograph = []
+                    # drinkingWaterPhotographs = []
+                    # demarkationOfPathwaysPhotographs = []
+
+                    # file_mapping = {
+                    #     'toiletPhotograph': toiletPhotograph,
+                    #     'drinkingWaterPhotographs': drinkingWaterPhotographs,
+                    #     'demarkationOfPathwaysPhotographs' : demarkationOfPathwaysPhotographs,
+                    # }
+                    # for field in ['toiletPhotograph', 'drinkingWaterPhotographs' , 'demarkationOfPathwaysPhotographs', 'signagesLabelingPhotographs',
+                    #       'kitchenAreaPhotographs' ,'roomsOrDomsPhotographs' , 'fireExtinguishPhotographs' ,
+                    #       'segregationOfWastePhotographs' , 'regularHealthCheckupPhotographs' , 'availabilityOfDoctorPhotographs' , 
+                    #       'firstAidKitPhotographs' , 'photographs' , 'documents']:
+                
+                    #     files = request.FILES.getlist(field)
+                    #     if files is not None:
+                    #         for file in files:
+                    #             tmp = os.path.join(settings.MEDIA_ROOT, 'contactus/images/', file.name)
+
+                    #             path = default_storage.save(tmp, ContentFile(file.read()))
+                    #             tmp_file = os.path.join(settings.MEDIA_ROOT, path)
+                                
+                    #             file_list = file_mapping.get(field)
+                    #             if file_list is not None:
+                    #                 file_list.append('/media/contactus/images/' + file.name)
+
                     LabourCampDetails = serializer.save(location=location , user = request.user)
                     data = LabourCampDetailViewSerializer(LabourCampDetails).data
 
@@ -232,7 +281,7 @@ class LabourCampDetailsView(generics.GenericAPIView):
                 key, value =list(serializer.errors.items())[0]
                 error_message = key+" ,"+value[0]
                 return Response({'status': 'error',
-                                'Message' :value[0]} , status = status.HTTP_400_BAD_REQUEST)
+                                'Message' :error_message} , status = status.HTTP_400_BAD_REQUEST)
             
         elif "consultant" in request.user.groups.values_list("name" , flat = True):
             serializer = self.get_serializer(data=request.data)
@@ -248,12 +297,14 @@ class LabourCampDetailsView(generics.GenericAPIView):
                 key, value =list(serializer.errors.items())[0]
                 error_message = key+" ,"+value[0]
                 return Response({'status': 'error',
-                                'Message' :value[0]} , status = status.HTTP_400_BAD_REQUEST)
+                                'Message' :error_message} , status = status.HTTP_400_BAD_REQUEST)
         else:
         # except Exception:
             return Response({"msg": "Only consultant and contractor can fill this form"}, status=401)
 
 
+# The `labourCampUpdateView` class is a view in a Django REST framework API that allows authenticated
+# consultants to update labour camp data.
 class labourCampUpdateView(generics.UpdateAPIView):
     serializer_class = LabourCampUpdateSerialzier
     renderer_classes = [ErrorRenderer]
@@ -279,6 +330,8 @@ class labourCampUpdateView(generics.UpdateAPIView):
 # ------------------------------------ Construction site View -----------------------------------------------------
 
 
+# The `constructionSiteView` class is a view in a Django REST framework API that handles the creation
+# of construction site data, with different validation and permission checks based on the user's role.
 class constructionSiteView(generics.GenericAPIView):
     renderer_classes = [ErrorRenderer]
     parser_classes = [MultiPartParser]
@@ -308,7 +361,7 @@ class constructionSiteView(generics.GenericAPIView):
                 key, value =list(serialzier.errors.items())[0]
                 error_message = key+" ,"+value[0]
                 return Response({'status': 'error',
-                                'Message' :value[0]} , status = status.HTTP_400_BAD_REQUEST)
+                                'Message' :error_message} , status = status.HTTP_400_BAD_REQUEST)
         elif "consultant" in request.user.groups.values_list("name", flat=True):
             serialzier = constructionSiteSerializer( data=request.data, context={'request': request})
             if serialzier.is_valid(raise_exception=True):
@@ -324,11 +377,13 @@ class constructionSiteView(generics.GenericAPIView):
                 key, value =list(serialzier.errors.items())[0]
                 error_message = key+" ,"+value[0]
                 return Response({'status': 'error',
-                                    'Message' :value[0]} , status = status.HTTP_400_BAD_REQUEST)
+                                    'Message' :error_message} , status = status.HTTP_400_BAD_REQUEST)
         else:
             return Response({"msg": "Only consultant and contractor can fill this form"}, status=401)
 
 
+# The ConstructionSiteUpdateView class is a view in a Python Django application that handles updating
+# construction site data.
 class ConstructionSiteUpdateView(generics.GenericAPIView):
     serializer_class = constructionSiteSerializer
     renderer_classes = [ErrorRenderer]
@@ -359,45 +414,3 @@ class ConstructionSiteListView(generics.ListAPIView):
     queryset = ConstructionSiteDetails.objects.all()
 
 
-class PAPmanagmentAPI(generics.GenericAPIView):
-    serializer_class = PAPSerializer
-
-    def get(self, request, packages, *args, **kwargs):
-        packages = packages
-        instance = PAP.objects.filter(packages__iexact=packages)
-        if instance:
-            serializer = PAPSerializer(instance, many=True)
-            return Response({'Message': 'data updated successfully',
-                            'status' : 'success'}, status=200)
-        else:
-            return Response({'status': 'failed',
-                             'Message': 'invalid package'} , status= 400)
-
-
-class ConstructionSitemanagment(generics.GenericAPIView):
-    serializer_class = ConstructionSiteDetailsserializer
-
-    def get(self, request, packages, *args, **kwargs):
-        packages = packages
-        instance = ConstructionSiteDetails.objects.filter(
-            packages__iexact=packages)
-        if instance:
-            serializer = ConstructionSiteDetailsserializer(instance, many=True)
-            return Response({'status': 'success', 'data': serializer.data,
-                             'Message': 'successfully'} , status = 200)
-        else:
-            return Response({'status': 'failed', 'Message': 'invalid package'} , status =  400)
-
-
-class LabourCampManagmentAPI(generics.GenericAPIView):
-    serializer_class = LabourCampserializer
-
-    def get(self, request, packages, *args, **kwargs):
-        packages = packages
-        instance = LabourCamp.objects.filter(packages__iexact=packages)
-        if instance:
-            serializer = LabourCampserializer(instance, many=True)
-            return Response({'status': 'success', 'data': serializer.data,
-                             'Message': 'successfully'} , status=200)
-        else:
-            return Response({'status': 'failed', 'Message': 'invalid package'}, status= 400)

@@ -32,12 +32,12 @@ urlpatterns = [
 
     path('noisereportpackage/<str:packages>',
          NoiseReportpackageView.as_view(), name='Noisereport Package View'),
-    path('noisereportquarter/<str:quarter>/<int:year>',
+    path('noisereportquarter/<str:month>/<int:year>',
          NoiseReportQuarterView.as_view(), name='Noisereport Package View'),
 
-    path('waterReportpackage/<str:packages>',
+    path('waterReportpackage/<str:packages>',     
          waterReportPackageView.as_view(), name='Water Report Package View'),
-    path('waterReportquarter/<str:quarter>/<int:year>',
+    path('waterReportquarter/<str:month>/<int:year>',
          waterReportQuarterView.as_view(), name='Water Report Package View'),
 
     path('wastetreatmentpackage/<str:packages>',
@@ -55,12 +55,20 @@ urlpatterns = [
      path('TreeManagementReportQuarterView/<str:quarter>/<int:year>',
          TreeManagementReportQuarterView.as_view(), name='Tree Management Quarter'),
 
+
+     path('TrainnigReporQuarter/<str:quarter>/<int:year>' , TrainnigReportQuarterView.as_view() , name = ' PreConstructionStageCompliance'),
+     path('TrainnigReporpackage/<str:packages>' , TrainnigReportPackageView.as_view() , name = ' PreConstructionStageCompliance'),
+    
+     path('OccupationalHealthQuarter/<str:quarter>/<int:year>' , OccupationalHealthQuarterView.as_view() , name = ' PreConstructionStageCompliance'),
+     path('OccupationalHealthPackage/<str:packages>' , OccupationalHealthPackageView.as_view() , name = ' PreConstructionStageCompliance'),
+     
+     
      path('package54Aligment' , Package54AlignmentView.as_view() , name = 'Package54AlignmentView'),
-     path('package12Aligment' , package12AlignmentView.as_view() , name = 'package12Aligment '),
-     path('package11Aligment' , package11AlignmentView.as_view() , name = 'package11Aligment '),
-     path('package10Aligment' , package10AlignmentView.as_view() , name = 'package10Aligment '),
-     path('package09Aligment' , package09AlignmentView.as_view() , name = 'package09Aligment '),
-     path('package08Aligment' , package08AlignmentView.as_view() , name = 'package08Aligment '),
+     path('package12Aligment' , package12AlignmentView.as_view() , name = 'package12Aligment'),
+     path('package11Aligment' , package11AlignmentView.as_view() , name = 'package11Aligment'),
+     path('package10Aligment' , package10AlignmentView.as_view() , name = 'package10Aligment'),
+     path('package09Aligment' , package09AlignmentView.as_view() , name = 'package09Aligment'),
+     path('package08Aligment' , package08AlignmentView.as_view() , name = 'package08Aligment'),
      path('MetroStation' , MetroStationView.as_view() , name = 'MetroStationView '),
      path('ProjectAffectedTrees' , ProjectAffectedTreesView.as_view() , name = 'MetroStationView '),
     

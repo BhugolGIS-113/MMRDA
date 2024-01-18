@@ -322,3 +322,17 @@ class ConstructionSiteDetails(Baseclass):
     documents = models.FileField(
         upload_to='constructionSite/documents/', blank=True, null=True)
     remarks = models.TextField(max_length=255, blank=True, null=True)
+
+
+
+class Projectaffectedperson(models.Model):
+    gid = models.AutoField(primary_key=True)
+    pap_id = models.FloatField(blank=True, null=True)
+    name = models.CharField(max_length=254, blank=True, null=True)
+    category = models.CharField(max_length=254, blank=True, null=True)
+    date = models.CharField(max_length=254, blank=True, null=True)
+    geom = models.PointField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'projectAffectedPerson'

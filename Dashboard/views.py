@@ -383,4 +383,36 @@ class AirChartView(generics.GenericAPIView):
                         #  'AQI': serializers.get('AQI')})
 
 
+# API for PAP count
+class SocialMonitoringCountDashboardView(APIView):
+    serializer_class = SocialMonitoringCountDashboardViewSerializer
 
+    def get(self, request, *args, **kwargs):
+        queryset = PAP.objects.all()
+
+        PAPCount = PAP.objects.all().count()
+        EligiblePAPCount = PAP.objects.filter(eligibility='Eligible').count()
+        NonEligiblePAPCount = PAP.objects.filter(eligibility='Not Eligible').count()
+
+        print('eligible_count:', EligiblePAPCount, 'none_count:', NonEligiblePAPCount)
+
+        # for obj in queryset:
+        #   print(obj.__dict__)
+
+        # # Serialize the queryset using your custom serializer
+        # serializer = SocialMonitoringCountDashboardViewSerializer(queryset, many=True)
+        # serialized_data = serializer.data
+
+        # for obj in serialized_data:
+        #   print(obj)
+
+        if PAPCount == 0:
+            return Response({'Message': 'No data Found',
+                            'status': 'success'})
+
+        return Response({'status': 'success',
+                        'Message': 'Data Fetched successfully',
+                         'PAPcount': PAPCount,
+                         'EligiblePAPCount': EligiblePAPCount,
+                         'NonEligiblePAPCount': NonEligiblePAPCount,
+                         }, status=200)

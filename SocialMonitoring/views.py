@@ -414,3 +414,7 @@ class ConstructionSiteListView(generics.ListAPIView):
     queryset = ConstructionSiteDetails.objects.all()
 
 
+
+
+
+

@@ -16,13 +16,17 @@ class PAPCategoryDashboardView(ListAPIView):
     queryset = PAP.objects.all()
 
     def get(self, request, *args, **kwargs):
-        categoryOfPap = PAP.objects.values('categoryOfPap').annotate(count=Count('categoryOfPap'))
-        Rehabilitations = Rehabilitation.objects.values('categoryOfPap').annotate(count=Count('categoryOfPap'))
-       
-        dataset_Rehabilitations = [count['count'] for count in Rehabilitations]
-        lable = [count['categoryOfPap'] for count in categoryOfPap]
-        dataset_PAP = [count['count'] for count in categoryOfPap]
-        print(dataset_PAP)
+        packages = self.request.query_params.get("packages")
+        quarter = self.request.query_params.get("quarter")
+        if packages and quarter:
+            categoryOfPap = PAP.objects.filter(packages = packages , quarter = quarter).values('categoryOfPap').annotate(count=Count('categoryOfPap'))
+            lable = [count['categoryOfPap'] for count in categoryOfPap]
+            dataset_PAP = [count['count'] for count in categoryOfPap]
+        else:
+            categoryOfPap = PAP.objects.values('categoryOfPap').annotate(count=Count('categoryOfPap'))
+            lable = [count['categoryOfPap'] for count in categoryOfPap]
+            dataset_PAP = [count['count'] for count in categoryOfPap]
+            # print(dataset_PAP)
         # lable_PAP = [count['categoryOfPap'] for count in categoryOfPap]
 
         # dataset_PAP = [22 , 22 , 20 , 25 , 23 , 22]
@@ -89,12 +93,24 @@ class RehabilitatedPAPDashboardView(GenericAPIView):
     serializer_class = RehabilationDashboardSerializer
 
     def get(self, request):
-        counts = Rehabilitation.objects.values('compensationStatus').annotate(count=Count('compensationStatus'))
-        label = [count['compensationStatus'] for count in counts]
-        print(label)
-        totalcount = Rehabilitation.objects.all().count()
+        packages = self.request.query_params.get("packages")
+        quarter = self.request.query_params.get("quarter")
+        print("before if")
+        if packages and quarter:
+            print("inside if")
+            counts = Rehabilitation.objects.filter(packages = packages , quarter = quarter).values('compensationStatus').annotate(count=Count('compensationStatus'))
+            label = [count['compensationStatus'] for count in counts]
+            print(label)
+            totalcount = Rehabilitation.objects.all().count()
 
-        dataset = [count['count'] for count in counts]
+            dataset = [count['count'] for count in counts]
+        else:
+            counts = Rehabilitation.objects.values('compensationStatus').annotate(count=Count('compensationStatus'))
+            label = [count['compensationStatus'] for count in counts]
+            print(label)
+            totalcount = Rehabilitation.objects.all().count()
+
+            dataset = [count['count'] for count in counts]
         return Response({'status': 'success',
                         'Message': 'Data fetched successfully',
                          'dataset': dataset,
@@ -386,13 +402,15 @@ class AirChartView(generics.GenericAPIView):
 # API for PAP count
 class SocialMonitoringCountDashboardView(APIView):
     serializer_class = SocialMonitoringCountDashboardViewSerializer
+    #Need to be optimized
+    def get(self, request,quarter, packages, *args, **kwargs):
 
-    def get(self, request, *args, **kwargs):
-        queryset = PAP.objects.all()
+        PAPCount = PAP.objects.all().filter(packages=packages, quarter=quarter).count()
+        EligiblePAPCount = PAP.objects.filter(eligibility='Eligible', packages=packages, quarter=quarter).count()
+        NonEligiblePAPCount = PAP.objects.filter(eligibility='Not Eligible', packages=packages, quarter=quarter).count()
+        ReallocateCount = Rehabilitation.objects.all().filter(packages=packages, quarter=quarter).count()
+        NonReallocateCount = PAPCount - ReallocateCount
 
-        PAPCount = PAP.objects.all().count()
-        EligiblePAPCount = PAP.objects.filter(eligibility='Eligible').count()
-        NonEligiblePAPCount = PAP.objects.filter(eligibility='Not Eligible').count()
 
         print('eligible_count:', EligiblePAPCount, 'none_count:', NonEligiblePAPCount)
 
@@ -415,4 +433,6 @@ class SocialMonitoringCountDashboardView(APIView):
                          'PAPcount': PAPCount,
                          'EligiblePAPCount': EligiblePAPCount,
                          'NonEligiblePAPCount': NonEligiblePAPCount,
+                         'ReallocateCount': ReallocateCount,
+                         'NonReallocateCount': NonReallocateCount,
                          }, status=200)

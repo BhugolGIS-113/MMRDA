@@ -40,6 +40,8 @@ class PAP(Baseclass):
                              on_delete=models.CASCADE, null=True)
     PAPID = models.CharField( max_length=255,unique=True)
     nameOfPAP = models.CharField(max_length=255, blank=True, null=True)
+    firstName = models.CharField(max_length=255, blank=True, null=True)
+    lastName = models.CharField(max_length=255, blank=True, null=True)
     addressLine1 = models.TextField(max_length=255, blank=True, null=True)
     streetName = models.CharField(max_length=255, blank=True, null=True)
     pincode = models.PositiveIntegerField(blank=True, null=True)

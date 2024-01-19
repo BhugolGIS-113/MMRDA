@@ -60,7 +60,7 @@ class PapSerailzer(serializers.ModelSerializer):
     latitude = serializers.CharField(max_length=50, required=True)
     class Meta:
         model = PAP
-        fields = ('quarter', 'packages', 'longitude', 'latitude','dateOfMonitoring', 'user','dateOfIdentification','PAPID','nameOfPAP', 
+        fields = ('quarter', 'packages', 'longitude', 'latitude','dateOfMonitoring', 'user','dateOfIdentification','PAPID','firstName', 'lastName' 
                   'addressLine1','streetName','pincode','eligibility', 'categoryOfPap', 
                     'areaOfAsset','typeOfStructure','legalStatus','legalDocuments',
                    'actionTaken', 'notAgreedReason','presentPhotograph','remarks' )

@@ -7,7 +7,7 @@ urlpatterns = [
      path('CategoryWiseCompensationChart', CategoryWiseCompensationChart.as_view() , name='PAP Dashboard View'),
      path('IdentifiedPAPView', IdentifiedPAPDashboardView.as_view(), name='PAP Dashboard View'),
      
-     path('SocialMonitoringCount', SocialMonitoringCountDashboardView.as_view(), name='PAP Count'),
+     path('SocialMonitoringDashboardCount/<str:quarter>/<str:packages>', SocialMonitoringCountDashboardView.as_view(), name='PAP Count'),
 
      path('LabourcampFaciliteis<str:labourCampName>/<str:quarter>',LabourCampFacilitiesDashboardView.as_view(), name='labour Dashboard View'),
      path('campFaciliteisOverAll',LabourCampFacilitiesOverallDashboardView.as_view(), name='labour Dashboard View'),
@@ -27,8 +27,5 @@ urlpatterns = [
      path('Incidenttype',IncidenttypeCountchart.as_view() , name = 'Incident Type char'),
      path('WaterCondition',WaterConditionChart.as_view() , name = 'Water condition char'),
      path('AirChartView/<str:month>/<int:year>',AirChartView.as_view() , name = 'AIr chart'),
-
-
-
-
+    
 ]

@@ -74,6 +74,8 @@ class Rehabilitation(Baseclass):
         PAP, related_name='rehabilitation', on_delete=models.CASCADE)
     dateOfRehabilitation = models.DateField(blank=True, null=True)
     PAPID = models.CharField(max_length=255, blank=True, null=True)
+    firstName = models.CharField(max_length=255, blank=True, null=True)
+    lastName = models.CharField(max_length=255, blank=True, null=True)
     categoryOfPap = models.CharField(
         max_length=255,  null=True, blank=True)
     PAPName = models.CharField(max_length=255, blank=True, null=True)

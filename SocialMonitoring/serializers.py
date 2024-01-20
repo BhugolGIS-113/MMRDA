@@ -60,7 +60,7 @@ class PapSerailzer(serializers.ModelSerializer):
     latitude = serializers.CharField(max_length=50, required=True)
     class Meta:
         model = PAP
-        fields = ('quarter', 'packages', 'longitude', 'latitude','dateOfMonitoring', 'user','dateOfIdentification','PAPID','firstName', 'lastName' 
+        fields = ('quarter', 'packages', 'longitude', 'latitude','dateOfMonitoring', 'user','dateOfIdentification','PAPID','firstName', 'lastName',
                   'addressLine1','streetName','pincode','eligibility', 'categoryOfPap', 
                     'areaOfAsset','typeOfStructure','legalStatus','legalDocuments',
                    'actionTaken', 'notAgreedReason','presentPhotograph','remarks' )
@@ -119,7 +119,7 @@ class RehabilitationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Rehabilitation
-        fields = ('quarter','longitude', 'latitude','ID','dateOfRehabilitation' ,'PAPID', 'PAPName' ,'categoryOfPap','cashCompensation', 'compensationStatus',
+        fields = ('quarter','longitude', 'latitude','ID','dateOfRehabilitation' ,'PAPID', 'firstName', 'lastName', 'categoryOfPap','cashCompensation', 'compensationStatus',
                    'typeOfCompensation', 'otherCompensationType' ,'addressLine1','streetName','pincode',
                    'isShiftingAllowance','shiftingAllowanceAmount','isLivelihoodSupport', 'livelihoodSupportAmount','livelihoodSupportCondition',
                    'livelihoodSupportPhotograph','livelihoodSupportRemarks','isTraining','trainingCondition',
@@ -154,7 +154,7 @@ class RehabilitationViewSerializer(GeoFeatureModelSerializer):
 class RehabilatedPAPIDSerializer(serializers.ModelSerializer):
     class Meta:
         model = PAP
-        fields = ('id', 'PAPID' , 'nameOfPAP' , 'categoryOfPap'  , "actionTaken")
+        fields = ('id', 'PAPID' , 'nameOfPAP', 'firstName', 'lastName', 'categoryOfPap'  , "actionTaken")
 
 # -------------------------------- Labour camp details Serialzier --------------------------------      
 class LabourCampDetailSerializer(serializers.ModelSerializer):

@@ -20,10 +20,12 @@ class PAPCategoryDashboardView(ListAPIView):
         quarter = self.request.query_params.get("quarter")
         if packages and quarter:
             categoryOfPap = PAP.objects.filter(packages = packages , quarter = quarter).values('categoryOfPap').annotate(count=Count('categoryOfPap'))
+            print(categoryOfPap)
             lable = [count['categoryOfPap'] for count in categoryOfPap]
             dataset_PAP = [count['count'] for count in categoryOfPap]
         else:
             categoryOfPap = PAP.objects.values('categoryOfPap').annotate(count=Count('categoryOfPap'))
+            print(categoryOfPap)
             lable = [count['categoryOfPap'] for count in categoryOfPap]
             dataset_PAP = [count['count'] for count in categoryOfPap]
             # print(dataset_PAP)

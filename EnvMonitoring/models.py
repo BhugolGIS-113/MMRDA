@@ -44,6 +44,7 @@ class  Air(Baseclass):
     standardO3 = models.FloatField(blank= True , default = 100.00 , null= True)
     NOx = models.CharField( max_length= 50 , blank= True , default= 0, null = True)
     standardNOx = models.FloatField(blank= True , default = 80.00 , null= True)
+    CO = models.CharField(max_length=50, blank= True, null=True)
     AQI = models.CharField(max_length= 50 , blank= True , default= 0, null = True) 
     Remarks = models.TextField ( blank = True, max_length  = 255, null = True )
 

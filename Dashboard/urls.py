@@ -3,7 +3,7 @@ from .views import *
 
 urlpatterns = [
     # for social Monitoring
-     path('PAPDashboardcategory', PAPCategoryDashboardView.as_view() , name='PAP Dashboard View'),
+     path('SocialMonitoringPAPDashboardLanduseCategory', PAPCategoryDashboardView.as_view() , name='PAP Dashboard View'),
      path('CategoryWiseCompensationChart', CategoryWiseCompensationChart.as_view() , name='PAP Dashboard View'),
      path('IdentifiedPAPView', IdentifiedPAPDashboardView.as_view(), name='PAP Dashboard View'),
      

@@ -681,3 +681,16 @@ class WatermanagmentAPI(generics.GenericAPIView):
         else:
             return Response({'status': 403, 'message': 'invalid package'})
 
+
+
+
+# class GetAPI(generics.GenericAPIView):
+#     serializer_class = GetAQISerializer
+#     def get(self, request,packages, *args, **kwargs):
+#         air_parameters = Air.objects.all()
+#         if instance:
+#             serializer = AirmanagementSerializer(instance, many=True)
+#             return Response({'status': 200, 'data': serializer.data,
+#                                       'message': 'successfully'})
+#         else:
+#             return Response({'status': 403, 'message': 'invalid package'})

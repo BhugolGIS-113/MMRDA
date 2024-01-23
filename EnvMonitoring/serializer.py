@@ -32,7 +32,7 @@ class AirSerializer(serializers.ModelSerializer):
     class Meta:
         model = Air
         fields = ('quarter','packages','month','longitude','latitude','dateOfMonitoring','PM10','SO2',
-                   'O3','NOx','AQI' , 'Remarks')
+                   'O3','NOx', 'CO', 'AQI' , 'Remarks')
         # geo_field='location'
     def validate(self,data):
         if data['quarter']=="" or data['quarter']==None:
@@ -310,3 +310,9 @@ class WatermanamentSerializer(serializers.ModelSerializer):
     class Meta:
         model = water
         fields = ['qualityOfWater','sourceOfWater','location','packages','quarter']
+
+
+class GetAQISerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Air
+        fields = ['PM10', 'SO2', 'O3', 'NOx', 'CO']

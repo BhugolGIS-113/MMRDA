@@ -6,11 +6,11 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# use this if setting up on Windows 10 with GDAL installed from OSGeo4W using defaults
-if os.name == 'nt':
-    VIRTUAL_ENV_BASE = os.environ['VIRTUAL_ENV']
-    os.environ['PATH'] = os.path.join(VIRTUAL_ENV_BASE, r'.\Lib\site-packages\osgeo') + ';' + os.environ['PATH']
-    os.environ['PROJ_LIB'] = os.path.join(VIRTUAL_ENV_BASE, r'.\Lib\site-packages\osgeo\data\proj') + ';' + os.environ['PATH']
+# # use this if setting up on Windows 10 with GDAL installed from OSGeo4W using defaults
+# if os.name == 'nt':
+#     VIRTUAL_ENV_BASE = os.environ['VIRTUAL_ENV']
+#     os.environ['PATH'] = os.path.join(VIRTUAL_ENV_BASE, r'.\Lib\site-packages\osgeo') + ';' + os.environ['PATH']
+#     os.environ['PROJ_LIB'] = os.path.join(VIRTUAL_ENV_BASE, r'.\Lib\site-packages\osgeo\data\proj') + ';' + os.environ['PATH']
 
 
 # Quick-start development settings - unsuitable for production
@@ -221,3 +221,6 @@ SIMPLE_JWT = {
 }
 
 TIME_ZONE =  'Asia/Kolkata'
+
+GDAL_LIBRARY_PATH = r"C:\OSGeo4W\bin\gdal308.dll"
+

@@ -16,18 +16,34 @@ class PAPCategoryDashboardView(ListAPIView):
     queryset = PAP.objects.all()
 
     def get(self, request, *args, **kwargs):
+        land_use_type = [
+    "Residential Land",
+    "Private Land",
+    "Other",
+    "Institutional Land",
+    "Government Land",
+    "Commercial Land"
+        ]
         packages = self.request.query_params.get("packages")
         quarter = self.request.query_params.get("quarter")
         if packages and quarter:
             categoryOfPap = PAP.objects.filter(packages = packages , quarter = quarter).values('categoryOfPap').annotate(count=Count('categoryOfPap'))
             print(categoryOfPap)
+
             lable = [count['categoryOfPap'] for count in categoryOfPap]
             dataset_PAP = [count['count'] for count in categoryOfPap]
+            # # if no values when filtered
+            # for value in land_use_type:
+            #     if value not in lable:
+            #         lable.append(value)
+            #         dataset_PAP.append(0)
         else:
             categoryOfPap = PAP.objects.values('categoryOfPap').annotate(count=Count('categoryOfPap'))
             print(categoryOfPap)
             lable = [count['categoryOfPap'] for count in categoryOfPap]
+            lable.sort(reverse=True)
             dataset_PAP = [count['count'] for count in categoryOfPap]
+            dataset_PAP.sort(reverse=True)
             # print(dataset_PAP)
         # lable_PAP = [count['categoryOfPap'] for count in categoryOfPap]
 

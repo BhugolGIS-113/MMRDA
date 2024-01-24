@@ -447,6 +447,8 @@ class NewTereeManagementView(generics.GenericAPIView):
             return  Response({'Message' : "Only consultant and Contractor can fill this form"}, status= status.HTTP_401_UNAUTHORIZED)
 
 
+
+
 class WasteTreatmentsView(generics.GenericAPIView):
     serializer_class = WasteTreatmentsSerializer
     # renderer_classes = [ErrorRenderer]
@@ -657,6 +659,7 @@ class WasteTreatmentsAPI(generics.GenericAPIView):
         else:
             return Response({'status': 403, 'message': 'invalid package'})
 
+
 class MaterialSourcingAPI(generics.GenericAPIView):
     serializer_class = MaterialSerializer
     def get(self, request,packages, *args, **kwargs):
@@ -668,6 +671,7 @@ class MaterialSourcingAPI(generics.GenericAPIView):
                                       'message': 'successfully'})
         else:
             return Response({'status':403,'message':'invalid package'})
+
 
 class WatermanagmentAPI(generics.GenericAPIView):
     serializer_class = WatermanamentSerializer
@@ -683,7 +687,6 @@ class WatermanagmentAPI(generics.GenericAPIView):
 
 
 
-
 # class GetAPI(generics.GenericAPIView):
 #     serializer_class = GetAQISerializer
 #     def get(self, request,packages, *args, **kwargs):
@@ -694,3 +697,24 @@ class WatermanagmentAPI(generics.GenericAPIView):
 #                                       'message': 'successfully'})
 #         else:
 #             return Response({'status': 403, 'message': 'invalid package'})
+
+
+
+def noiseWhithinLimit(typeOfArea, noiseLevel_day, noiseLevel_night):
+    isWhithinLimit = {"day": "initial",
+     "night": "initial"}
+    typeOfAreaList = ["Industrial Area", "Commercial Area", "Residential Area", "Residential Area"]
+    if typeOfArea == "Industrial Area":
+        isWhithinLimit['day'] = "Whithin Limit" if noiseLevel_day > 75 else "Out of Limit"
+        isWhithinLimit['night'] = "Whithin Limit" if noiseLevel_night > 70 else "Out of Limit"
+    if typeOfArea == "Commercial Area":
+        isWhithinLimit['day'] = "Whithin Limit" if noiseLevel_day > 65 else "Out of Limit"
+        isWhithinLimit['night'] = "Whithin Limit" if noiseLevel_night > 55 else "Out of Limit"
+    if typeOfArea == "Residential Area":
+        isWhithinLimit['day'] = "Whithin Limit" if noiseLevel_day > 55 else "Out of Limit"
+        isWhithinLimit['night'] = "Whithin Limit" if noiseLevel_night > 45 else "Out of Limit"
+    if typeOfArea == "Sensitive Area":
+        isWhithinLimit['day'] = "Whithin Limit" if noiseLevel_day > 50 else "Out of Limit"
+        isWhithinLimit['night'] = "Whithin Limit" if noiseLevel_night > 40 else "Out of Limit"
+
+    return isWhithinLimit
